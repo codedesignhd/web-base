@@ -1,0 +1,23 @@
+﻿@model CodeDesign.Models.Pagination
+<ul class="pagination">
+    @if (Model != null && Model.total_page > 1)
+    {
+        int start = Math.Max(Model.page - 2, 1);
+        int end = Math.Min(4 + start, Model.total_page);
+
+        <li class="paginate_button page-item previous @((Model.page>1 && Model.total_page>0)?"":"disabled")">
+            <a data-idx="@(Model.page - 1)" tabindex="0" class="page-link">Previous</a>
+        </li>
+
+        @for (int i = start; i <= end; i++)
+        {
+            <li class="paginate_button page-item @(Model.page==i?"active":"")">
+                <a data-idx="@i" tabindex="0" class="page-link">@i</a>
+            </li>
+        }
+
+        <li class="paginate_button page-item next @((Model.page<Model.total_page && Model.total_page>0)?"":"disabled")">
+            <a data-idx="@(Model.page + 1)" tabindex="@Model.total_page" class="page-link">Next</a>
+        </li>
+    }
+</ul>

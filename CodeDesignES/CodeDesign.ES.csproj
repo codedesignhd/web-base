@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Elasticsearch.Net" Version="7.10.0" />
+    <PackageReference Include="NEST.JsonNetSerializer" Version="7.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj" />
+    <ProjectReference Include="..\CodeDesignUtils\Utils.csproj" />
+  </ItemGroup>
+
+</Project>
