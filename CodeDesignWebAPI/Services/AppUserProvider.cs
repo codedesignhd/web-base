@@ -1,4 +1,5 @@
-﻿using CodeDesign.Models;
+﻿using CodeDesign.DTO.Vms;
+using CodeDesign.Models;
 using System.Security.Claims;
 
 namespace CodeDesign.WebAPI.Services
@@ -15,7 +16,7 @@ namespace CodeDesign.WebAPI.Services
         public AppUser GetCurrentUser()
         {
             ClaimsPrincipal principal = _httpContextAccessor.HttpContext.User;
-            AppUser app_user = new AppUser()
+            AppUser appUser = new AppUser()
             {
                 IsAuthenticated = principal.Identity.IsAuthenticated,
                 Username = principal.FindFirstValue(ClaimTypesCustom.USERNAME),
@@ -27,20 +28,20 @@ namespace CodeDesign.WebAPI.Services
             {
                 role = Role.USER;
             };
-            app_user.Role = role;
-            string prop_joined = principal.FindFirstValue(ClaimTypesCustom.THUOC_TINH);
-            if (!string.IsNullOrWhiteSpace(prop_joined))
+            appUser.Role = role;
+            string props = principal.FindFirstValue(ClaimTypesCustom.THUOC_TINH);
+            if (!string.IsNullOrWhiteSpace(props))
             {
                 try
                 {
-                    app_user.Props = prop_joined.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+                    appUser.Props = props.Split(',').Select(x => Convert.ToInt32(x)).ToList();
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex.Message);
                 }
             }
-            return app_user;
+            return appUser;
         }
     }
 }

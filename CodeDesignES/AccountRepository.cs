@@ -3,21 +3,25 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CodeDesign.ES.Core.Models;
 using CodeDesign.Models;
 using Elasticsearch.Net;
 using Nest;
 
 namespace CodeDesign.ES
 {
-    public class TaiKhoanRepository : IESRepository
+    public class AccountRepository : AbstractESRepository, IESRepository<Account>
     {
         #region Init
         private static string _index;
 
-        public TaiKhoanRepository(string modify_index)
+        public AccountRepository(string modify_index)
         {
             _index = !string.IsNullOrEmpty(modify_index) ? modify_index : _index;
-            ConnectionSettings settings = new ConnectionSettings(connectionPool, sourceSerializer: Nest.JsonNetSerializer.JsonNetSerializer.Default).DefaultIndex(_index).DisableDirectStreaming(true).MaximumRetries(10);
+            ConnectionSettings settings = new ConnectionSettings(connectionPool, sourceSerializer: Nest.JsonNetSerializer.JsonNetSerializer.Default)
+                .DefaultIndex(_index)
+                .DisableDirectStreaming(true)
+                .MaximumRetries(10);
             client = new ElasticClient(settings);
             var ping = client.Ping(p => p.Pretty(true));
             if (ping.ServerError != null && ping.ServerError.Error != null)
@@ -27,15 +31,15 @@ namespace CodeDesign.ES
         }
 
 
-        private static TaiKhoanRepository _instance;
-        public static TaiKhoanRepository Instance
+        private static AccountRepository _instance;
+        public static AccountRepository Instance
         {
             get
             {
                 if (_instance is null)
                 {
                     _index = string.Format("{0}_account", prefix_index);
-                    _instance = new TaiKhoanRepository(_index);
+                    _instance = new AccountRepository(_index);
                 }
                 return _instance;
             }
@@ -45,38 +49,39 @@ namespace CodeDesign.ES
 
 
         #region CRUD
-        public (bool success, string id) Index(TaiKhoan tai_khoan)
+        public (bool success, string id) Index(Account data, string id = "", string route = "")
         {
-            return Index<TaiKhoan>(tai_khoan, tai_khoan.username);
+            return Index<Account>(data, id, route);
         }
 
-        public bool Update(string id, object obj)
+        public bool Update(string id, object doc)
         {
-            return Update<TaiKhoan>(id, obj);
+            return Update<Account>(id, doc);
         }
 
-        public bool Delete(string id)
+        public bool Delete(string id, bool isForceDelete = false)
         {
-            return Delete<TaiKhoan>(id);
+            return Delete<Account>(id, isForceDelete);
         }
 
-        public List<TaiKhoan> GetAll(string[] fields = null)
+        public Account Get(string id, string[] fields = null)
         {
-            SourceFilter so = new SourceFilter()
-            {
-                Includes = fields,
-            };
-            return GetObjectScroll<TaiKhoan>(null, so).ToList();
+            return Get<Account>(id, fields);
         }
 
-        public TaiKhoan Get(string id, string[] fields = null)
+        public List<Account> MultiGet(IEnumerable<string> ids, string[] fields = null)
         {
-            return Get<TaiKhoan>(id, fields);
+            return MultiGet<Account>(ids, fields);
+        }
+
+        public ScrollResult<Account> GetScroll(string scrollId, SearchRequest request)
+        {
+            return GetScroll<Account>(scrollId, request);
         }
         #endregion
 
         #region Function
-        public TaiKhoan Login(string username, string password)
+        public Account Login(string username, string password)
         {
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
             {
@@ -96,7 +101,7 @@ namespace CodeDesign.ES
                     Size = 1,
                     Source = CustomSource(null, new string[] { "password", "nguoi_tao", "nguoi_sua", "trang_thai", "ngay_sua", "ngay_tao" }),
                 };
-                var res = client.Search<TaiKhoan>(req);
+                var res = client.Search<Account>(req);
                 if (res.IsValid && res.Total == 1)
                 {
                     return res.Hits.Select(ToDocument).First();
@@ -125,7 +130,7 @@ namespace CodeDesign.ES
                     }),
                     Size = 1,
                 };
-                var res = client.Search<TaiKhoan>(req);
+                var res = client.Search<Account>(req);
                 return res.IsValid && res.Total > 0;
             }
             return false;
@@ -155,7 +160,7 @@ namespace CodeDesign.ES
                         {"DUP_EMAIL", new TermsAggregation("DUP_EMAIL"){Field="email.keyword" } },
                     }
                 };
-                var res = client.Search<TaiKhoan>(req);
+                var res = client.Search<Account>(req);
                 if (res.IsValid)
                 {
                     duplicate_user_email.AddRange(res.Aggregations.Terms("DUP_USER").Buckets.Select(x => x.Key));

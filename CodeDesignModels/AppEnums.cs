@@ -47,7 +47,6 @@ namespace CodeDesign.Models
     public enum DOI_TUONG
     {
         TAI_KHOAN = 1,
-
     }
 
     public enum ACTION
@@ -57,5 +56,30 @@ namespace CodeDesign.Models
         CREATE = 2,
         UPDATE = 3,
         DELETE = 4,
+    }
+
+    public enum PackageType
+    {
+        UNKNOWN = 0,
+        NORMAL = 1,
+        DETAIL = 2,
+    }
+
+    public enum KhoangThoiGian
+    {
+        ALL = 0,
+        NGAY = 1,
+        TUAN = 2,
+        THANG = 3,
+        NAM = 4,
+        FULL = 5,
+    }
+
+    public enum ProvinceType
+    {
+        ALL = 0,
+        PROVINCE = 1,
+        DISTRICT = 2,
+        COMMUNE = 3,
     }
 }

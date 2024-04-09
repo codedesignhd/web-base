@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using CodeDesign.BL.Response;
 using CodeDesign.DTO.Dtos.ToDo;
+using CodeDesign.DTO.Vms;
 using CodeDesign.ES;
 using CodeDesign.Models;
+using CodeDesign.Utilities;
 
 namespace CodeDesign.BL
 {
@@ -26,7 +28,7 @@ namespace CodeDesign.BL
         #endregion
 
         #region CRUD
-        public BaseResponse Create(UpsertToDoDto dto)
+        public ResponseBase Create(UpsertToDoDto dto)
         {
             if (dto == null)
             {
@@ -34,7 +36,7 @@ namespace CodeDesign.BL
             }
             else
             {
-                long thoi_gian_ket_thuc = Utils.DateTimeUtils.StringToEpoch(dto.ngay_ket_thuc);
+                long thoi_gian_ket_thuc = DateTimeUtils.StringToEpoch(dto.ngay_ket_thuc);
                 ToDo to_do = new ToDo()
                 {
                     title = dto.title,
@@ -49,7 +51,7 @@ namespace CodeDesign.BL
             }
         }
 
-        public BaseResponse Update(AppUser user, string id, UpsertToDoDto dto)
+        public ResponseBase Update(AppUser user, string id, UpsertToDoDto dto)
         {
             if (string.IsNullOrWhiteSpace(id) || dto == null)
             {
@@ -60,13 +62,13 @@ namespace CodeDesign.BL
                 ToDo toDo = ToDoRepository.Instance.Get(id, new string[] { "nguoi_tao" });
                 if (toDo != null && toDo.nguoi_tao == user.Username)
                 {
-                    long thoi_gian_ket_thuc = Utils.DateTimeUtils.StringToEpoch(dto.ngay_ket_thuc);
+                    long thoi_gian_ket_thuc = DateTimeUtils.StringToEpoch(dto.ngay_ket_thuc);
                     object doc = new
                     {
                         id,
                         dto.title,
                         thoi_gian_ket_thuc,
-                        ngay_sua = Utils.DateTimeUtils.TimeInEpoch(),
+                        ngay_sua = DateTimeUtils.TimeInEpoch(),
                     };
                     bool success = ToDoRepository.Instance.Update(id, doc);
                     if (success)
@@ -79,7 +81,7 @@ namespace CodeDesign.BL
             }
         }
 
-        public BaseResponse UpdateTrangThaiThucHien(AppUser user, string id, TrangThaiThucHien trang_thai_thuc_hien)
+        public ResponseBase UpdateTrangThaiThucHien(AppUser user, string id, TrangThaiThucHien trang_thai_thuc_hien)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -94,7 +96,7 @@ namespace CodeDesign.BL
                     {
                         id,
                         trang_thai_thuc_hien,
-                        ngay_sua = Utils.DateTimeUtils.TimeInEpoch(),
+                        ngay_sua = DateTimeUtils.TimeInEpoch(),
                     };
                     bool success = ToDoRepository.Instance.Update(id, doc);
                     if (success)
@@ -107,7 +109,7 @@ namespace CodeDesign.BL
             }
         }
 
-        public BaseResponse Delete(AppUser user, string id)
+        public ResponseBase Delete(AppUser user, string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {

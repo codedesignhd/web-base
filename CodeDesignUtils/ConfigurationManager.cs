@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-namespace Utils
+namespace CodeDesign.Utilities
 {
     public static class ConfigurationManager
     {

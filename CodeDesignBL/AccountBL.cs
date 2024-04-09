@@ -2,44 +2,43 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Transactions;
-using CodeDesign.DTO.Dtos.TaiKhoan;
+using CodeDesign.DTO.Dtos.Account;
 using CodeDesign.ES;
 using CodeDesign.Models;
+using CodeDesign.Utilities;
 using log4net;
 using log4net.Core;
-using Utils;
 namespace CodeDesign.BL
 {
-    public class TaiKhoanBL : BaseBL
+    public class AccountBL : BaseBL
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(TaiKhoanBL));
         #region Init
-        private static TaiKhoanBL _instance;
-        public static TaiKhoanBL Instance
+
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(AccountBL));
+        private static AccountBL _instance;
+        public static AccountBL Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    return new TaiKhoanBL();
+                    return new AccountBL();
                 }
                 return _instance;
             }
         }
         #endregion
 
-
         #region Login + Register
         /// <summary>
         /// Find user has username or email with password, if return account info if founded, ortherwise return default
         /// </summary>
-        public TaiKhoan Login(string username, string password)
+        public Account Login(string username, string password)
         {
             if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
             {
                 password = CryptoUtils.HashPasword(password.ChuanHoa());
-                _logger.Debug("Login");
-                return TaiKhoanRepository.Instance.Login(username.ChuanHoa(), password);
+                return AccountRepository.Instance.Login(username.ChuanHoa(), password);
             }
             return default;
         }
@@ -50,7 +49,7 @@ namespace CodeDesign.BL
             {
                 dto.email = dto.email.ChuanHoa();
                 dto.username = dto.username.ChuanHoa();
-                List<string> duplicates = TaiKhoanRepository.Instance.GetIfDuplicate(dto.username, dto.email);
+                List<string> duplicates = AccountRepository.Instance.GetIfDuplicate(dto.username, dto.email);
                 if (duplicates.Contains(dto.username))
                 {
                     return new KeyValuePair<bool, string>(false, "Username đã được đăng ký bởi người dùng khác");
@@ -59,16 +58,15 @@ namespace CodeDesign.BL
                 {
                     return new KeyValuePair<bool, string>(false, "Email đã được đăng ký bởi người dùng khác");
                 }
-                TaiKhoan tk = new TaiKhoan()
+                Account tk = new Account()
                 {
                     username = dto.username,
                     email = dto.email,
                     fullname = dto.fullname,
                     role = Role.USER,
                     nguoi_tao = dto.username,
-                    ngay_tao = DateTimeUtils.TimeInEpoch(),
                 };
-                var res = TaiKhoanRepository.Instance.Index(tk);
+                var res = AccountRepository.Instance.Index(tk);
                 if (res.success)
                 {
                     return new KeyValuePair<bool, string>(true, "Đăng ký thành công");
@@ -84,7 +82,7 @@ namespace CodeDesign.BL
         {
             if (!string.IsNullOrWhiteSpace(username))
             {
-                return TaiKhoanRepository.Instance.Update(username, new
+                return AccountRepository.Instance.Update(username, new
                 {
                     last_login = DateTimeUtils.TimeInEpoch()
                 });
@@ -103,25 +101,24 @@ namespace CodeDesign.BL
         {
             if (!string.IsNullOrWhiteSpace(identity))
             {
-                return TaiKhoanRepository.Instance.IsUserExist(identity);
+                return AccountRepository.Instance.IsUserExist(identity);
             }
             return true;
         }
 
-        public TaiKhoan Get(string id, string[] fields = null)
+        public Account Get(string id, string[] fields = null)
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
-                return TaiKhoanRepository.Instance.Get(id, fields);
+                return AccountRepository.Instance.Get(id, fields);
             }
-            return null;
+            return default;
         }
 
 
-        public List<TaiKhoan> GetAll(string[] fields = null)
+        public List<Account> GetAll(string[] fields = null)
         {
-            return TaiKhoanRepository.Instance.GetAll(fields);
+            return new List<Account>();
         }
-
     }
 }

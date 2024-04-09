@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Nest;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +19,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "DemoAPI",
+        Title = "CodeDesign API",
         Version = "v1"
     });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -71,9 +70,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 //builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterValidator>();
 //builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
-builder.Services.AddSingleton<AppValidator>();
+builder.Services.AddScoped<AppValidator>();
 builder.Services.AddSingleton<AppUserProvider>();
-builder.Services.AddSingleton<AppDependencyProvider>();
+builder.Services.AddScoped<AppDependencyProvider>();
 builder.Logging.ClearProviders()
     .AddLog4Net("log4net.config");
 builder.Services.AddCors(options =>

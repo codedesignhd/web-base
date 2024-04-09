@@ -7,7 +7,7 @@ using Couchbase.KeyValue;
 
 namespace CodeDesign.Couchbase
 {
-    public class DemoCouchebase : IDemoCouchbase
+    public class CodeDesignCB : ICodeDesignCouchbase
     {
 
 

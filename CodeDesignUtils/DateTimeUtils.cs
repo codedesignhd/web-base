@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Utils
+namespace CodeDesign.Utilities
 {
     public class DateTimeUtils
     {
@@ -32,7 +32,7 @@ namespace Utils
         /// </summary>
         public static string EpochToTimeString(long epoch, string format = "dd/MM/yyyy HH:mm")
         {
-            DateTime dt = EpochToTime(epoch);
+            DateTime dt = ToLocalTime(epoch);
             try
             {
                 return dt.ToString(format);
@@ -93,6 +93,13 @@ namespace Utils
         public static bool IsValidDate(string date)
         {
             return DateTime.TryParse(date, out _);
+        }
+
+        public static DateTime ToLocalTime(long epoch)
+        {
+            DateTime dt = EpochToTime(epoch)
+                .ToLocalTime();
+            return dt;
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿using CodeDesign.DTO.Dtos.ToDo;
+using CodeDesign.Utilities;
 using FluentValidation;
-using Utils;
 namespace CodeDesign.DTO.Validators
 {
     public class UpsertToDoValidator : AbstractValidator<UpsertToDoDto>

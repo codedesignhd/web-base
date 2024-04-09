@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace CodeDesign.DTO.Dtos.TaiKhoan
+namespace CodeDesign.DTO.Dtos.Account
 {
     public class RegisterUserDto
     {

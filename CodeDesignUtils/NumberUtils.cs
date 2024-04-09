@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Utils
+namespace CodeDesign.Utilities
 {
     public class NumberUtils
     {
@@ -15,11 +15,11 @@ namespace Utils
             }
             return (int)Math.Ceiling(value);
         }
-        
+
     }
 
     public static class NumberExt
     {
-        
+
     }
 }

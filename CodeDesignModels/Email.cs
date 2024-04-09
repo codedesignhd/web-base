@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CodeDesign.Models
 {
-    public class Email : BaseModel
+    public class Email : ModelBase
     {
         public string title { get; set; }
         public string body { get; set; }

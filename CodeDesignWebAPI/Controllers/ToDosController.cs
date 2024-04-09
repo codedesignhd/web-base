@@ -39,7 +39,7 @@ namespace CodeDesign.WebAPI.Controllers
             var result = _dependencies.Validator.UpdateToDo.Validate(dto);
             if (result.IsValid)
             {
-                BaseResponse response = ToDoBL.Instance.Create(dto);
+                ResponseBase response = ToDoBL.Instance.Create(dto);
                 return new JsonResult(response);
             }
             return new JsonResult(new Response(false, result.GetMessage()));
@@ -61,7 +61,7 @@ namespace CodeDesign.WebAPI.Controllers
             var result = _dependencies.Validator.UpdateToDo.Validate(dto);
             if (result.IsValid)
             {
-                BaseResponse response = ToDoBL.Instance.Update(AppUser, id, dto);
+                ResponseBase response = ToDoBL.Instance.Update(AppUser, id, dto);
                 return new JsonResult(response);
             }
             return new JsonResult(new Response(false, result.GetMessage()));
@@ -71,14 +71,14 @@ namespace CodeDesign.WebAPI.Controllers
         [HttpPost, Route("{id}/UpdateTrangThaiThucHien")]
         public IActionResult UpdateTrangThaiThucHien(string id, TrangThaiThucHien trang_thai_thuc_hien)
         {
-            BaseResponse response = ToDoBL.Instance.UpdateTrangThaiThucHien(AppUser, id, trang_thai_thuc_hien);
+            ResponseBase response = ToDoBL.Instance.UpdateTrangThaiThucHien(AppUser, id, trang_thai_thuc_hien);
             return new JsonResult(response);
         }
 
         [HttpDelete, Route("{id}/Delete")]
         public IActionResult Delete(string id)
         {
-            BaseResponse response = ToDoBL.Instance.Delete(AppUser, id);
+            ResponseBase response = ToDoBL.Instance.Delete(AppUser, id);
             return new JsonResult(response);
         }
     }

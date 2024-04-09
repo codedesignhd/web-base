@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Utils
+namespace CodeDesign.Utilities
 {
     public class CryptoUtils
     {
@@ -23,7 +23,7 @@ namespace Utils
             }
         }
 
-        public static string HashPasword(string password, string salt=null)
+        public static string HashPasword(string password, string salt = null)
         {
             if (!string.IsNullOrWhiteSpace(salt))
             {

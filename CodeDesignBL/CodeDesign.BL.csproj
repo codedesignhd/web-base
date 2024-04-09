@@ -12,7 +12,7 @@
     <ProjectReference Include="..\CodeDesignDTO\CodeDesign.DTO.csproj" />
     <ProjectReference Include="..\CodeDesignES\CodeDesign.ES.csproj" />
     <ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj" />
-    <ProjectReference Include="..\CodeDesignUtils\Utils.csproj" />
+    <ProjectReference Include="..\CodeDesignUtils\CodeDesign.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

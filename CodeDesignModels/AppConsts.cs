@@ -5,15 +5,15 @@ using System.Text;
 
 namespace CodeDesign.Models
 {
-    public static class Constants
+    public abstract class AppConsts
     {
-        public static readonly string DEFAULT_USER = "unknow";
+        public const string DEFAULT_USER = "unknow";
     }
-    public class ClaimTypesCustom
+    public abstract class ClaimTypesCustom
     {
-        public static readonly string THUOC_TINH = "prp";
+        public const string THUOC_TINH = "prp";
         //public static readonly string FULL_NAME = "fna";
-        public static readonly string USERNAME = "usr";
+        public const string USERNAME = "usr";
         //public static readonly string EMAIL = "emi";
     }
 }

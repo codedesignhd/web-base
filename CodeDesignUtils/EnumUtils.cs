@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Utils
+namespace CodeDesign.Utilities
 {
     public static class EnumUtils
     {
-        
+
     }
 }

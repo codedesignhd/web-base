@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Models
 {
-    public class LogAction : BaseModel
+    public class LogAction : ModelBase
     {
         public string source_id { get; set; }
         public string target_id { get; set; }

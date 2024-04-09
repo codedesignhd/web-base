@@ -8,8 +8,8 @@ using CodeDesign.Models;
 using CodeDesign.BL;
 using CodeDesign.WebAPI.Services;
 using CodeDesign.DTO.Validators;
-using CodeDesign.DTO.Dtos.TaiKhoan;
 using CodeDesign.BL.Response;
+using CodeDesign.DTO.Dtos.Account;
 
 namespace CodeDesign.WebAPI.Controllers
 {
@@ -29,25 +29,24 @@ namespace CodeDesign.WebAPI.Controllers
         [Route("users")]
         public IActionResult GetAllUsers()
         {
-            List<TaiKhoan> accounts = TaiKhoanBL.Instance.GetAll();
-            return new JsonResult(new Response<List<TaiKhoan>>() { data = accounts });
+            List<Account> accounts = AccountBL.Instance.GetAll();
+            return new JsonResult(new Response<List<Account>>() { data = accounts });
         }
 
         [AllowAnonymous, HttpPost, Route("login")]
         public IActionResult Login(string username, string password)
         {
-
-            TaiKhoan tai_khoan = TaiKhoanBL.Instance.Login(username, password);
-            if (tai_khoan != null)
+            Account account = AccountBL.Instance.Login(username, password);
+            if (account != null)
             {
-                string token = JwtManager.GenToken(tai_khoan);
+                string token = JwtManager.GenToken(account);
                 _logger.Debug("From Login");
                 return new JsonResult(new Response<object>
                 {
                     success = true,
                     data = new
                     {
-                        token,
+                        access_token = token,
                     }
                 });
             }
@@ -67,7 +66,7 @@ namespace CodeDesign.WebAPI.Controllers
             ValidationResult result = await _dependencies.Validator.Register.ValidateAsync(dto);
             if (result.IsValid)
             {
-                KeyValuePair<bool, string> res = TaiKhoanBL.Instance.Register(dto);
+                KeyValuePair<bool, string> res = AccountBL.Instance.Register(dto);
                 return new JsonResult(new Response(res));
             }
             return new JsonResult(new Response(false, result.GetMessage()));
@@ -93,7 +92,7 @@ namespace CodeDesign.WebAPI.Controllers
         [HttpGet, Route("checkUserExist")]
         public IActionResult CheckUserExist(string username)
         {
-            bool isExist = TaiKhoanBL.Instance.IsUserExist(username);
+            bool isExist = AccountBL.Instance.IsUserExist(username);
             string message = "Username is avaiable";
             if (isExist)
             {

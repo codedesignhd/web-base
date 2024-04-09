@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Models.EFModel
 {
-    public class Employee : BaseModel
+    public class Employee : ModelBase
     {
         public string fullname { get; set; }
         //public string department_id { get; set; }

@@ -1,22 +1,20 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net.Sockets;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using CodeDesign.BL;
 using CodeDesign.Models;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CodeDesign.WebAPI.Services
 {
     public class JwtManager
     {
-        public static string GenToken(TaiKhoan user, int expired_mins = 30)
+        public static string GenToken(Account user, int expired_mins = 30)
         {
             if (user != null)
             {
-                string secret = Utils.ConfigurationManager.AppSettings["Jwt:Key"];
+                string secret = Utilities.ConfigurationManager.AppSettings["Jwt:Key"];
                 byte[] symmetricKey = Encoding.UTF8.GetBytes(secret);
                 var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -36,8 +34,8 @@ namespace CodeDesign.WebAPI.Services
 
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(symmetricKey),
                         SecurityAlgorithms.HmacSha256Signature),
-                    Issuer = Utils.ConfigurationManager.AppSettings["Jwt:Issuer"],
-                    Audience = Utils.ConfigurationManager.AppSettings["Jwt:Audience"],
+                    Issuer = Utilities.ConfigurationManager.AppSettings["Jwt:Issuer"],
+                    Audience = Utilities.ConfigurationManager.AppSettings["Jwt:Audience"],
                 };
 
                 SecurityToken stoken = tokenHandler.CreateToken(tokenDescriptor);
@@ -58,7 +56,7 @@ namespace CodeDesign.WebAPI.Services
                 if (jwtToken == null)
                     return null;
 
-                var symmetricKey = Convert.FromBase64String(Utils.ConfigurationManager.AppSettings["Jwt:Key"]);
+                var symmetricKey = Convert.FromBase64String(Utilities.ConfigurationManager.AppSettings["Jwt:Key"]);
 
                 var validationParameters = new TokenValidationParameters()
                 {
@@ -106,7 +104,7 @@ namespace CodeDesign.WebAPI.Services
             if (isValidToken(token, out string username))
             {
                 // based on username to get more information from database 
-                TaiKhoan tk = TaiKhoanBL.Instance.Get(username, new string[] { "username", "email", "role" });
+                Account tk = AccountBL.Instance.Get(username, new string[] { "username", "email", "role" });
                 if (tk != null)
                 {
                     List<Claim> claims = new List<Claim>

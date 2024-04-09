@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Services", "Code
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Sql", "CodeDesignSql\CodeDesign.Sql.csproj", "{7B80AC6D-6C4B-4CB8-8FCD-2364076398AC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "CodeDesignUtils\Utils.csproj", "{3EF66ACC-9AE3-4CBF-A66B-406EFF6DA993}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Utilities", "CodeDesignUtils\CodeDesign.Utilities.csproj", "{3EF66ACC-9AE3-4CBF-A66B-406EFF6DA993}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Web", "CodeDesignWeb\CodeDesign.Web.csproj", "{116A9EC1-D863-4C09-BB36-14F5D18A5039}"
 EndProject

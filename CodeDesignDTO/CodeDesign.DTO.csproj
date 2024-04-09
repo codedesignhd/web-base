@@ -6,11 +6,7 @@
 
   <ItemGroup>
 	  <ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj" />
-	  <ProjectReference Include="..\CodeDesignUtils\Utils.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Vms\" />
+	  <ProjectReference Include="..\CodeDesignUtils\CodeDesign.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

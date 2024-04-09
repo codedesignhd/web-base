@@ -19,7 +19,7 @@
 		<ProjectReference Include="..\CodeDesignSql\CodeDesign.Sql.csproj" />
 
 		<ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj" />
-		<ProjectReference Include="..\CodeDesignUtils\Utils.csproj" />
+		<ProjectReference Include="..\CodeDesignUtils\CodeDesign.Utilities.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
