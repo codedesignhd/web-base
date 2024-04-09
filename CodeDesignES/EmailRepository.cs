@@ -9,15 +9,13 @@ using Nest;
 
 namespace CodeDesign.ES
 {
-    public class EmailRepository : IESRepository
+    public class EmailRepository : AbstractESRepository, IESRepository<Email>
     {
         #region Init
-        private static string _default_index;
-
         public EmailRepository(string modify_index)
         {
-            _default_index = !string.IsNullOrEmpty(modify_index) ? modify_index : _default_index;
-            ConnectionSettings settings = new ConnectionSettings(connectionPool, sourceSerializer: Nest.JsonNetSerializer.JsonNetSerializer.Default).DefaultIndex(_default_index).DisableDirectStreaming(true).MaximumRetries(10);
+            _index = !string.IsNullOrEmpty(modify_index) ? modify_index : _index;
+            ConnectionSettings settings = new ConnectionSettings(connectionPool, sourceSerializer: Nest.JsonNetSerializer.JsonNetSerializer.Default).DefaultIndex(_index).DisableDirectStreaming(true).MaximumRetries(10);
             client = new ElasticClient(settings);
             var ping = client.Ping(p => p.Pretty(true));
             if (ping.ServerError != null && ping.ServerError.Error != null)
@@ -34,8 +32,8 @@ namespace CodeDesign.ES
             {
                 if (_instance is null)
                 {
-                    _default_index = string.Format("{0}_email", prefix_index);
-                    _instance = new EmailRepository(_default_index);
+                    _index = string.Format("{0}_email", prefix_index);
+                    _instance = new EmailRepository(_index);
                 }
                 return _instance;
             }
@@ -45,9 +43,19 @@ namespace CodeDesign.ES
 
 
         #region CRUD
-        public (bool, string) Index(Email mail)
+        public (bool success, string id) Index(Email data, string id = "", string route = "")
         {
-            return Index<Email>(mail);
+            return Index<Email>(data, data.id);
+        }
+
+        public bool Delete(string id, bool isForceDelete = false)
+        {
+            return Delete<Email>(id, isForceDelete);
+        }
+
+        public List<Email> MultiGet(IEnumerable<string> ids, string[] fields = null)
+        {
+            return MultiGet<Email>(ids, fields);
         }
 
         public bool Update(string id, object obj)
@@ -60,6 +68,11 @@ namespace CodeDesign.ES
             return Delete<Email>(id);
         }
 
+        public Email Get(string id, string[] fields = null)
+        {
+            return Get<Email>(id, fields);
+        }
+
         public List<Email> GetAll(string[] fields = null)
         {
             SourceFilter so = new SourceFilter()
@@ -69,20 +82,13 @@ namespace CodeDesign.ES
             return GetObjectScroll<Email>(null, so).ToList();
         }
 
-        public Email Get(string id, string[] fields = null)
-        {
-            return Get<Email>(id, fields);
-        }
 
-        public IEnumerable<Email> GetMailResend(int max_error, string[] fields = null)
+        #endregion
+
+        #region Service
+        public List<Email> GetMailResend(int max_error, string[] fields = null)
         {
-            List<QueryContainer> filter = new List<QueryContainer>()
-            {
-                new LongRangeQuery { Field = "so_lan_loi", LessThanOrEqualTo = max_error },
-                new TermQuery { Field = "trang_thai_gui",Value=TrangThaiMail.LOI},
-            };
-            QueryContainer query = new QueryContainer(new BoolQuery { Filter = filter, MustNot = CustomMustNot() });
-            return GetObjectScroll<Email>(query, CustomSource(fields));
+            return new List<Email>();
         }
         #endregion
     }

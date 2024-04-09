@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.DTO.Dtos.TaiKhoan
+namespace CodeDesign.Dtos
 {
     public class LoginRequest
     {

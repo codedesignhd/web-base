@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Utils
+namespace CodeDesign.Utilities
 {
     public class DateTimeUtils
     {

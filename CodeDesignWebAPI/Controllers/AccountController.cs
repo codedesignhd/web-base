@@ -7,9 +7,8 @@ using log4net;
 using CodeDesign.Models;
 using CodeDesign.BL;
 using CodeDesign.WebAPI.Services;
-using CodeDesign.DTO.Validators;
-using CodeDesign.DTO.Dtos.TaiKhoan;
 using CodeDesign.BL.Response;
+using CodeDesign.Dtos;
 
 namespace CodeDesign.WebAPI.Controllers
 {
@@ -25,19 +24,12 @@ namespace CodeDesign.WebAPI.Controllers
         }
         #endregion
 
-        [AllowAnonymous, HttpGet]
-        [Route("users")]
-        public IActionResult GetAllUsers()
-        {
-            List<TaiKhoan> accounts = TaiKhoanBL.Instance.GetAll();
-            return new JsonResult(new Response<List<TaiKhoan>>() { data = accounts });
-        }
-
+        #region Auth
         [AllowAnonymous, HttpPost, Route("login")]
         public IActionResult Login(string username, string password)
         {
 
-            TaiKhoan tai_khoan = TaiKhoanBL.Instance.Login(username, password);
+            Account tai_khoan = AccountBL.Instance.Login(username, password);
             if (tai_khoan != null)
             {
                 string token = JwtManager.GenToken(tai_khoan);
@@ -67,33 +59,47 @@ namespace CodeDesign.WebAPI.Controllers
             ValidationResult result = await _dependencies.Validator.Register.ValidateAsync(dto);
             if (result.IsValid)
             {
-                KeyValuePair<bool, string> res = TaiKhoanBL.Instance.Register(dto);
+                KeyValuePair<bool, string> res = AccountBL.Instance.Register(dto);
                 return new JsonResult(new Response(res));
             }
             return new JsonResult(new Response(false, result.GetMessage()));
         }
-
-        [HttpPost]
-        [Route("changePassword")]
-        public IActionResult ChangePassword(string newPassword)
-        {
-            return new JsonResult(new Response());
-        }
-
-
-
         [HttpGet, Route("signout")]
         public new async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
             return new JsonResult(new Response(true, "success"));
         }
+        #endregion
+
+        #region User settings
+        [HttpPost]
+        [Route("changePassword")]
+        public IActionResult ChangePassword(string newPassword)
+        {
+            return new JsonResult(new Response());
+        }
+        #endregion
+
+        [AllowAnonymous, HttpGet]
+        [Route("users")]
+        public IActionResult GetAllUsers()
+        {
+            List<Account> accounts = AccountBL.Instance.GetAll();
+            return new JsonResult(new Response<List<Account>>() { data = accounts });
+        }
+
+
+
+
+
+
 
         [AllowAnonymous]
         [HttpGet, Route("checkUserExist")]
         public IActionResult CheckUserExist(string username)
         {
-            bool isExist = TaiKhoanBL.Instance.IsUserExist(username);
+            bool isExist = AccountBL.Instance.IsUserExist(username);
             string message = "Username is avaiable";
             if (isExist)
             {

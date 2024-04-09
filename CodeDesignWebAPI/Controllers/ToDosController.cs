@@ -1,7 +1,6 @@
 ﻿using CodeDesign.BL;
 using CodeDesign.BL.Response;
-using CodeDesign.DTO.Dtos.ToDo;
-using CodeDesign.DTO.Validators;
+using CodeDesign.Dtos;
 using CodeDesign.Models;
 using CodeDesign.WebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -23,8 +22,8 @@ namespace CodeDesign.WebAPI.Controllers
         [HttpGet, Route("")]
         public IActionResult GetAll()
         {
-            List<ToDo> todos = ToDoBL.Instance.GetAll(null);
-            return new JsonResult(new PagedResponse<ToDo>()
+            List<CodeDesign.Models.ToDo> todos = ToDoBL.Instance.GetAll(null);
+            return new JsonResult(new PagedResponse<CodeDesign.Models.ToDo>()
             {
                 currentPage = 1,
                 data = todos,

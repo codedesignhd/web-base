@@ -1,8 +1,6 @@
-﻿using CodeDesign.DTO.Dtos.TaiKhoan;
-using CodeDesign.DTO.Dtos.ToDo;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace CodeDesign.DTO.Validators
+namespace CodeDesign.Dtos
 {
     public class AppValidator
     {

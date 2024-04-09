@@ -21,7 +21,7 @@ namespace CodeDesign.Services.Workers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            double.TryParse(Utils.ConfigurationManager.AppSettings["MailSettings:DelayTime"], out double delay);
+            double.TryParse(CodeDesign.Utilities.ConfigurationManager.AppSettings["MailSettings:DelayTime"], out double delay);
             if (delay == 0)
             {
                 delay = 1;

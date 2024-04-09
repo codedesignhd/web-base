@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj" />
-    <ProjectReference Include="..\CodeDesignUtils\Utils.csproj" />
+    <ProjectReference Include="..\CodeDesignUtils\CodeDesign.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

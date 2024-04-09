@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CodeDesign.Models;
 using Nest;
 
 namespace CodeDesign.ES
 {
-    public class LogActionRepository : IESRepository
+    public class LogActionRepository : AbstractESRepository, IESRepository<LogAction>
     {
         #region Init
-        private static string _index;
 
         public LogActionRepository(string modify_index)
         {
@@ -41,10 +41,46 @@ namespace CodeDesign.ES
         #endregion
 
         #region CRUD
-        public (bool success, string id) Index(LogAction action)
+        public (bool success, string id) Index(LogAction data, string id = "", string route = "")
         {
-            return Index<LogAction>(action);
+            return Index<LogAction>(data, data.id);
         }
+
+        public bool Delete(string id, bool isForceDelete = false)
+        {
+            return Delete<LogAction>(id, isForceDelete);
+        }
+
+        public List<LogAction> MultiGet(IEnumerable<string> ids, string[] fields = null)
+        {
+            return MultiGet<LogAction>(ids, fields);
+        }
+
+        public bool Update(string id, object obj)
+        {
+            return Update<LogAction>(id, obj);
+        }
+
+        public bool Delete(string id)
+        {
+            return Delete<LogAction>(id);
+        }
+
+        public LogAction Get(string id, string[] fields = null)
+        {
+            return Get<LogAction>(id, fields);
+        }
+
+        public List<LogAction> GetAll(string[] fields = null)
+        {
+            SourceFilter so = new SourceFilter()
+            {
+                Includes = fields,
+            };
+            return GetObjectScroll<LogAction>(null, so).ToList();
+        }
+
+
         #endregion
     }
 }

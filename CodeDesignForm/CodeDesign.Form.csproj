@@ -15,11 +15,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\CodeDesignBL\CodeDesign.BL.csproj" />
-		<ProjectReference Include="..\CodeDesignDTO\CodeDesign.DTO.csproj" />
+		<ProjectReference Include="..\CodeDesignDTO\CodeDesign.Dtos.csproj" />
 		<ProjectReference Include="..\CodeDesignSql\CodeDesign.Sql.csproj" />
 
 		<ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj" />
-		<ProjectReference Include="..\CodeDesignUtils\Utils.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

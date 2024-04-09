@@ -1,4 +1,4 @@
-﻿using CodeDesign.DTO.Validators;
+﻿using CodeDesign.Dtos;
 
 namespace CodeDesign.Web.Services
 {

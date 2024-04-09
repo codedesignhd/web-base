@@ -1,12 +1,11 @@
 using System.Net;
 using System.Text;
-using CodeDesign.DTO.Validators;
+using CodeDesign.Dtos;
 using CodeDesign.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Nest;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,9 +70,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 //builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterValidator>();
 //builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
-builder.Services.AddSingleton<AppValidator>();
+builder.Services.AddScoped<AppValidator>();
+builder.Services.AddScoped<AppDependencyProvider>();
 builder.Services.AddSingleton<AppUserProvider>();
-builder.Services.AddSingleton<AppDependencyProvider>();
 builder.Logging.ClearProviders()
     .AddLog4Net("log4net.config");
 builder.Services.AddCors(options =>

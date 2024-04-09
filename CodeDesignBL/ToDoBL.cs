@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using CodeDesign.Dtos;
 using CodeDesign.BL.Response;
-using CodeDesign.DTO.Dtos.ToDo;
 using CodeDesign.ES;
 using CodeDesign.Models;
+using CodeDesign.Utilities;
 
 namespace CodeDesign.BL
 {
@@ -34,7 +33,7 @@ namespace CodeDesign.BL
             }
             else
             {
-                long thoi_gian_ket_thuc = Utils.DateTimeUtils.StringToEpoch(dto.ngay_ket_thuc);
+                long thoi_gian_ket_thuc = DateTimeUtils.StringToEpoch(dto.ngay_ket_thuc);
                 ToDo to_do = new ToDo()
                 {
                     title = dto.title,
@@ -60,13 +59,13 @@ namespace CodeDesign.BL
                 ToDo toDo = ToDoRepository.Instance.Get(id, new string[] { "nguoi_tao" });
                 if (toDo != null && toDo.nguoi_tao == user.Username)
                 {
-                    long thoi_gian_ket_thuc = Utils.DateTimeUtils.StringToEpoch(dto.ngay_ket_thuc);
+                    long thoi_gian_ket_thuc = DateTimeUtils.StringToEpoch(dto.ngay_ket_thuc);
                     object doc = new
                     {
                         id,
                         dto.title,
                         thoi_gian_ket_thuc,
-                        ngay_sua = Utils.DateTimeUtils.TimeInEpoch(),
+                        ngay_sua = DateTimeUtils.TimeInEpoch(),
                     };
                     bool success = ToDoRepository.Instance.Update(id, doc);
                     if (success)
@@ -87,14 +86,14 @@ namespace CodeDesign.BL
             }
             else
             {
-                ToDo toDo = ToDoRepository.Instance.Get(id, new string[] { "nguoi_tao" });
+                CodeDesign.Models.ToDo toDo = ToDoRepository.Instance.Get(id, new string[] { "nguoi_tao" });
                 if (toDo != null && toDo.nguoi_tao == user.Username)
                 {
                     object doc = new
                     {
                         id,
                         trang_thai_thuc_hien,
-                        ngay_sua = Utils.DateTimeUtils.TimeInEpoch(),
+                        ngay_sua = DateTimeUtils.TimeInEpoch(),
                     };
                     bool success = ToDoRepository.Instance.Update(id, doc);
                     if (success)

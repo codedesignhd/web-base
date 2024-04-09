@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using CodeDesign.Dtos;
 using CodeDesign.BL;
 using CodeDesign.BL.Response;
-using CodeDesign.DTO.Dtos.TaiKhoan;
-using CodeDesign.DTO.Validators;
-using CodeDesign.Models;
 using CodeDesign.Web.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -36,7 +33,7 @@ namespace CodeDesign.Web.Controllers
         [Route("/PostLogin", Name = "PostLogin")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-            TaiKhoan tk = TaiKhoanBL.Instance.Login(request.username, request.password);
+            CodeDesign.Models.Account tk = AccountBL.Instance.Login(request.username, request.password);
             if (tk != null)
             {
                 //set cookie
@@ -60,7 +57,7 @@ namespace CodeDesign.Web.Controllers
                     IssuedUtc = DateTime.UtcNow,
                     ExpiresUtc = DateTime.UtcNow.AddYears(1),
                 });
-                TaiKhoanBL.Instance.UpdateLastLogin(tk.username);
+                AccountBL.Instance.UpdateLastLogin(tk.username);
 
                 string redirect_uri = request.redirect_uri;
                 if (string.IsNullOrWhiteSpace(redirect_uri))
@@ -97,7 +94,7 @@ namespace CodeDesign.Web.Controllers
             var validate = _dependencies.Validator.Register.Validate(dto);
             if (validate.IsValid)
             {
-                KeyValuePair<bool, string> result = TaiKhoanBL.Instance.Register(dto);
+                KeyValuePair<bool, string> result = AccountBL.Instance.Register(dto);
                 return Json(new Response(result));
             }
             else

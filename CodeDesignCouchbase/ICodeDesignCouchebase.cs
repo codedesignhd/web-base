@@ -5,7 +5,7 @@ using Couchbase;
 
 namespace CodeDesign.Couchbase
 {
-    public interface IDemoCouchbase
+    public interface ICodeDesignCouchebase
     {
         //T Get<T>(string key) where T : class;
         //List<T> MGet<T>(IEnumerable<string> keys) where T : class;

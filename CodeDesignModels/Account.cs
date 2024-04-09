@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Models
 {
-    public class TaiKhoan : BaseModel
+    public class Account : ModelBase
     {
         public string username { get; set; }
         public string password { get; set; }

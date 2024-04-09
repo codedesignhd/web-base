@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CodeDesign.Models;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Principal;
 
-namespace CodeDesign.Models
+namespace CodeDesign.Dtos
 {
     public class AppUser
     {
@@ -12,7 +13,7 @@ namespace CodeDesign.Models
         public Role Role { get; set; }
         public List<int> Props { get; set; }
         public bool IsAuthenticated { get; set; }
-        public static AppUser From(TaiKhoan tai_khoan)
+        public static AppUser From(CodeDesign.Models.Account tai_khoan)
         {
             if (tai_khoan != null)
             {

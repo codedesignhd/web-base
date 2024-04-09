@@ -1,7 +1,7 @@
 ﻿using CodeDesign.Models;
 using System;
 
-namespace CodeDesign.DTO.Dtos.ToDo
+namespace CodeDesign.Dtos
 {
     public class UpsertToDoDto
     {
