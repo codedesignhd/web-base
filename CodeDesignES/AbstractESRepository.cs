@@ -21,7 +21,7 @@ namespace CodeDesign.ES
         protected static StickyConnectionPool connectionPool = new StickyConnectionPool(new[] { node });
         protected ElasticClient client;
         protected static string _index;
-
+        protected const int MaxResultWindow = 9999;
         #region Core Function
         protected T ToDocument<T>(IMultiGetHit<T> hit) where T : class
         {
@@ -88,14 +88,16 @@ namespace CodeDesign.ES
             }
             return false;
         }
-        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> ids_with_error) where T : class
+        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> successIds) where T : class
         {
-            ids_with_error = new List<string>();
             BulkResponse res = client.Bulk(bu => bu.UpdateMany(docs, (b, doc) => b.Doc(doc)));
-            if (res.ItemsWithErrors.Count() > 0)
-            {
-                ids_with_error = res.ItemsWithErrors.Select(x => x.Id).ToList();
-            }
+
+            IEnumerable<string> errorIs = res.ItemsWithErrors.Select(it => it.Id);
+            successIds = res.Items
+                .Select(it => it.Id)
+                .Except(errorIs)
+                .ToList();
+
             return res.IsValid && !res.Errors;
         }
         protected bool Delete<T>(string id, bool isForceDelete = false) where T : class
@@ -114,9 +116,9 @@ namespace CodeDesign.ES
             DeleteResponse res = client.Delete<T>(id);
             return res.IsValid && res.Result == Result.Deleted;
         }
-        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> ids_with_error, bool isForceDelete = false) where T : class
+        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> successIds, bool isForceDelete = false) where T : class
         {
-            ids_with_error = new List<string>();
+            successIds = new List<string>();
             if (ids != null && ids.Count() > 0)
             {
                 if (!isForceDelete)
@@ -129,14 +131,15 @@ namespace CodeDesign.ES
                             id,
                             trang_thai_du_lieu = TrangThaiDuLieu.XOA
                         });
-                        return BulkUpdate<T>(docs, out ids_with_error);
+                        return BulkUpdate<T>(docs, out successIds);
                     }
                 }
                 BulkResponse res = client.Bulk(bu => bu.DeleteMany<T>(ids));
-                if (res.ItemsWithErrors.Count() > 0)
-                {
-                    ids_with_error = res.ItemsWithErrors.Select(x => x.Id).ToList();
-                }
+                IEnumerable<string> errorIs = res.ItemsWithErrors.Select(it => it.Id);
+                successIds = res.Items
+                    .Select(it => it.Id)
+                    .Except(errorIs)
+                    .ToList();
                 return res.IsValid && !res.Errors;
             }
             return false;
@@ -196,11 +199,9 @@ namespace CodeDesign.ES
 
                     if (!searchResponse.Documents.Any())
                         break;
-
-                    var tmp = searchResponse.Hits;
-                    foreach (var item in tmp)
+                    foreach (var hit in searchResponse.Hits)
                     {
-                        bag.Add(item);
+                        bag.Add(hit);
                     }
                     searchResponse = client.Scroll<T>(scroll_timeout, searchResponse.ScrollId);
                 }
@@ -271,18 +272,22 @@ namespace CodeDesign.ES
 
         protected SortOrder FromSort(SortDir sort_direction)
         {
-            return sort_direction == SortDir.DECS ? SortOrder.Descending : SortOrder.Ascending;
+            return sort_direction == SortDir.Desc ? SortOrder.Descending : SortOrder.Ascending;
         }
 
-        protected List<ISort> CustomSort(Dictionary<string, SortDir> dic_sort = null)
+        protected List<ISort> CustomSort(Dictionary<string, SortDir> sorts = null)
         {
             List<ISort> sort = new List<ISort>();
-            if (dic_sort != null && dic_sort.Count > 0)
+            if (sorts != null && sorts.Count > 0)
             {
-                foreach (var item in dic_sort)
+                foreach (var item in sorts)
                 {
                     sort.Add(new FieldSort { Field = item.Key, Order = FromSort(item.Value) });
                 }
+            }
+            else
+            {
+                sort.Add(new FieldSort { Field = "ngay_tao", Order = SortOrder.Descending });
             }
             return sort;
         }

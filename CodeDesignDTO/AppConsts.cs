@@ -12,9 +12,9 @@ namespace CodeDesign.Dtos
     }
     public class ClaimTypesCustom
     {
-        public const string THUOC_TINH = "prp";
-        //public static readonly string FULL_NAME = "fna";
-        public const string USERNAME = "usr";
+        public const string Properties = "prp";
+        public static readonly string Fullname = "fna";
+        public const string Username = "usr";
         //public static readonly string EMAIL = "emi";
     }
 }

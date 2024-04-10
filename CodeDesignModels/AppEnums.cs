@@ -4,11 +4,20 @@ using System.Text;
 
 namespace CodeDesign.Models
 {
+    public enum ThuocTinhHeThong
+    {
+        DEMO = -10000,
+        DA_TONG_HOP = -1,
+        GoiCuocHienThi = 1,
+
+
+
+    }
     public enum SortDir
     {
         ALL = 0,
-        ACS = 1,
-        DECS = 2,
+        Asc = 1,
+        Desc = 2,
     }
     public enum TrangThaiDuLieu
     {
@@ -39,11 +48,8 @@ namespace CodeDesign.Models
         LOI = 2,
     }
 
-    public enum ThuocTinhHeThong
-    {
-        DEMO = -10000,
-        DA_TONG_HOP = -1,
-    }
+
+
     public enum DOI_TUONG
     {
         TAI_KHOAN = 1,
@@ -57,5 +63,23 @@ namespace CodeDesign.Models
         CREATE = 2,
         UPDATE = 3,
         DELETE = 4,
+    }
+
+    public enum DurationUnit
+    {
+        ALL = 0,
+        NGAY = 1,
+        TUAN = 2,
+        THANG = 3,
+        NAM = 4,
+        FULL = 5,
+    }
+
+    public enum PaymentStatus
+    {
+        All = 0,
+        DA_THANH_TOAN = 1,
+        CHO_THANH_TOAN = 2,
+        HET_HAN = 3,
     }
 }

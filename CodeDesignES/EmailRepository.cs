@@ -41,7 +41,6 @@ namespace CodeDesign.ES
 
         #endregion
 
-
         #region CRUD
         public (bool success, string id) Index(Email data, string id = "", string route = "")
         {

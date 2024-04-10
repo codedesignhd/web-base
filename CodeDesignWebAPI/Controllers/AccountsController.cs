@@ -14,11 +14,11 @@ namespace CodeDesign.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : BaseController
+    public class AccountsController : BaseController
     {
         #region DI
-        private readonly ILog _logger = LogManager.GetLogger(typeof(AccountController));
-        public AccountController(AppDependencyProvider dependency) : base(dependency)
+        private readonly ILog _logger = LogManager.GetLogger(typeof(AccountsController));
+        public AccountsController(AppDependencyProvider dependency) : base(dependency)
         {
 
         }
@@ -82,21 +82,15 @@ namespace CodeDesign.WebAPI.Controllers
         #endregion
 
         [AllowAnonymous, HttpGet]
-        [Route("users")]
+        [Route("Users")]
         public IActionResult GetAllUsers()
         {
             List<Account> accounts = AccountBL.Instance.GetAll();
             return new JsonResult(new Response<List<Account>>() { data = accounts });
         }
 
-
-
-
-
-
-
         [AllowAnonymous]
-        [HttpGet, Route("checkUserExist")]
+        [HttpGet, Route("CheckUserExist")]
         public IActionResult CheckUserExist(string username)
         {
             bool isExist = AccountBL.Instance.IsUserExist(username);

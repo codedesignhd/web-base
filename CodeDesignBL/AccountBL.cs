@@ -119,5 +119,36 @@ namespace CodeDesign.BL
             return AccountRepository.Instance.GetAll(fields);
         }
 
+
+        public bool CHekccAnyThing()
+        {
+            Account acc = new Account()
+            {
+                thuoc_tinh = new List<int> { (int)ThuocTinhHeThong.Da_mua_goi_cuoc, (int)ThuocTinhHeThong.Mua_goi_tra_tien }
+            };
+
+            ///thuoc_tinh: [3,5]
+            ///Query: user nào đã mua gói cước và mua gói trả tiền
+            ///
+            ///EF:        context.Accounts.Where(acc=>acc.IsDaMuaGoiCuoc && acc.IsDaMuaGoiTraTien)
+            ///Dynamic:   context.Accounts.Where(acc=>acc.thuoc_tinh.contains((int)ThuocTinhHeThong.Da_mua_goi_cuoc) && acc.thuoc_tinh.contains((int)ThuocTinhHeThong.Mua_goi_tra_tien))
+
+
+            ///Table Accoount: 5 col
+            ///Table Order: 6 col
+            ///Order join => Account => 11 col => 1m rows
+            ///View: col1, col2, col3, ....col 11.
+            ///
+
+            /// SQL: string (dạng json) =>  (id_don_hang, thoi_gian_mua)
+            /// NoSql
+            /// 
+
+
+            ///: Template => Title: XIn chào {{username}}. Anh chị đọc đống bên dưới {{content}}
+
+            /// Content: => Chỗ khác.
+            return false;
+        }
     }
 }

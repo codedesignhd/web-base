@@ -43,8 +43,8 @@ namespace CodeDesign.Web.Controllers
                     new Claim(ClaimTypes.Role, Convert.ToString((int)tk.role)),
                     new Claim(ClaimTypes.Email, tk.email),
                     new Claim(ClaimTypes.GivenName, tk.fullname),
-                    new Claim(ClaimTypesCustom.USERNAME, tk.username),
-                    new Claim(ClaimTypesCustom.THUOC_TINH,string.Join(",", tk.thuoc_tinh)),
+                    new Claim(ClaimTypesCustom.Username, tk.username),
+                    new Claim(ClaimTypesCustom.Properties,string.Join(",", tk.thuoc_tinh)),
                 };
                 ClaimsIdentity identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 

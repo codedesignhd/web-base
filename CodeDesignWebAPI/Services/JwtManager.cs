@@ -28,9 +28,9 @@ namespace CodeDesign.WebAPI.Services
                         new Claim(ClaimTypes.Name, user.username),
                         new Claim(ClaimTypes.Role, Convert.ToString(user.role)),
                         new Claim(ClaimTypes.Email, user.email),
-                        new Claim(ClaimTypesCustom.USERNAME, user.username),
+                        new Claim(ClaimTypesCustom.Username, user.username),
                         new Claim(ClaimTypes.GivenName, user.fullname),
-                        new Claim(ClaimTypesCustom.THUOC_TINH, string.Join(",", user.thuoc_tinh)),
+                        new Claim(ClaimTypesCustom.Properties, string.Join(",", user.thuoc_tinh)),
                     }),
 
                     Expires = DateTime.UtcNow.AddMinutes(Convert.ToInt32(expired_mins)),

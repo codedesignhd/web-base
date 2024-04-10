@@ -19,7 +19,7 @@ namespace CodeDesign.Web.Services
             AppUser app_user = new AppUser()
             {
                 IsAuthenticated = principal.Identity.IsAuthenticated,
-                Username = principal.FindFirstValue(ClaimTypesCustom.USERNAME),
+                Username = principal.FindFirstValue(ClaimTypesCustom.Username),
                 Fullname = principal.FindFirstValue(ClaimTypes.GivenName),
                 Email = principal.FindFirstValue(ClaimTypes.Email),
                 Props = new List<int>(),
@@ -29,7 +29,7 @@ namespace CodeDesign.Web.Services
                 role = Role.USER;
             };
             app_user.Role = role;
-            string prop_joined = principal.FindFirstValue(ClaimTypesCustom.THUOC_TINH);
+            string prop_joined = principal.FindFirstValue(ClaimTypesCustom.Properties);
             if (!string.IsNullOrWhiteSpace(prop_joined))
             {
                 try
