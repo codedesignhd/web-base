@@ -19,17 +19,17 @@ namespace CodeDesign.Web.Services
             AppUser app_user = new AppUser()
             {
                 IsAuthenticated = principal.Identity.IsAuthenticated,
-                Username = principal.FindFirstValue(ClaimTypesCustom.Username),
+                Username = principal.FindFirstValue(ClaimTypesCustom.USERNAME),
                 Fullname = principal.FindFirstValue(ClaimTypes.GivenName),
                 Email = principal.FindFirstValue(ClaimTypes.Email),
                 Props = new List<int>(),
             };
             if (!Enum.TryParse(principal.FindFirstValue(ClaimTypes.Role), out Role role))
             {
-                role = Role.USER;
+                role = Role.User;
             };
             app_user.Role = role;
-            string prop_joined = principal.FindFirstValue(ClaimTypesCustom.Properties);
+            string prop_joined = principal.FindFirstValue(ClaimTypesCustom.THUOC_TINH);
             if (!string.IsNullOrWhiteSpace(prop_joined))
             {
                 try

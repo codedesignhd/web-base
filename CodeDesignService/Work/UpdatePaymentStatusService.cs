@@ -31,7 +31,7 @@ namespace CodeDesign.Services.Work
                 docs.Add(new
                 {
                     id = payment.id,
-                    payment_status = PaymentStatus.HET_HAN,
+                    payment_status = PaymentStatus.HetHan,
                     ngay_sua = epoch,
                 });
             });

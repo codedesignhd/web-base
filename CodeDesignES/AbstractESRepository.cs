@@ -21,7 +21,8 @@ namespace CodeDesign.ES
         protected static StickyConnectionPool connectionPool = new StickyConnectionPool(new[] { node });
         protected ElasticClient client;
         protected static string _index;
-        protected const int MaxResultWindow = 9999;
+        protected const int MaxResultWindow = 10000;
+
         #region Core Function
         protected T ToDocument<T>(IMultiGetHit<T> hit) where T : class
         {
@@ -88,16 +89,14 @@ namespace CodeDesign.ES
             }
             return false;
         }
-        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> successIds) where T : class
+        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> ids_with_error) where T : class
         {
+            ids_with_error = new List<string>();
             BulkResponse res = client.Bulk(bu => bu.UpdateMany(docs, (b, doc) => b.Doc(doc)));
-
-            IEnumerable<string> errorIs = res.ItemsWithErrors.Select(it => it.Id);
-            successIds = res.Items
-                .Select(it => it.Id)
-                .Except(errorIs)
-                .ToList();
-
+            if (res.ItemsWithErrors.Count() > 0)
+            {
+                ids_with_error = res.ItemsWithErrors.Select(x => x.Id).ToList();
+            }
             return res.IsValid && !res.Errors;
         }
         protected bool Delete<T>(string id, bool isForceDelete = false) where T : class
@@ -109,16 +108,16 @@ namespace CodeDesign.ES
                 {
                     return Update<T>(id, new
                     {
-                        trang_thai_du_lieu = TrangThaiDuLieu.XOA
+                        trang_thai_du_lieu = TrangThaiDuLieu.Deleted
                     });
                 }
             }
             DeleteResponse res = client.Delete<T>(id);
             return res.IsValid && res.Result == Result.Deleted;
         }
-        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> successIds, bool isForceDelete = false) where T : class
+        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> ids_with_error, bool isForceDelete = false) where T : class
         {
-            successIds = new List<string>();
+            ids_with_error = new List<string>();
             if (ids != null && ids.Count() > 0)
             {
                 if (!isForceDelete)
@@ -129,17 +128,16 @@ namespace CodeDesign.ES
                         IEnumerable<object> docs = ids.Select(id => new
                         {
                             id,
-                            trang_thai_du_lieu = TrangThaiDuLieu.XOA
+                            trang_thai_du_lieu = TrangThaiDuLieu.Deleted
                         });
-                        return BulkUpdate<T>(docs, out successIds);
+                        return BulkUpdate<T>(docs, out ids_with_error);
                     }
                 }
                 BulkResponse res = client.Bulk(bu => bu.DeleteMany<T>(ids));
-                IEnumerable<string> errorIs = res.ItemsWithErrors.Select(it => it.Id);
-                successIds = res.Items
-                    .Select(it => it.Id)
-                    .Except(errorIs)
-                    .ToList();
+                if (res.ItemsWithErrors.Count() > 0)
+                {
+                    ids_with_error = res.ItemsWithErrors.Select(x => x.Id).ToList();
+                }
                 return res.IsValid && !res.Errors;
             }
             return false;
@@ -199,9 +197,11 @@ namespace CodeDesign.ES
 
                     if (!searchResponse.Documents.Any())
                         break;
-                    foreach (var hit in searchResponse.Hits)
+
+                    var tmp = searchResponse.Hits;
+                    foreach (var item in tmp)
                     {
-                        bag.Add(hit);
+                        bag.Add(item);
                     }
                     searchResponse = client.Scroll<T>(scroll_timeout, searchResponse.ScrollId);
                 }
@@ -252,7 +252,7 @@ namespace CodeDesign.ES
             {
                 must_not = new List<QueryContainer>();
             }
-            must_not.Add(new TermQuery { Field = "trang_thai_du_lieu", Value = TrangThaiDuLieu.XOA });
+            must_not.Add(new TermQuery { Field = "trang_thai_du_lieu", Value = TrangThaiDuLieu.Deleted });
             return must_not;
         }
 
@@ -275,19 +275,15 @@ namespace CodeDesign.ES
             return sort_direction == SortDir.Desc ? SortOrder.Descending : SortOrder.Ascending;
         }
 
-        protected List<ISort> CustomSort(Dictionary<string, SortDir> sorts = null)
+        protected List<ISort> CustomSort(Dictionary<string, SortDir> dic_sort = null)
         {
             List<ISort> sort = new List<ISort>();
-            if (sorts != null && sorts.Count > 0)
+            if (dic_sort != null && dic_sort.Count > 0)
             {
-                foreach (var item in sorts)
+                foreach (var item in dic_sort)
                 {
                     sort.Add(new FieldSort { Field = item.Key, Order = FromSort(item.Value) });
                 }
-            }
-            else
-            {
-                sort.Add(new FieldSort { Field = "ngay_tao", Order = SortOrder.Descending });
             }
             return sort;
         }

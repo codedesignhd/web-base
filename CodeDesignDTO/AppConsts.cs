@@ -8,8 +8,16 @@ namespace CodeDesign.Dtos
     public static class AppConsts
     {
         public const string DEFAULT_USER = "unknow";
+       
+    }
+
+    public class RegexConst
+    {
         public static Regex RegXUsername = new Regex("", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1.0));
     }
+
+
+
     public class ClaimTypesCustom
     {
         public const string Properties = "prp";

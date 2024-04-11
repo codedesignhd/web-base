@@ -13,7 +13,7 @@ namespace CodeDesign.WebAPI.Services
 {
     public class JwtManager
     {
-        public static string GenToken(Account user, int expired_mins = 30)
+        public static string GenToken(Account user, int expiredMins = 30)
         {
             if (user != null)
             {
@@ -33,7 +33,7 @@ namespace CodeDesign.WebAPI.Services
                         new Claim(ClaimTypesCustom.Properties, string.Join(",", user.thuoc_tinh)),
                     }),
 
-                    Expires = DateTime.UtcNow.AddMinutes(Convert.ToInt32(expired_mins)),
+                    Expires = DateTime.UtcNow.AddMinutes(Convert.ToInt32(expiredMins)),
 
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(symmetricKey),
                         SecurityAlgorithms.HmacSha256Signature),

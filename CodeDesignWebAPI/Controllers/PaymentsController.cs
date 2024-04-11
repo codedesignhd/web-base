@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeDesign.WebAPI.Controllers
@@ -11,8 +12,6 @@ namespace CodeDesign.WebAPI.Controllers
         {
 
         }
-
-       
 
         [HttpGet]
         [Route("GetActivePayment")]

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CodeDesign.Dtos
 {
-    public class RegisterUserDto
+    public class RegisterUserRequest
     {
         private string _username;
         public string username

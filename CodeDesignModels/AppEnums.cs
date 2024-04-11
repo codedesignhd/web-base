@@ -6,8 +6,8 @@ namespace CodeDesign.Models
 {
     public enum ThuocTinhHeThong
     {
-        DEMO = -10000,
-        DA_TONG_HOP = -1,
+        Demo = -10000,
+        DaTongHop = -1,
         GoiCuocHienThi = 1,
 
 
@@ -15,71 +15,63 @@ namespace CodeDesign.Models
     }
     public enum SortDir
     {
-        ALL = 0,
+        All = 0,
         Asc = 1,
         Desc = 2,
     }
     public enum TrangThaiDuLieu
     {
-        XOA = -1,
-        ALL = 0,
+        Deleted = -1,
+        All = 0,
     }
 
-    public enum TrangThaiThucHien
-    {
-        ALL = 0,
-        OPEN = 1,
-        IN_PROGRESS = 2,
-        CANCEL = 3,
-        DONE = 4,
-    }
     public enum Role
     {
-        ALL = 0,
-        SYS = 1,
-        USER = 2,
-        GUEST = 3,
-        ADMIN = 4,
+        All = 0,
+        Sys = 1,
+        User = 2,
+        Guest = 3,
+        Admin = 4,
     }
     public enum TrangThaiMail
     {
-        ALL = 0,
-        THANH_CONG = 1,
-        LOI = 2,
+        All = 0,
+        Success = 1,
+        Failed = 2,
     }
 
 
 
     public enum DOI_TUONG
     {
-        TAI_KHOAN = 1,
+        TaiKhoan = 1,
 
     }
 
     public enum ACTION
     {
-        ALL = 0,
-        VIEW = 1,
-        CREATE = 2,
-        UPDATE = 3,
-        DELETE = 4,
+        All = 0,
+        View = 1,
+        Create = 2,
+        Update = 3,
+        Delete = 4,
     }
 
     public enum DurationUnit
     {
-        ALL = 0,
-        NGAY = 1,
-        TUAN = 2,
-        THANG = 3,
-        NAM = 4,
-        FULL = 5,
+        All = 0,
+        Day = 1,
+        Week = 2,
+        Month = 3,
+        Year = 4,
+        Full = 5,
     }
 
     public enum PaymentStatus
     {
         All = 0,
-        DA_THANH_TOAN = 1,
-        CHO_THANH_TOAN = 2,
-        HET_HAN = 3,
+        DaThanhToan = 1,
+        ChoThanhToan = 2,
+        HetHan = 3,
     }
 }

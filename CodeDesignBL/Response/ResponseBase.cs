@@ -4,23 +4,23 @@ using System.Text;
 
 namespace CodeDesign.BL.Response
 {
-    public abstract class BaseResponse
+    public abstract class ResponseBase
     {
         public bool success { get; set; }
         public string message { get; set; }
 
-        public BaseResponse()
+        public ResponseBase()
         {
 
         }
-        public BaseResponse(bool success, string message)
+        public ResponseBase(bool success, string message)
         {
             this.success = success;
             this.message = message;
         }
     }
 
-    public sealed class Response : BaseResponse
+    public sealed class Response : ResponseBase
     {
         public Response()
         {
@@ -36,12 +36,12 @@ namespace CodeDesign.BL.Response
         }
     }
 
-    public sealed class Response<T> : BaseResponse where T : class
+    public sealed class Response<T> : ResponseBase where T : class
     {
         public T data { get; set; }
     }
 
-    public sealed class PagedResponse<T> : BaseResponse where T : class
+    public sealed class PagedResponse<T> : ResponseBase where T : class
     {
         public long total { get; set; }
         public int currentPage { get; set; }

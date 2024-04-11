@@ -7,31 +7,41 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.FeatureManagement;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using Microsoft.Extensions.Options;
+using System.Reflection;
+using Serilog;
+using System.Configuration;
+using CodeDesign.Dtos.Validators;
+using FluentValidation;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddFeatureManagement();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+
+
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "DemoAPI",
+        Title = "CodeDesign API",
         Version = "v1"
     });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer eyj...\"",
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement {
         {
             new OpenApiSecurityScheme {
                 Reference = new OpenApiReference {
@@ -42,7 +52,22 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddApiVersioning(x =>
+{
+    x.DefaultApiVersion = new ApiVersion(1, 0);
+    x.AssumeDefaultVersionWhenUnspecified = true;
+    x.ReportApiVersions = true;
+    x.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("x-api-version"),
+        new MediaTypeApiVersionReader("x-api-version"));
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -68,33 +93,49 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-//builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterValidator>();
-//builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
+builder.Services.AddScoped<CodeDesign.Dtos.Validators.ICodeDesignValidatorFactory, CodeDesign.Dtos.Validators.ValidatorFactory>();
+builder.Services.AddTransient<IValidator<RegisterUserRequest>, RegisterValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 builder.Services.AddScoped<AppValidator>();
 builder.Services.AddScoped<AppDependencyProvider>();
 builder.Services.AddSingleton<AppUserProvider>();
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+Log.Information("Starting web");
+
 builder.Logging.ClearProviders()
-    .AddLog4Net("log4net.config");
+    .AddLog4Net("log4net.config")
+    .AddSerilog();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "Typing",
     builder =>
     {
-        builder.WithOrigins("http://localhost:4200",
-    "http://www.contoso.com");
+        builder.WithOrigins("http://localhost:4200", "http://www.contoso.com");
     });
 });
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseSwagger();
-app.UseSwaggerUI();
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    // var apiVersionBuilder = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+    app.UseSwaggerUI(options =>
+    {
+        //foreach (var des in apiVersionBuilder.ApiVersionDescriptions)
+        //{
+        //    options.SwaggerEndpoint($"/swagger/{des.GroupName}/swagger.json", des.GroupName.ToUpperInvariant());
+        //}
+    });
+}
 
 app.UseExceptionHandler(options => options.Run(async (context) =>
 {

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CodeDesign.Models;
 namespace CodeDesign.Web.Controllers
 {
     [Route("auth")]
@@ -33,7 +34,7 @@ namespace CodeDesign.Web.Controllers
         [Route("/PostLogin", Name = "PostLogin")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-            CodeDesign.Models.Account tk = AccountBL.Instance.Login(request.username, request.password);
+            Account tk = AccountBL.Instance.Login(request.username, request.password);
             if (tk != null)
             {
                 //set cookie
@@ -89,13 +90,13 @@ namespace CodeDesign.Web.Controllers
         }
         [AllowAnonymous, HttpPost]
         [Route("/PostRegister", Name = "PostRegister")]
-        public IActionResult Register(RegisterUserDto dto)
+        public IActionResult Register(RegisterUserRequest dto)
         {
-            var validate = _dependencies.Validator.Register.Validate(dto);
+            var validate = _dependencies.Validator.Validate(dto);
             if (validate.IsValid)
             {
-                KeyValuePair<bool, string> result = AccountBL.Instance.Register(dto);
-                return Json(new Response(result));
+                var res = AccountBL.Instance.Register(dto);
+                return Json(res);
             }
             else
             {

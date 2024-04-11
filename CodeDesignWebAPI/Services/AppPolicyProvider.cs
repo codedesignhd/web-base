@@ -10,7 +10,7 @@ namespace CodeDesign.WebAPI.Services
         {
             options.AddPolicy(AppPolicy.AdminOnly, policy =>
             {
-                policy.RequireRole(Convert.ToString(Role.ADMIN));
+                policy.RequireRole(Convert.ToString(Role.Admin));
             });
             return options;
         }

@@ -9,9 +9,13 @@ using CodeDesign.BL;
 using CodeDesign.WebAPI.Services;
 using CodeDesign.BL.Response;
 using CodeDesign.Dtos;
+using Asp.Versioning;
+using CodeDesign.Dtos.Account;
+using Humanizer;
 
 namespace CodeDesign.WebAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : BaseController
@@ -25,22 +29,26 @@ namespace CodeDesign.WebAPI.Controllers
         #endregion
 
         #region Auth
-        [AllowAnonymous, HttpPost, Route("login")]
+        /// <summary>
+        /// Create Auth Request
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("login")]
         public IActionResult Login(string username, string password)
         {
-
-            Account tai_khoan = AccountBL.Instance.Login(username, password);
-            if (tai_khoan != null)
+            Account account = AccountBL.Instance.Login(username, password);
+            if (account != null)
             {
-                string token = JwtManager.GenToken(tai_khoan);
-                _logger.Debug("From Login");
-                return new JsonResult(new Response<object>
+                string token = JwtManager.GenToken(account);
+                return new JsonResult(new Response<string>
                 {
                     success = true,
-                    data = new
-                    {
-                        token,
-                    }
+                    message = "Login success",
+                    data = token,
                 });
             }
             else
@@ -53,18 +61,19 @@ namespace CodeDesign.WebAPI.Controllers
             }
         }
 
-        [AllowAnonymous, HttpPost, Route("register")]
-        public async Task<IActionResult> Register(RegisterUserDto dto)
+        [AllowAnonymous]
+        [HttpPost, Route("Register")]
+        public async Task<IActionResult> Register(RegisterUserRequest request)
         {
-            ValidationResult result = await _dependencies.Validator.Register.ValidateAsync(dto);
+            ValidationResult result = await _dependencies.Validator.ValidateAsync(request);
             if (result.IsValid)
             {
-                KeyValuePair<bool, string> res = AccountBL.Instance.Register(dto);
-                return new JsonResult(new Response(res));
+                var res = AccountBL.Instance.Register(request);
+                return new JsonResult(res);
             }
             return new JsonResult(new Response(false, result.GetMessage()));
         }
-        [HttpGet, Route("signout")]
+        [HttpGet, Route("SignOut")]
         public new async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
@@ -74,13 +83,20 @@ namespace CodeDesign.WebAPI.Controllers
 
         #region User settings
         [HttpPost]
-        [Route("changePassword")]
-        public IActionResult ChangePassword(string newPassword)
+        [Route("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePwdRequest request)
         {
-            return new JsonResult(new Response());
+            ValidationResult result = await _dependencies.Validator.ValidateAsync(request);
+            if (result.IsValid)
+            {
+                var res = AccountBL.Instance.ChangePassword(request);
+                return new JsonResult(res);
+            }
+            return new JsonResult(new Response(false, result.GetMessage()));
         }
         #endregion
 
+        #region Others
         [AllowAnonymous, HttpGet]
         [Route("Users")]
         public IActionResult GetAllUsers()
@@ -89,7 +105,6 @@ namespace CodeDesign.WebAPI.Controllers
             return new JsonResult(new Response<List<Account>>() { data = accounts });
         }
 
-        [AllowAnonymous]
         [HttpGet, Route("CheckUserExist")]
         public IActionResult CheckUserExist(string username)
         {
@@ -109,5 +124,7 @@ namespace CodeDesign.WebAPI.Controllers
                 }
             });
         }
+        #endregion
+
     }
 }

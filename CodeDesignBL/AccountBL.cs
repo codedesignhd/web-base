@@ -4,6 +4,7 @@ using CodeDesign.Models;
 using log4net;
 using CodeDesign.Utilities;
 using CodeDesign.Dtos;
+using CodeDesign.Dtos.Account;
 namespace CodeDesign.BL
 {
     public class AccountBL : BaseBL
@@ -34,44 +35,50 @@ namespace CodeDesign.BL
             if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
             {
                 password = CryptoUtils.HashPasword(password.ChuanHoa());
-                _logger.Debug("Login");
                 return AccountRepository.Instance.Login(username.ChuanHoa(), password);
             }
             return default;
         }
 
-        public KeyValuePair<bool, string> Register(RegisterUserDto dto)
+        public Response.Response Register(RegisterUserRequest request)
         {
-            if (dto != null)
+            if (request != null)
             {
-                dto.email = dto.email.ChuanHoa();
-                dto.username = dto.username.ChuanHoa();
-                List<string> duplicates = AccountRepository.Instance.GetIfDuplicate(dto.username, dto.email);
-                if (duplicates.Contains(dto.username))
+                request.email = request.email.ChuanHoa();
+                request.username = request.username.ChuanHoa();
+                List<string> duplicates = AccountRepository.Instance.GetIfDuplicate(request.username, request.email);
+                if (duplicates.Contains(request.username))
                 {
-                    return new KeyValuePair<bool, string>(false, "Username đã được đăng ký bởi người dùng khác");
+                    return new Response.Response(false, "Username đã được đăng ký bởi người dùng khác");
                 }
-                if (duplicates.Contains(dto.email))
+                if (duplicates.Contains(request.email))
                 {
-                    return new KeyValuePair<bool, string>(false, "Email đã được đăng ký bởi người dùng khác");
+                    return new Response.Response(false, "Email đã được đăng ký bởi người dùng khác");
                 }
                 Models.Account tk = new Models.Account()
                 {
-                    username = dto.username,
-                    email = dto.email,
-                    fullname = dto.fullname,
-                    role = Role.USER,
-                    nguoi_tao = dto.username,
-                    ngay_tao = DateTimeUtils.TimeInEpoch(),
+                    username = request.username,
+                    email = request.email,
+                    fullname = request.fullname,
+                    role = Role.User,
+                    nguoi_tao = request.username,
+                    password = CryptoUtils.HashPasword(request.password.ChuanHoa())
                 };
                 var res = AccountRepository.Instance.Index(tk);
                 if (res.success)
                 {
-                    return new KeyValuePair<bool, string>(true, "Đăng ký thành công");
+                    return new Response.Response(res.success, "Đăng ký thành công");
                 }
-                return new KeyValuePair<bool, string>(false, "Đăng ký thất bại");
+                return new Response.Response(res.success, "Đăng ký thất bại");
             }
-            return new KeyValuePair<bool, string>(false, "Lỗi dữ liệu");
+            return new Response.Response(false, "Lỗi dữ liệu");
+        }
+
+        public Response.Response ChangePassword(ChangePwdRequest request)
+        {
+            Response.Response response = new Response.Response();
+
+            return response;
         }
         #endregion
 
@@ -119,36 +126,5 @@ namespace CodeDesign.BL
             return AccountRepository.Instance.GetAll(fields);
         }
 
-
-        public bool CHekccAnyThing()
-        {
-            Account acc = new Account()
-            {
-                thuoc_tinh = new List<int> { (int)ThuocTinhHeThong.Da_mua_goi_cuoc, (int)ThuocTinhHeThong.Mua_goi_tra_tien }
-            };
-
-            ///thuoc_tinh: [3,5]
-            ///Query: user nào đã mua gói cước và mua gói trả tiền
-            ///
-            ///EF:        context.Accounts.Where(acc=>acc.IsDaMuaGoiCuoc && acc.IsDaMuaGoiTraTien)
-            ///Dynamic:   context.Accounts.Where(acc=>acc.thuoc_tinh.contains((int)ThuocTinhHeThong.Da_mua_goi_cuoc) && acc.thuoc_tinh.contains((int)ThuocTinhHeThong.Mua_goi_tra_tien))
-
-
-            ///Table Accoount: 5 col
-            ///Table Order: 6 col
-            ///Order join => Account => 11 col => 1m rows
-            ///View: col1, col2, col3, ....col 11.
-            ///
-
-            /// SQL: string (dạng json) =>  (id_don_hang, thoi_gian_mua)
-            /// NoSql
-            /// 
-
-
-            ///: Template => Title: XIn chào {{username}}. Anh chị đọc đống bên dưới {{content}}
-
-            /// Content: => Chỗ khác.
-            return false;
-        }
     }
 }

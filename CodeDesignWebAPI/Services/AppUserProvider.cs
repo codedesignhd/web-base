@@ -26,15 +26,18 @@ namespace CodeDesign.WebAPI.Services
             };
             if (!Enum.TryParse(principal.FindFirstValue(ClaimTypes.Role), out Role role))
             {
-                role = Role.USER;
+                role = Role.User;
             };
             app_user.Role = role;
-            string prop_joined = principal.FindFirstValue(ClaimTypesCustom.Properties);
-            if (!string.IsNullOrWhiteSpace(prop_joined))
+            string props = principal.FindFirstValue(ClaimTypesCustom.Properties);
+            if (!string.IsNullOrWhiteSpace(props))
             {
                 try
                 {
-                    app_user.Props = prop_joined.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+                    app_user.Props = props
+                        .Split(',')
+                        .Select(x => Convert.ToInt32(x))
+                        .ToList();
                 }
                 catch (Exception ex)
                 {

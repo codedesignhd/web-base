@@ -81,7 +81,7 @@ namespace CodeDesign.ES
             List<PaymentHistory> payments = new List<PaymentHistory>();
             List<QueryContainer> filter = new List<QueryContainer>()
             {
-                new TermQuery{Field="payment_status", Value=PaymentStatus.DA_THANH_TOAN},
+                new TermQuery{Field="payment_status", Value=PaymentStatus.DaThanhToan},
                 new LongRangeQuery{Field="ngay_het_han", LessThan=CodeDesign.Utilities.DateTimeUtils.TimeInEpoch()},
             };
             if (username != null)
@@ -115,7 +115,7 @@ namespace CodeDesign.ES
             List<QueryContainer> filter = new List<QueryContainer>()
             {
                 new LongRangeQuery{Field="ngay_het_han",LessThan=Utilities.DateTimeUtils.TimeInEpoch()},
-                new TermQuery{Field="payment_status",Value=PaymentStatus.DA_THANH_TOAN},
+                new TermQuery{Field="payment_status",Value=PaymentStatus.DaThanhToan},
             };
 
             QueryContainer query = new BoolQuery { Filter = filter, MustNot = CustomMustNot() };

@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.WebAPI", "CodeDe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Utilities", "CodeDesignUtils\CodeDesign.Utilities.csproj", "{DE1047AE-38A0-49BE-B8DB-3379CAC1D868}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeDesign.Kafka", "CodeDesign.Kafka\CodeDesign.Kafka.csproj", "{723EB19B-7678-4BAE-B20E-FF1A3F202253}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{DE1047AE-38A0-49BE-B8DB-3379CAC1D868}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE1047AE-38A0-49BE-B8DB-3379CAC1D868}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE1047AE-38A0-49BE-B8DB-3379CAC1D868}.Release|Any CPU.Build.0 = Release|Any CPU
+		{723EB19B-7678-4BAE-B20E-FF1A3F202253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{723EB19B-7678-4BAE-B20E-FF1A3F202253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{723EB19B-7678-4BAE-B20E-FF1A3F202253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{723EB19B-7678-4BAE-B20E-FF1A3F202253}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
