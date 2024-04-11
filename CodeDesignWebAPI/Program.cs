@@ -99,6 +99,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 builder.Services.AddScoped<AppValidator>();
 builder.Services.AddScoped<AppDependencyProvider>();
 builder.Services.AddSingleton<AppUserProvider>();
+builder.Services.AddSingleton<IFileService, FileService>();
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)

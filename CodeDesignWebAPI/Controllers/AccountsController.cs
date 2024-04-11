@@ -94,6 +94,21 @@ namespace CodeDesign.WebAPI.Controllers
             }
             return new JsonResult(new Response(false, result.GetMessage()));
         }
+
+        [HttpPost]
+        [Route("UpdateInfo")]
+        public IActionResult UpdateInfo()
+        {
+            return new JsonResult(null);
+        }
+
+        [HttpPost]
+        [Route("UpdateAvatar")]
+        public IActionResult UpdateAvatar(IFormFile file)
+        {
+            return new JsonResult(null);
+        }
+
         #endregion
 
         #region Others

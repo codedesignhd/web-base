@@ -16,7 +16,7 @@ namespace CodeDesign.WebAPI.Services
         public AppUser GetCurrentUser()
         {
             ClaimsPrincipal principal = _httpContextAccessor.HttpContext.User;
-            AppUser app_user = new AppUser()
+            AppUser user = new AppUser()
             {
                 IsAuthenticated = principal.Identity.IsAuthenticated,
                 Username = principal.FindFirstValue(ClaimTypesCustom.Username),
@@ -28,13 +28,13 @@ namespace CodeDesign.WebAPI.Services
             {
                 role = Role.User;
             };
-            app_user.Role = role;
+            user.Role = role;
             string props = principal.FindFirstValue(ClaimTypesCustom.Properties);
             if (!string.IsNullOrWhiteSpace(props))
             {
                 try
                 {
-                    app_user.Props = props
+                    user.Props = props
                         .Split(',')
                         .Select(x => Convert.ToInt32(x))
                         .ToList();
@@ -44,7 +44,7 @@ namespace CodeDesign.WebAPI.Services
                     _logger.LogError(ex.Message);
                 }
             }
-            return app_user;
+            return user;
         }
     }
 }
