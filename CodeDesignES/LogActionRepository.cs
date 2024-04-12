@@ -7,7 +7,7 @@ using Nest;
 
 namespace CodeDesign.ES
 {
-    public class LogActionRepository : AbstractESRepository, IESRepository<LogAction>
+    public class LogActionRepository : BaseESRepository, IESRepository<LogAction>
     {
         #region Init
 

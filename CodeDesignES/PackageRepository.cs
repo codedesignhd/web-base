@@ -9,7 +9,7 @@ using System.Text;
 
 namespace CodeDesign.ES
 {
-    public class PackageRepository : AbstractESRepository, IESRepository<Package>
+    public class PackageRepository : BaseESRepository, IESRepository<Package>
     {
         #region Init
         public PackageRepository(string modify_index)

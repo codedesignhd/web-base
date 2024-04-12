@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CodeDesign.ES
 {
-    public class PaymentHistoryRepository : AbstractESRepository, IESRepository<PaymentHistory>
+    public class PaymentHistoryRepository : BaseESRepository, IESRepository<PaymentHistory>
     {
         #region Init
         public PaymentHistoryRepository(string modify_index)

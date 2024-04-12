@@ -14,7 +14,7 @@ using Nest;
 
 namespace CodeDesign.ES
 {
-    public abstract class AbstractESRepository
+    public abstract class BaseESRepository
     {
         protected static Uri node = new Uri(ConfigurationManager.AppSettings["ES:Server"]);
         protected static string prefix_index = ConfigurationManager.AppSettings["ES:Prefix"];
@@ -24,7 +24,7 @@ namespace CodeDesign.ES
         protected const int MaxResultWindow = 10000;
 
         #region Core Function
-        protected T ToDocument<T>(IMultiGetHit<T> hit) where T : class
+        protected T ToDocument<T>(IMultiGetHit<T> hit) where T : ModelBase
         {
             if (hit.Found)
             {
@@ -38,7 +38,7 @@ namespace CodeDesign.ES
             }
             return default;
         }
-        protected T ToDocument<T>(IHit<T> hit) where T : class
+        protected T ToDocument<T>(IHit<T> hit) where T : ModelBase
         {
             T obj = hit.Source;
             PropertyInfo prop = typeof(T).GetProperty("id");
@@ -49,14 +49,14 @@ namespace CodeDesign.ES
             return obj;
         }
 
-        protected IEnumerable<T> ToDocument<T>(ConcurrentBag<IHit<T>> hits) where T : class
+        protected IEnumerable<T> ToDocument<T>(ConcurrentBag<IHit<T>> hits) where T : ModelBase
         {
             foreach (var hit in hits)
             {
                 yield return ToDocument(hit);
             }
         }
-        protected (bool success, string id) Index<T>(T data, string id = "", string route = "") where T : class
+        protected (bool success, string id) Index<T>(T data, string id = "", string route = "") where T : ModelBase
         {
             IndexResponse re = null;
             if (!string.IsNullOrWhiteSpace(id))
@@ -75,12 +75,12 @@ namespace CodeDesign.ES
             }
             return (re.Result == Result.Created, re.Id);
         }
-        protected bool BulkIndex<T>(IEnumerable<T> docs) where T : class
+        protected bool BulkIndex<T>(IEnumerable<T> docs) where T : ModelBase
         {
             BulkResponse res = client.Bulk(bi => bi.IndexMany(docs));
             return res.IsValid && !res.Errors;
         }
-        protected bool Update<T>(string id, object doc) where T : class
+        protected bool Update<T>(string id, object doc) where T : ModelBase
         {
             if (!string.IsNullOrWhiteSpace(id) && doc != null)
             {
@@ -89,7 +89,7 @@ namespace CodeDesign.ES
             }
             return false;
         }
-        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> ids_with_error) where T : class
+        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> ids_with_error) where T : ModelBase
         {
             ids_with_error = new List<string>();
             BulkResponse res = client.Bulk(bu => bu.UpdateMany(docs, (b, doc) => b.Doc(doc)));
@@ -99,7 +99,7 @@ namespace CodeDesign.ES
             }
             return res.IsValid && !res.Errors;
         }
-        protected bool Delete<T>(string id, bool isForceDelete = false) where T : class
+        protected bool Delete<T>(string id, bool isForceDelete = false) where T : ModelBase
         {
             if (!isForceDelete)
             {
@@ -115,7 +115,7 @@ namespace CodeDesign.ES
             DeleteResponse res = client.Delete<T>(id);
             return res.IsValid && res.Result == Result.Deleted;
         }
-        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> ids_with_error, bool isForceDelete = false) where T : class
+        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> ids_with_error, bool isForceDelete = false) where T : ModelBase
         {
             ids_with_error = new List<string>();
             if (ids != null && ids.Count() > 0)
@@ -161,7 +161,7 @@ namespace CodeDesign.ES
             }
             return default;
         }
-        protected List<T> MultiGet<T>(IEnumerable<string> ids, string[] fields = null) where T : class
+        protected List<T> MultiGet<T>(IEnumerable<string> ids, string[] fields = null) where T : ModelBase
         {
             MultiGetResponse res = client.MultiGet(mget => mget.GetMany<T>(ids).SourceIncludes(fields));
             if (res.IsValid)
@@ -170,7 +170,7 @@ namespace CodeDesign.ES
             }
             return new List<T>();
         }
-        public IEnumerable<T> GetObjectScroll<T>(QueryContainer query, SourceFilter so, string scroll_timeout = "5m", int page_size = 2000) where T : class
+        public IEnumerable<T> GetObjectScroll<T>(QueryContainer query, SourceFilter so, string scroll_timeout = "5m", int page_size = 2000) where T : ModelBase
         {
             if (query == null)
                 query = new MatchAllQuery();
@@ -217,7 +217,7 @@ namespace CodeDesign.ES
             return ToDocument(bag);
         }
 
-        public ScrollResult<T> GetScroll<T>(string scrollId, SearchRequest request) where T : class
+        public ScrollResult<T> GetScroll<T>(string scrollId, SearchRequest request) where T : ModelBase
         {
             ScrollResult<T> result = new ScrollResult<T>()
             {
