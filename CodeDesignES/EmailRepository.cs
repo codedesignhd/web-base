@@ -15,7 +15,10 @@ namespace CodeDesign.ES
         public EmailRepository(string modify_index)
         {
             _index = !string.IsNullOrEmpty(modify_index) ? modify_index : _index;
-            ConnectionSettings settings = new ConnectionSettings(connectionPool, sourceSerializer: Nest.JsonNetSerializer.JsonNetSerializer.Default).DefaultIndex(_index).DisableDirectStreaming(true).MaximumRetries(10);
+            ConnectionSettings settings = new ConnectionSettings(connectionPool, sourceSerializer: Nest.JsonNetSerializer.JsonNetSerializer.Default)
+                .DefaultIndex(_index)
+                .DisableDirectStreaming(true)
+                .MaximumRetries(10);
             client = new ElasticClient(settings);
             var ping = client.Ping(p => p.Pretty(true));
             if (ping.ServerError != null && ping.ServerError.Error != null)

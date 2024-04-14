@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Principal;
 
-namespace CodeDesign.Dtos
+namespace CodeDesign.Dtos.Accounts
 {
     public class AppUser
     {
@@ -13,17 +13,17 @@ namespace CodeDesign.Dtos
         public Role Role { get; set; }
         public List<int> Props { get; set; }
         public bool IsAuthenticated { get; set; }
-        public static AppUser From(CodeDesign.Models.Account tai_khoan)
+        public static AppUser From(Account acc)
         {
-            if (tai_khoan != null)
+            if (acc != null)
             {
                 return new AppUser()
                 {
-                    Username = tai_khoan.username,
-                    Fullname = tai_khoan.fullname,
-                    Email = tai_khoan.email,
-                    Role = tai_khoan.role,
-                    Props = tai_khoan.thuoc_tinh,
+                    Username = acc.username,
+                    Fullname = acc.fullname,
+                    Email = acc.email,
+                    Role = acc.role,
+                    Props = acc.thuoc_tinh,
                 };
             }
             return default;

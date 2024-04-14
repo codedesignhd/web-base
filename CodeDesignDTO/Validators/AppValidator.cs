@@ -1,18 +1,15 @@
-﻿using CodeDesign.Dtos.Account;
-using CodeDesign.Dtos.Validators;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
-using System;
 using System.Threading.Tasks;
 
-namespace CodeDesign.Dtos
+namespace CodeDesign.Dtos.Validators
 {
     public class AppValidator
     {
 
-        private readonly Validators.ICodeDesignValidatorFactory _validatorFactory;
+        private readonly ICodeDesignValidatorFactory _validatorFactory;
 
-        public AppValidator(Validators.ICodeDesignValidatorFactory validatorFactory)
+        public AppValidator(ICodeDesignValidatorFactory validatorFactory)
         {
             _validatorFactory = validatorFactory;
         }

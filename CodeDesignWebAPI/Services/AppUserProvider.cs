@@ -1,5 +1,6 @@
-﻿using CodeDesign.Dtos;
+﻿using CodeDesign.Dtos.Accounts;
 using CodeDesign.Models;
+using CodeDesign.Utilities.Constants;
 using System.Security.Claims;
 
 namespace CodeDesign.WebAPI.Services

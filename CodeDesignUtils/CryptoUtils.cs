@@ -5,12 +5,29 @@ using System.Text;
 
 namespace CodeDesign.Utilities
 {
-    public class CryptoUtils
+    public static class CryptoUtils
     {
-        private static readonly string SALT = "DefaultSalt";
-        public static string HashSHA256(string text)
+        private const string DefaultKey = "";
+        private static readonly string DefaultSalt = "DefaultSalt";
+        public static string HmacSHA256(string key, string text)
         {
-            using (var sha = new HMACSHA256())
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+            using (var sha = new HMACSHA256(keyBytes))
+            {
+                StringBuilder hash = new StringBuilder();
+                byte[] bytes = Encoding.UTF8.GetBytes(text);
+                byte[] crypto = sha.ComputeHash(bytes);
+                foreach (byte b in crypto)
+                {
+                    hash.Append(b.ToString("x2"));
+                }
+                return hash.ToString();
+            }
+        }
+        public static string HmacSHA512(string key, string text)
+        {
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+            using (var sha = new HMACSHA512(keyBytes))
             {
                 StringBuilder hash = new StringBuilder();
                 byte[] bytes = Encoding.UTF8.GetBytes(text);
@@ -27,9 +44,9 @@ namespace CodeDesign.Utilities
         {
             if (!string.IsNullOrWhiteSpace(salt))
             {
-                return HashSHA256(password + salt);
+                return HmacSHA256(DefaultKey, password + salt);
             }
-            return HashSHA256(password + SALT);
+            return HmacSHA256(DefaultKey, password + DefaultSalt);
         }
     }
 }

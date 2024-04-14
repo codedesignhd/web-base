@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using CodeDesign.Dtos;
 using CodeDesign.BL;
 using CodeDesign.BL.Response;
 using CodeDesign.Web.Services;
@@ -8,6 +7,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CodeDesign.Models;
+using CodeDesign.Dtos.Validators;
+using CodeDesign.Dtos.Accounts;
+using CodeDesign.Dtos.Constants;
+using CodeDesign.Utilities.Constants;
 namespace CodeDesign.Web.Controllers
 {
     [Route("auth")]

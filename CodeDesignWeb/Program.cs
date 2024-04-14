@@ -1,5 +1,5 @@
 using System.Net;
-using CodeDesign.Dtos;
+using CodeDesign.Dtos.Validators;
 using CodeDesign.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;

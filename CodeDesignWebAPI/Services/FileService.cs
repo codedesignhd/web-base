@@ -1,5 +1,6 @@
-﻿using CodeDesign.BL.Response;
-using CodeDesign.Dtos;
+﻿using CodeDesign.BL.Responses;
+using CodeDesign.Dtos.Constants;
+using CodeDesign.Utilities.Constants;
 
 namespace CodeDesign.WebAPI.Services
 {

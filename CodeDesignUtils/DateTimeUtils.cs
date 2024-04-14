@@ -2,7 +2,7 @@
 
 namespace CodeDesign.Utilities
 {
-    public class DateTimeUtils
+    public static class DateTimeUtils
     {
         /// <summary>
         /// Convert DateTime to UnixTime

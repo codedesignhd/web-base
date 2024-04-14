@@ -3,8 +3,9 @@ using CodeDesign.ES;
 using CodeDesign.Models;
 using log4net;
 using CodeDesign.Utilities;
-using CodeDesign.Dtos;
-using CodeDesign.Dtos.Account;
+using CodeDesign.ES.Models;
+using CodeDesign.BL.Responses;
+using CodeDesign.Dtos.Accounts;
 namespace CodeDesign.BL
 {
     public class AccountBL : BaseBL
@@ -25,7 +26,6 @@ namespace CodeDesign.BL
         }
         #endregion
 
-
         #region Login + Register
         /// <summary>
         /// Find user has username or email with password, if return account info if founded, ortherwise return default
@@ -40,7 +40,7 @@ namespace CodeDesign.BL
             return default;
         }
 
-        public Response.Response Register(RegisterUserRequest request)
+        public Response Register(RegisterUserRequest request)
         {
             if (request != null)
             {
@@ -49,11 +49,11 @@ namespace CodeDesign.BL
                 List<string> duplicates = AccountRepository.Instance.GetIfDuplicate(request.username, request.email);
                 if (duplicates.Contains(request.username))
                 {
-                    return new Response.Response(false, "Username đã được đăng ký bởi người dùng khác");
+                    return new Response(false, "Username đã được đăng ký bởi người dùng khác");
                 }
                 if (duplicates.Contains(request.email))
                 {
-                    return new Response.Response(false, "Email đã được đăng ký bởi người dùng khác");
+                    return new Response(false, "Email đã được đăng ký bởi người dùng khác");
                 }
                 Models.Account tk = new Models.Account()
                 {
@@ -67,16 +67,16 @@ namespace CodeDesign.BL
                 var res = AccountRepository.Instance.Index(tk);
                 if (res.success)
                 {
-                    return new Response.Response(res.success, "Đăng ký thành công");
+                    return new Response(res.success, "Đăng ký thành công");
                 }
-                return new Response.Response(res.success, "Đăng ký thất bại");
+                return new Response(res.success, "Đăng ký thất bại");
             }
-            return new Response.Response(false, "Lỗi dữ liệu");
+            return new Response(false, "Lỗi dữ liệu");
         }
 
-        public Response.Response ChangePassword(ChangePwdRequest request)
+        public Response ChangePassword(ChangePwdRequest request)
         {
-            Response.Response response = new Response.Response();
+            Response response = new Response();
 
             return response;
         }
@@ -111,6 +111,8 @@ namespace CodeDesign.BL
             return true;
         }
 
+
+        #region Search
         public Models.Account Get(string id, string[] fields = null)
         {
             if (!string.IsNullOrWhiteSpace(id))
@@ -125,6 +127,20 @@ namespace CodeDesign.BL
         {
             return AccountRepository.Instance.GetAll(fields);
         }
+
+
+        public PaginatedResponse<Account> SearchUser(SearchUserRequest request)
+        {
+            SearchResult<Account> result = AccountRepository.Instance.Search(request.q, SearchParamsBase.Create(request.scroll_id, request.page, request.page_size, request.sort_field, request.sort_dir));
+
+            PaginatedResponse<Account> response = PaginatedResponse<Account>.Create(request);
+
+            //mapping
+
+            return response;
+        }
+        #endregion
+
 
     }
 }

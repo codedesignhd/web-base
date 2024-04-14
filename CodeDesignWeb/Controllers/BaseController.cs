@@ -1,4 +1,4 @@
-﻿using CodeDesign.Dtos;
+﻿using CodeDesign.Dtos.Accounts;
 using CodeDesign.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

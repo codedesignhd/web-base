@@ -42,13 +42,12 @@ namespace CodeDesign.Models
 
 
 
-    public enum DOI_TUONG
+    public enum DoiTuong
     {
         TaiKhoan = 1,
-
     }
 
-    public enum ACTION
+    public enum Action
     {
         All = 0,
         View = 1,
@@ -70,8 +69,8 @@ namespace CodeDesign.Models
     public enum PaymentStatus
     {
         All = 0,
-        DaThanhToan = 1,
-        ChoThanhToan = 2,
+        ChoThanhToan = 1,
+        DaThanhToan = 2,
         HetHan = 3,
     }
 }

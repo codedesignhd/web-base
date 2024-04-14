@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using FluentValidation.Results;
 
-namespace CodeDesign.Dtos
+namespace CodeDesign.Dtos.Validators
 {
     public static class ValidationExt
     {

@@ -1,12 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net.Sockets;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using CodeDesign.BL;
-using CodeDesign.Dtos;
 using CodeDesign.Models;
-using Microsoft.AspNetCore.DataProtection;
+using CodeDesign.Utilities.Constants;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CodeDesign.WebAPI.Services
@@ -126,6 +124,4 @@ namespace CodeDesign.WebAPI.Services
             return Task.FromResult<IPrincipal>(null);
         }
     }
-
-
 }

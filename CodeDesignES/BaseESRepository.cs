@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using CodeDesign.ES.Constants;
 using CodeDesign.ES.Models;
 using CodeDesign.Models;
 using CodeDesign.Utilities;
@@ -21,8 +22,7 @@ namespace CodeDesign.ES
         protected static StickyConnectionPool connectionPool = new StickyConnectionPool(new[] { node });
         protected ElasticClient client;
         protected static string _index;
-        protected const int MaxResultWindow = 10000;
-
+        protected const string ScrollTimeOut = "5m";
         #region Core Function
         protected T ToDocument<T>(IMultiGetHit<T> hit) where T : ModelBase
         {
@@ -89,13 +89,15 @@ namespace CodeDesign.ES
             }
             return false;
         }
-        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> ids_with_error) where T : ModelBase
+        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> successId) where T : ModelBase
         {
-            ids_with_error = new List<string>();
+            successId = new List<string>();
             BulkResponse res = client.Bulk(bu => bu.UpdateMany(docs, (b, doc) => b.Doc(doc)));
             if (res.ItemsWithErrors.Count() > 0)
             {
-                ids_with_error = res.ItemsWithErrors.Select(x => x.Id).ToList();
+                successId = res.Items.Select(it => it.Id)
+                    .Except(res.ItemsWithErrors.Select(it => it.Id))
+                    .ToList();
             }
             return res.IsValid && !res.Errors;
         }
@@ -115,9 +117,9 @@ namespace CodeDesign.ES
             DeleteResponse res = client.Delete<T>(id);
             return res.IsValid && res.Result == Result.Deleted;
         }
-        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> ids_with_error, bool isForceDelete = false) where T : ModelBase
+        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> successIds, bool isForceDelete = false) where T : ModelBase
         {
-            ids_with_error = new List<string>();
+            successIds = new List<string>();
             if (ids != null && ids.Count() > 0)
             {
                 if (!isForceDelete)
@@ -130,14 +132,13 @@ namespace CodeDesign.ES
                             id,
                             trang_thai_du_lieu = TrangThaiDuLieu.Deleted
                         });
-                        return BulkUpdate<T>(docs, out ids_with_error);
+                        return BulkUpdate<T>(docs, out successIds);
                     }
                 }
                 BulkResponse res = client.Bulk(bu => bu.DeleteMany<T>(ids));
-                if (res.ItemsWithErrors.Count() > 0)
-                {
-                    ids_with_error = res.ItemsWithErrors.Select(x => x.Id).ToList();
-                }
+                successIds = res.Items.Select(it => it.Id)
+                    .Except(res.ItemsWithErrors.Select(it => it.Id))
+                    .ToList();
                 return res.IsValid && !res.Errors;
             }
             return false;
@@ -166,7 +167,9 @@ namespace CodeDesign.ES
             MultiGetResponse res = client.MultiGet(mget => mget.GetMany<T>(ids).SourceIncludes(fields));
             if (res.IsValid)
             {
-                return res.GetMany<T>(ids).Select(ToDocument).ToList();
+                return res.GetMany<T>(ids)
+                    .Select(ToDocument)
+                    .ToList();
             }
             return new List<T>();
         }
@@ -179,7 +182,6 @@ namespace CodeDesign.ES
             ConcurrentBag<IHit<T>> bag = new ConcurrentBag<IHit<T>>();
             try
             {
-
                 SearchRequest req = new SearchRequest()
                 {
                     From = 0,
@@ -217,32 +219,60 @@ namespace CodeDesign.ES
             return ToDocument(bag);
         }
 
-        public ScrollResult<T> GetScroll<T>(string scrollId, SearchRequest request) where T : ModelBase
+        //public ScrollResult<T> GetScroll<T>(string scrollId, SearchRequest request) where T : ModelBase
+        //{
+        //    ScrollResult<T> result = new ScrollResult<T>()
+        //    {
+        //        documents = new List<T>(),
+        //    };
+        //    ISearchResponse<T> response;
+        //    if (string.IsNullOrWhiteSpace(scrollId))
+        //    {
+        //        response = client.Search<T>(request);
+        //    }
+        //    else
+        //    {
+        //        response = client.Scroll<T>("5m", scrollId);
+        //    }
+        //    result.documents = response.Hits
+        //        .Select(ToDocument)
+        //        .ToList();
+        //    result.total = response.Total;
+        //    if (response.Total > request.Size)
+        //    {
+        //        result.scroll_id = response.ScrollId;
+        //    }
+        //    return result;
+        //}
+
+
+        public SearchResult<T> GetScroll<T>(SearchRequest request, string scrollId = null) where T : ModelBase
         {
-            ScrollResult<T> result = new ScrollResult<T>()
+            SearchResult<T> result = new SearchResult<T>()
             {
-                Documents = new List<T>(),
+                documents = new List<T>(),
             };
             ISearchResponse<T> response;
-            if (string.IsNullOrWhiteSpace(scrollId))
+            if (string.IsNullOrWhiteSpace(scrollId) && request.From * request.Size <= ESConsts.MaxResultWindow)
             {
+                request.Scroll = null;
+                request.TrackTotalHits = true;
                 response = client.Search<T>(request);
             }
             else
             {
-                response = client.Scroll<T>("5m", scrollId);
+                response = client.Scroll<T>(ScrollTimeOut, scrollId);
             }
-            result.Documents = response.Hits
+            result.documents = response.Hits
                 .Select(ToDocument)
                 .ToList();
-            result.Total = response.Total;
+            result.total = response.Total;
             if (response.Total > request.Size)
             {
-                result.ScrollId = response.ScrollId;
+                result.scroll_id = response.ScrollId;
             }
             return result;
         }
-
         #endregion
 
         #region Custom Request
@@ -270,9 +300,9 @@ namespace CodeDesign.ES
             return so;
         }
 
-        protected SortOrder FromSort(SortDir sort_direction)
+        protected SortOrder FromSort(SortDir sortDir)
         {
-            return sort_direction == SortDir.Desc ? SortOrder.Descending : SortOrder.Ascending;
+            return sortDir == SortDir.Desc ? SortOrder.Descending : SortOrder.Ascending;
         }
 
         protected List<ISort> CustomSort(Dictionary<string, SortDir> dic_sort = null)

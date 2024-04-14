@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Dtos
+namespace CodeDesign.Dtos.Accounts
 {
     public class LoginRequest
     {

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CodeDesign.ES.Models;
 using CodeDesign.Models;
 using Elasticsearch.Net;
 using Nest;
@@ -179,6 +180,35 @@ namespace CodeDesign.ES
         }
 
 
+        #endregion
+
+        #region Search
+        public SearchResult<Account> Search(string query, SearchParamsBase search_params = null)
+        {
+            if (search_params != null && !string.IsNullOrWhiteSpace(search_params.scroll_id))
+            {
+                return GetScroll<Account>(null, search_params?.scroll_id);
+            }
+
+            List<QueryContainer> filter = new List<QueryContainer>();
+            List<QueryContainer> must = new List<QueryContainer>();
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                must.Add(new QueryStringQuery { Fields = new string[] { "username", "email", "fullname" }, DefaultField = "fullname", Query = query });
+            }
+            SearchRequest request = new SearchRequest()
+            {
+                Query = new BoolQuery { Filter = filter, Must = must, MustNot = CustomMustNot() },
+            };
+            if (search_params != null)
+            {
+                request.Source = CustomSource(search_params.fields);
+                request.Sort = CustomSort(search_params.sort);
+                request.AddPaging(search_params.page, search_params.page_size);
+            }
+            SearchResult<Account> result = GetScroll<Account>(request, search_params?.scroll_id);
+            return result;
+        }
         #endregion
     }
 }

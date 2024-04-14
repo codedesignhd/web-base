@@ -1,5 +1,7 @@
-﻿using FluentValidation;
-namespace CodeDesign.Dtos
+﻿using CodeDesign.Dtos.Accounts;
+using CodeDesign.Dtos.Constants;
+using FluentValidation;
+namespace CodeDesign.Dtos.Validators
 {
     public class RegisterValidator : AbstractValidator<RegisterUserRequest>
     {

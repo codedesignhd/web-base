@@ -1,20 +1,17 @@
 using System.Net;
 using System.Text;
-using CodeDesign.Dtos;
 using CodeDesign.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Microsoft.FeatureManagement;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
-using Microsoft.Extensions.Options;
-using System.Reflection;
 using Serilog;
-using System.Configuration;
-using CodeDesign.Dtos.Validators;
 using FluentValidation;
+using CodeDesign.WebAPI.ServiceExtensions;
+using CodeDesign.Dtos.Validators;
+using CodeDesign.Dtos.Accounts;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -25,36 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddFeatureManagement();
 
 
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "CodeDesign API",
-        Version = "v1"
-    });
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer eyj...\"",
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement {
-        {
-            new OpenApiSecurityScheme {
-                Reference = new OpenApiReference {
-                    Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
+builder.Services.AddSwashbuckleSwagger();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -66,7 +34,11 @@ builder.Services.AddApiVersioning(x =>
     x.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
         new HeaderApiVersionReader("x-api-version"),
         new MediaTypeApiVersionReader("x-api-version"));
-});
+}).AddApiExplorer(config =>
+{
+    config.GroupNameFormat = "'v'VVV";
+    config.SubstituteApiVersionInUrl = true;
+}); ;
 
 builder.Services.AddAuthentication(options =>
 {
@@ -93,6 +65,7 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 builder.Services.AddScoped<CodeDesign.Dtos.Validators.ICodeDesignValidatorFactory, CodeDesign.Dtos.Validators.ValidatorFactory>();
 builder.Services.AddTransient<IValidator<RegisterUserRequest>, RegisterValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
@@ -124,18 +97,10 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    // var apiVersionBuilder = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
-    app.UseSwaggerUI(options =>
-    {
-        //foreach (var des in apiVersionBuilder.ApiVersionDescriptions)
-        //{
-        //    options.SwaggerEndpoint($"/swagger/{des.GroupName}/swagger.json", des.GroupName.ToUpperInvariant());
-        //}
-    });
+    var apiVersionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+    app.UseSwashbuckleSwagger(apiVersionProvider);
 }
 
 app.UseExceptionHandler(options => options.Run(async (context) =>

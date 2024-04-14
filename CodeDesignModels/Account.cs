@@ -11,8 +11,8 @@ namespace CodeDesign.Models
         public string password { get; set; }
         public string fullname { get; set; }
         public string email { get; set; }
+        public long dob { get; set; }
         public Role role { get; set; }
         public long last_login { get; set; }
-        //public GCNotificationStatus status { get; set; }
     }
 }

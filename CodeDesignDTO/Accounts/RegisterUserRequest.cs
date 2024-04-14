@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace CodeDesign.Dtos
+namespace CodeDesign.Dtos.Accounts
 {
     public class RegisterUserRequest
     {

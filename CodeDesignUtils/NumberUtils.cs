@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Utilities
 {
-    public class NumberUtils
+    public static class NumberUtils
     {
         public static int RoundToInt(double value)
         {
@@ -15,11 +15,6 @@ namespace CodeDesign.Utilities
             }
             return (int)Math.Ceiling(value);
         }
-
-    }
-
-    public static class NumberExt
-    {
 
     }
 }

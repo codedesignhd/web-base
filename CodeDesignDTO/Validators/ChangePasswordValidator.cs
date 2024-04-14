@@ -1,4 +1,4 @@
-﻿using CodeDesign.Dtos.Account;
+﻿using CodeDesign.Dtos.Accounts;
 using FluentValidation;
 using System;
 using System.Collections.Generic;

@@ -8,8 +8,8 @@ namespace CodeDesign.Models
     {
         public string source_id { get; set; }
         public string target_id { get; set; }
-        public DOI_TUONG target_type { get; set; }
-        public ACTION action { get; set; }
+        public DoiTuong target_type { get; set; }
+        public Action action { get; set; }
         public LogInfo info { get; set; }
     }
 
