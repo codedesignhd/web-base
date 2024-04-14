@@ -1,4 +1,5 @@
-﻿using CodeDesign.Models;
+﻿using CodeDesign.ES.Constants;
+using CodeDesign.Models;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,7 @@ namespace CodeDesign.ES
             SearchRequest request = new SearchRequest(_index)
             {
                 Query = new BoolQuery { Filter = filter, Must = CustomMustNot() },
-                Size = MaxResultWindow,
+                Size = ESConsts.MaxResultWindow,
                 Sort = CustomSort(sort),
                 Source = CustomSource(fields),
             };

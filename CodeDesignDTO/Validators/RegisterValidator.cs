@@ -1,5 +1,5 @@
 ﻿using CodeDesign.Dtos.Accounts;
-using CodeDesign.Dtos.Constants;
+using CodeDesign.Utilities.Constants;
 using FluentValidation;
 namespace CodeDesign.Dtos.Validators
 {
