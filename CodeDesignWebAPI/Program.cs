@@ -12,6 +12,7 @@ using FluentValidation;
 using CodeDesign.WebAPI.ServiceExtensions;
 using CodeDesign.Dtos.Validators;
 using CodeDesign.Dtos.Accounts;
+using CodeDesign.Dtos;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,23 +23,23 @@ builder.Services.AddControllers();
 builder.Services.AddFeatureManagement();
 
 
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwashbuckleSwagger();
 
-builder.Services.AddEndpointsApiExplorer();
-
+//builder.Services.AddSwaggerGen();
 builder.Services.AddApiVersioning(x =>
 {
-    x.DefaultApiVersion = new ApiVersion(1, 0);
-    x.AssumeDefaultVersionWhenUnspecified = true;
-    x.ReportApiVersions = true;
-    x.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
-        new HeaderApiVersionReader("x-api-version"),
-        new MediaTypeApiVersionReader("x-api-version"));
+    //x.DefaultApiVersion = new ApiVersion(1, 0);
+    //x.AssumeDefaultVersionWhenUnspecified = true;
+    //x.ReportApiVersions = true;
+    //x.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
+    //    new HeaderApiVersionReader("x-api-version"),
+    //    new MediaTypeApiVersionReader("x-api-version"));
 }).AddApiExplorer(config =>
 {
     config.GroupNameFormat = "'v'VVV";
     config.SubstituteApiVersionInUrl = true;
-}); ;
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -73,7 +74,7 @@ builder.Services.AddScoped<AppValidator>();
 builder.Services.AddScoped<AppDependencyProvider>();
 builder.Services.AddSingleton<AppUserProvider>();
 builder.Services.AddSingleton<IFileService, FileService>();
-
+builder.Services.AddGoogleService();
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
@@ -101,6 +102,8 @@ if (app.Environment.IsDevelopment())
 {
     var apiVersionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
     app.UseSwashbuckleSwagger(apiVersionProvider);
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
 }
 
 app.UseExceptionHandler(options => options.Run(async (context) =>

@@ -7,10 +7,9 @@ using log4net;
 using CodeDesign.Models;
 using CodeDesign.BL;
 using CodeDesign.BL.Responses;
-using CodeDesign.Dtos.Validators;
 using CodeDesign.WebAPI.Services;
 using CodeDesign.Dtos.Accounts;
-
+using CodeDesign.Dtos.Validators;
 namespace CodeDesign.WebAPI.Controllers
 {
 

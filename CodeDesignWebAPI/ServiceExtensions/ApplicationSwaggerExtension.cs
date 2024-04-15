@@ -17,6 +17,7 @@ namespace CodeDesign.WebAPI.ServiceExtensions
         /// <param name="services"></param>
         public static void AddSwashbuckleSwagger(this IServiceCollection services)
         {
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigureOptions>();
             services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -43,7 +44,6 @@ namespace CodeDesign.WebAPI.ServiceExtensions
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
-            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigureOptions>();
         }
 
         public static void UseSwashbuckleSwagger(this IApplicationBuilder application, IApiVersionDescriptionProvider apiVersionDescriptionProvider)
@@ -59,6 +59,7 @@ namespace CodeDesign.WebAPI.ServiceExtensions
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
+            application.UseSwagger();
             application.UseSwaggerUI(options =>
             {
                 foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
@@ -84,6 +85,7 @@ namespace CodeDesign.WebAPI.ServiceExtensions
                 {
                     Title = "CodeDesign API",
                     Version = desc.ApiVersion.ToString(),
+                    Contact = new OpenApiContact { Email = "viettungtvhd@gmail.com", Name = "Viet Tung, Vu" }
                 });
             }
         }
