@@ -13,9 +13,7 @@ namespace CodeDesign.Utilities
             string ipAddress;
             try
             {
-
-                ipAddress = context.Request.Headers["HTTP_X_FORWARDED_FOR"]; ;
-
+                ipAddress = context.Connection.RemoteIpAddress.ToString();
                 if (string.IsNullOrEmpty(ipAddress) || (ipAddress.ToLower() == "unknown") || ipAddress.Length > 45)
                     ipAddress = context.Request.Headers["REMOTE_ADDR"];
             }

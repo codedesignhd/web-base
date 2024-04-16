@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
 using CodeDesign.BL;
@@ -9,9 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CodeDesign.WebAPI.Services
 {
-    public class JwtManager
+    internal class JwtService
     {
-        public static string GenToken(Account user, int expiredMins = 30)
+        public string GenAccessToken(Account user, int expiredMins = 30)
         {
             if (user != null)
             {
@@ -47,7 +48,34 @@ namespace CodeDesign.WebAPI.Services
             return string.Empty;
         }
 
-        public static ClaimsPrincipal GetPrincipal(string token)
+        public RefreshToken GenerateRefreshToken(string ipAddress)
+        {
+            long createdDate = Utilities.DateTimeUtils.TimeInEpoch();
+            long expires = Utilities.DateTimeUtils.TimeInEpoch(DateTime.UtcNow.AddDays(7));
+            RefreshToken refreshToken = new RefreshToken
+            {
+                token = getUniqueToken(),
+                expires = expires,
+                created_date = createdDate,
+                ip = ipAddress
+            };
+            return refreshToken;
+        }
+
+        private string getUniqueToken(int maxCall = 10)
+        {
+            if (maxCall <= 0)
+            {
+                return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            }
+            var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            bool tokenIsUnique = AccountBL.Instance.IsUniqueRefreshToken(token);
+
+            if (!tokenIsUnique)
+                return getUniqueToken(maxCall - 1);
+            return token;
+        }
+        public ClaimsPrincipal GetPrincipal(string token)
         {
             try
             {
@@ -79,7 +107,7 @@ namespace CodeDesign.WebAPI.Services
             }
         }
 
-        private static bool isValidToken(string token, out string username)
+        private bool isValidToken(string token, out string username)
         {
             username = string.Empty;
 

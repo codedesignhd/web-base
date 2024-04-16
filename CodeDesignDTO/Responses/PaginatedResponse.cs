@@ -1,9 +1,8 @@
 ﻿using CodeDesign.Dtos.Requests;
-using CodeDesign.ES.Models;
 using System;
 using System.Collections.Generic;
 
-namespace CodeDesign.BL.Responses
+namespace CodeDesign.Dtos.Responses
 {
     public class PaginatedResponse<TViewModel> : ResponseBase where TViewModel : class
     {

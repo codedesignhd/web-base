@@ -8,8 +8,7 @@ namespace CodeDesign.GoogleService
 {
     public abstract class GServiceBase
     {
-       protected BaseClientService.Initializer initializer;
-        public abstract void CreateInitializer();
+      
 
     }
 }

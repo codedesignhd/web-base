@@ -1,4 +1,4 @@
-﻿using CodeDesign.BL.Responses;
+﻿using CodeDesign.Dtos.Responses;
 using CodeDesign.Dtos.Vnpay;
 using Microsoft.AspNetCore.Http;
 using Nest;

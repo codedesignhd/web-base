@@ -179,7 +179,45 @@ namespace CodeDesign.ES
             return duplicate_user_email;
         }
 
+        public bool IsUniqueRefreshToken(string refreshToken)
+        {
+            List<QueryContainer> filter = new List<QueryContainer>();
+            if (!string.IsNullOrWhiteSpace(refreshToken))
+            {
+                filter.Add(new TermQuery { Field = "refresh_token.keyword", Value = refreshToken });
+            }
 
+            SearchRequest request = new SearchRequest(_index)
+            {
+                Query = new BoolQuery { Filter = filter, MustNot = CustomMustNot() },
+                Size = 1,
+                Source = CustomSource(new string[] { "username" })
+            };
+            var res = client.Search<Account>(request);
+            return res.IsValid ? res.Total == 0 : true;
+        }
+
+        public Account GetByRefreshToken(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                return default;
+            List<QueryContainer> filter = new List<QueryContainer>()
+            {
+                new TermQuery{Field="refresh_token.token.keyword", Value=token},
+                new LongRangeQuery{Field="refresh_token.expires", GreaterThan=Utilities.DateTimeUtils.TimeInEpoch()}
+            };
+            SearchRequest req = new SearchRequest(_index)
+            {
+                Query = new BoolQuery { Filter = filter, MustNot = CustomMustNot() },
+                Size = 1,
+            };
+            var res = client.Search<Account>(req);
+            if (res.IsValid && res.Total > 0)
+            {
+                return res.Hits.Select(ToDocument).First();
+            }
+            return default;
+        }
         #endregion
 
         #region Search

@@ -1,15 +1,13 @@
 ﻿using FluentValidation.Results;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using log4net;
 using CodeDesign.Models;
 using CodeDesign.BL;
-using CodeDesign.BL.Responses;
-using CodeDesign.WebAPI.Services;
+using CodeDesign.Dtos.Responses;
 using CodeDesign.Dtos.Accounts;
 using CodeDesign.Dtos.Validators;
+using CodeDesign.WebAPI.ServiceExtensions;
 namespace CodeDesign.WebAPI.Controllers
 {
 
@@ -25,41 +23,9 @@ namespace CodeDesign.WebAPI.Controllers
         }
         #endregion
 
-        #region Auth
-        /// <summary>
-        /// Create Auth Request
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        [HttpPost]
+        #region Register
         [AllowAnonymous]
-        [Route("login")]
-        public IActionResult Login(string username, string password)
-        {
-            Account account = AccountBL.Instance.Login(username, password);
-            if (account != null)
-            {
-                string token = JwtManager.GenToken(account);
-                return new JsonResult(new Response<string>
-                {
-                    success = true,
-                    message = "Login success",
-                    data = token,
-                });
-            }
-            else
-            {
-                return new JsonResult(new Response
-                {
-                    success = false,
-                    message = "Tài khoản hoặc mật khẩu không chính xác"
-                });
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpPost, Route("Register")]
+        [HttpPost, Route("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
         {
             ValidationResult result = await _dependencies.Validator.ValidateAsync(request);
@@ -70,17 +36,12 @@ namespace CodeDesign.WebAPI.Controllers
             }
             return new JsonResult(new Response(false, result.GetMessage()));
         }
-        [HttpGet, Route("SignOut")]
-        public new async Task<IActionResult> SignOut()
-        {
-            await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
-            return new JsonResult(new Response(true, "success"));
-        }
+
         #endregion
 
         #region User settings
         [HttpPost]
-        [Route("ChangePassword")]
+        [Route("change-password")]
         public async Task<IActionResult> ChangePassword(ChangePwdRequest request)
         {
             ValidationResult result = await _dependencies.Validator.ValidateAsync(request);
@@ -93,14 +54,14 @@ namespace CodeDesign.WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("UpdateInfo")]
+        [Route("update-info")]
         public IActionResult UpdateInfo()
         {
             return new JsonResult(null);
         }
 
         [HttpPost]
-        [Route("UpdateAvatar")]
+        [Route("update-avatar")]
         public IActionResult UpdateAvatar(IFormFile file)
         {
             return new JsonResult(null);
@@ -109,15 +70,14 @@ namespace CodeDesign.WebAPI.Controllers
         #endregion
 
         #region Others
-        [AllowAnonymous, HttpGet]
-        [Route("Users")]
+        [HttpGet("users")]
         public IActionResult GetAllUsers()
         {
             List<Account> accounts = AccountBL.Instance.GetAll();
             return new JsonResult(new Response<List<Account>>() { data = accounts });
         }
 
-        [HttpGet, Route("CheckUserExist")]
+        [HttpGet("check-user-exist")]
         public IActionResult CheckUserExist(string username)
         {
             bool isExist = AccountBL.Instance.IsUserExist(username);

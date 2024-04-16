@@ -1,11 +1,12 @@
 ﻿using CodeDesign.Dtos.Accounts;
-using CodeDesign.WebAPI.Services;
+using CodeDesign.WebAPI.Core.Authorization;
+using CodeDesign.WebAPI.ServiceExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeDesign.WebAPI.Controllers
 {
-    [Authorize]
+    [Authorized]
     public class BaseController : ControllerBase
     {
         #region DI
@@ -15,7 +16,7 @@ namespace CodeDesign.WebAPI.Controllers
             _dependencies = dependencies;
         }
 
-        protected AppUser AppUser => _dependencies.AppUserService.GetCurrentUser();
+        protected AppUser AppUser => _dependencies.Auth.GetUser();
         #endregion
     }
 }

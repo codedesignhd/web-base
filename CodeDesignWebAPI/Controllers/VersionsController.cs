@@ -1,5 +1,5 @@
 ﻿using Asp.Versioning;
-using CodeDesign.WebAPI.Models;
+using CodeDesign.WebAPI.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

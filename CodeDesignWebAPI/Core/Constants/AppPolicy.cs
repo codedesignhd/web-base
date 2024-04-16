@@ -1,4 +1,4 @@
-﻿namespace CodeDesign.WebAPI.Models
+﻿namespace CodeDesign.WebAPI.Core.Constants
 {
     public class AppPolicy
     {

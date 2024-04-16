@@ -4,8 +4,9 @@ using CodeDesign.Models;
 using log4net;
 using CodeDesign.Utilities;
 using CodeDesign.ES.Models;
-using CodeDesign.BL.Responses;
+using CodeDesign.Dtos.Responses;
 using CodeDesign.Dtos.Accounts;
+using CodeDesign.Dtos.Auth;
 namespace CodeDesign.BL
 {
     public class AccountBL : BaseBL
@@ -27,17 +28,49 @@ namespace CodeDesign.BL
         #endregion
 
         #region Login + Register
+
+        public bool IsUniqueRefreshToken(string refreshToken)
+        {
+            return string.IsNullOrWhiteSpace(refreshToken) ? false : AccountRepository.Instance.IsUniqueRefreshToken(refreshToken);
+        }
+
+        public Response UpdateRefreshToken(string username, RefreshToken token)
+        {
+            if (string.IsNullOrWhiteSpace(username) || token is null)
+                return new Response(false, "Không tìm thấy user hoặc token không hợp lệ");
+            bool success = AccountRepository.Instance.Update(username, new
+            {
+                id = username,
+                refresh_token = token,
+                last_login = Utilities.DateTimeUtils.TimeInEpoch(),
+            });
+            return new Response(success, success ? "Thành công" : "Thất bại");
+        }
+
+        public Account GetAccountByRefreshToken(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+                return default;
+            return AccountRepository.Instance.GetByRefreshToken(token);
+        }
+
+
         /// <summary>
         /// Find user has username or email with password, if return account info if founded, ortherwise return default
         /// </summary>
+        public Models.Account Login(AuthRequest request)
+        {
+            request.password = CryptoUtils.HashPasword(request.password.ChuanHoa());
+            return AccountRepository.Instance.Login(request.username.ChuanHoa(), request.password);
+        }
+
+
+
+
         public Models.Account Login(string username, string password)
         {
-            if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
-            {
-                password = CryptoUtils.HashPasword(password.ChuanHoa());
-                return AccountRepository.Instance.Login(username.ChuanHoa(), password);
-            }
-            return default;
+            password = CryptoUtils.HashPasword(password.ChuanHoa());
+            return AccountRepository.Instance.Login(username.ChuanHoa(), password);
         }
 
         public Response Register(RegisterUserRequest request)

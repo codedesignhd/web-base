@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
 using CodeDesign.GoogleService;
-using CodeDesign.WebAPI.Models;
+using CodeDesign.WebAPI.Core.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +18,15 @@ namespace CodeDesign.WebAPI.Controllers
         [HttpPost]
         public IActionResult CreateDrive([FromForm] string driveName)
         {
-            _gDriveService.CreateFolder(driveName);
+            _gDriveService.Test();
+            return new JsonResult("ok");
+        }
+        [HttpGet]
+        [Route("~/Auth")]
+        public IActionResult Auth()
+        {
             return new JsonResult("ok");
         }
     }
+
 }

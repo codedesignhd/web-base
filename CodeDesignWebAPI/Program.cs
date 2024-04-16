@@ -13,6 +13,7 @@ using CodeDesign.WebAPI.ServiceExtensions;
 using CodeDesign.Dtos.Validators;
 using CodeDesign.Dtos.Accounts;
 using CodeDesign.Dtos;
+using Microsoft.AspNetCore.HttpOverrides;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -67,12 +68,13 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-builder.Services.AddScoped<CodeDesign.Dtos.Validators.ICodeDesignValidatorFactory, CodeDesign.Dtos.Validators.ValidatorFactory>();
+builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICodeDesignValidatorFactory, ValidatorFactory>();
 builder.Services.AddTransient<IValidator<RegisterUserRequest>, RegisterValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
 builder.Services.AddScoped<AppValidator>();
 builder.Services.AddScoped<AppDependencyProvider>();
-builder.Services.AddSingleton<AppUserProvider>();
 builder.Services.AddSingleton<IFileService, FileService>();
 builder.Services.AddGoogleService();
 Log.Logger = new LoggerConfiguration()
@@ -105,7 +107,10 @@ if (app.Environment.IsDevelopment())
     //app.UseSwagger();
     //app.UseSwaggerUI();
 }
-
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 app.UseExceptionHandler(options => options.Run(async (context) =>
 {
     Exception error = context.Features.Get<IExceptionHandlerFeature>().Error;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.BL.Responses
+namespace CodeDesign.Dtos.Responses
 {
     public abstract class ResponseBase
     {
