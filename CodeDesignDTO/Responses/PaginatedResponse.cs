@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 namespace CodeDesign.Dtos.Responses
 {
-    public class PaginatedResponse<TViewModel> : ResponseBase where TViewModel : class
+    public class PaginatedResponse<TViewModel> : Response where TViewModel : class
     {
+        public string scroll_id { get; set; }
         public long total { get; set; }
         public List<TViewModel> data { get; set; }
         public int page { get; set; }
@@ -19,7 +20,6 @@ namespace CodeDesign.Dtos.Responses
                 return (int)Math.Ceiling((decimal)total / page_size);
             }
         }
-        public string scroll_id { get; set; }
 
         public static PaginatedResponse<TViewModel> Create(PagingRequest request)
         {

@@ -6,6 +6,7 @@ namespace CodeDesign.WebAPI.Services
     public interface IFileService
     {
         Response IsValidDocument(IFormFile file);
+        Response IsValidImage(IFormFile file);
         Response<string> Save(IFormFile file, string saveDirectoryPath, string fileName = null);
     }
 
@@ -27,6 +28,30 @@ namespace CodeDesign.WebAPI.Services
             }
 
             if (!double.TryParse(Utilities.ConfigurationManager.AppSettings["MaxContentLength:Word"], out double maxMB)
+                && maxMB == 0)
+            {
+                maxMB = 2;
+            }
+
+            if (file.Length == 0 || file.Length > maxMB * 100_000)
+            {
+                response.message = string.Format("Dung lượng file quá lớn (vượt quá {0}MB)", maxMB);
+                return response;
+            }
+            response.success = true;
+            return response;
+        }
+        public Response IsValidImage(IFormFile file)
+        {
+            Response response = new Response();
+            string fileExt = Path.GetFileNameWithoutExtension(file.FileName);
+            if (FileExtension.ValidImageExt.Contains(fileExt, StringComparer.OrdinalIgnoreCase))
+            {
+                response.message = "Định dạng ảnh không được hỗ trợ";
+                return response;
+            }
+
+            if (!double.TryParse(Utilities.ConfigurationManager.AppSettings["MaxContentLength:Image"], out double maxMB)
                 && maxMB == 0)
             {
                 maxMB = 2;

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Utilities
 {
-    public static class NumberUtils
+    public abstract class NumberUtils
     {
         public static int RoundToInt(double value)
         {

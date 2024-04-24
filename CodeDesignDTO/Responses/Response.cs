@@ -4,8 +4,24 @@ using System.Text;
 
 namespace CodeDesign.Dtos.Responses
 {
-    public sealed class Response : ResponseBase
+    public class Response
     {
+        public bool success { get; set; }
+        public string message { get; set; }
+        public Response()
+        {
+
+        }
+        public Response(bool success, string message)
+        {
+            this.success = success;
+            this.message = message;
+        }
+    }
+
+    public sealed class Response<T> : Response
+    {
+        public T data { get; set; }
         public Response()
         {
 
@@ -14,10 +30,6 @@ namespace CodeDesign.Dtos.Responses
         {
 
         }
-    }
 
-    public sealed class Response<T> : ResponseBase
-    {
-        public T data { get; set; }
     }
 }

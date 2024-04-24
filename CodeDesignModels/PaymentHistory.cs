@@ -17,9 +17,19 @@ namespace CodeDesign.Models
         public double so_tien_xac_nhan { get; set; }
         public bool vat { get; set; }
         public PaymentStatus status { get; set; }
+
+        /// <summary>
+        /// Mã giao dịch thanh toán từ bên thứ 3, lưu để đối soát
+        /// </summary>
+        public string external_id { get; set; }
+        /// <summary>
+        /// nguồn thanh toán, cho biết thanh toán này đến từ đơn vị nào? Vnpay hay momo
+        /// </summary>
+        public ExternalPaymentSource external_source { get; set; }
     }
     public class PaymentUserInfo
     {
+        public BankCode bank_code { get; set; }
         public string bank_account { get; set; }
         public string fullname { get; set; }
         public string phone { get; set; }

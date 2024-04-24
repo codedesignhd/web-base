@@ -7,13 +7,12 @@ using CodeDesign.ES.Models;
 using CodeDesign.Models;
 using Elasticsearch.Net;
 using Nest;
-
+using CodeDesign.Models.Extensions;
 namespace CodeDesign.ES
 {
     public class AccountRepository : ESRepositoryBase, IESRepository<Account>
     {
         #region Init
-
         public AccountRepository(string modify_index)
         {
             _index = !string.IsNullOrEmpty(modify_index) ? modify_index : _index;
@@ -37,7 +36,7 @@ namespace CodeDesign.ES
             {
                 if (_instance is null)
                 {
-                    _index = string.Format("{0}_account", prefix_index);
+                    _index = string.Format("{0}account", prefix_index);
                     _instance = new AccountRepository(_index);
                 }
                 return _instance;
@@ -90,14 +89,45 @@ namespace CodeDesign.ES
         #endregion
 
         #region Function
+
+        public Account GetByIdentity(string identity, string[] fields = null)
+        {
+            if (string.IsNullOrWhiteSpace(identity))
+                return default;
+
+            List<QueryContainer> should = new List<QueryContainer>()
+                {
+                    new TermQuery { Field = "username.keyword", Value = identity },
+                    new TermQuery { Field = "email.keyword", Value = identity },
+                };
+
+            SearchRequest req = new SearchRequest(_index)
+            {
+                Query = new QueryContainer(new BoolQuery
+                {
+                    Should = should,
+                    MustNot = CustomMustNot()
+                }),
+                Size = 1,
+                Source = CustomSource(fields, new string[] { "password" }),
+            };
+            var res = client.Search<Account>(req);
+            if (res.IsValid && res.Total == 1)
+            {
+                return res.Hits.Select(ToDocument).First();
+            }
+            return default;
+        }
+
+
         public Account Login(string username, string password)
         {
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
             {
                 List<QueryContainer> should = new List<QueryContainer>()
                 {
-                    new TermQuery{Field="username.keyword", Value=username},
-                    new TermQuery{Field="email.keyword", Value=username},
+                    new TermQuery { Field = "username.keyword", Value = username },
+                    new TermQuery { Field = "email.keyword", Value = username },
                 };
 
                 SearchRequest req = new SearchRequest(_index)

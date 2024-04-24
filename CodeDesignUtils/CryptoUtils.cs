@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CodeDesign.Utilities
 {
-    public static class CryptoUtils
+    public abstract class CryptoUtils
     {
         private const string DefaultKey = "";
         private static readonly string DefaultSalt = "DefaultSalt";

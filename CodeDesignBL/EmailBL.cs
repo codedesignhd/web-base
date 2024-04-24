@@ -20,7 +20,6 @@ namespace CodeDesign.BL
         }
         #endregion
 
-
         public Email Get(string id, string[] fields = null)
         {
             if (!string.IsNullOrWhiteSpace(id))

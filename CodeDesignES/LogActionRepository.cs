@@ -31,7 +31,7 @@ namespace CodeDesign.ES
             {
                 if (_instance is null)
                 {
-                    _index = string.Format("{0}_logaction", prefix_index);
+                    _index = string.Format("{0}logaction", prefix_index);
                     _instance = new LogActionRepository(_index);
                 }
                 return _instance;

@@ -25,7 +25,7 @@ namespace CodeDesign.WebAPI.Services
     {
         private readonly JwtService _jwt;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly string _cookieRfToken = "refreshToken";
+        private readonly string _cookieRefreshToken = "refreshToken";
         public AuthService(JwtService jwt, IHttpContextAccessor contextAccessor)
         {
             _jwt = jwt;
@@ -36,7 +36,6 @@ namespace CodeDesign.WebAPI.Services
         {
             return Utilities.CommonUtils.GetIpAddress(_contextAccessor.HttpContext);
         }
-
 
         public AuthResponse Authenticate(AuthRequest request)
         {
@@ -74,7 +73,7 @@ namespace CodeDesign.WebAPI.Services
 
         public void SetTokenCookie(string refreshToken)
         {
-            _contextAccessor.HttpContext.Response.Cookies.Append(_cookieRfToken, refreshToken, new CookieOptions
+            _contextAccessor.HttpContext.Response.Cookies.Append(_cookieRefreshToken, refreshToken, new CookieOptions
             {
                 Expires = DateTime.UtcNow.AddDays(7),
                 SameSite = SameSiteMode.Lax,
@@ -83,7 +82,7 @@ namespace CodeDesign.WebAPI.Services
         }
         public string GetTokenCookie()
         {
-            return _contextAccessor.HttpContext.Request.Cookies[_cookieRfToken];
+            return _contextAccessor.HttpContext.Request.Cookies[_cookieRefreshToken];
         }
         public AppUser GetUser()
         {
@@ -96,24 +95,26 @@ namespace CodeDesign.WebAPI.Services
                 Email = principal.FindFirstValue(ClaimTypes.Email),
                 Props = new List<int>(),
             };
+            if (long.TryParse(principal.FindFirstValue(ClaimTypesCustom.Id), out long id))
+            {
+                user.Id = id;
+            }
             if (!Enum.TryParse(principal.FindFirstValue(ClaimTypes.Role), out Role role))
             {
-                role = Role.User;
+                role = Role.Guest;
             };
             user.Role = role;
             string props = principal.FindFirstValue(ClaimTypesCustom.Properties);
             if (!string.IsNullOrWhiteSpace(props))
             {
-                try
-                {
-                    user.Props = props
-                        .Split(',')
-                        .Select(x => Convert.ToInt32(x))
-                        .ToList();
-                }
-                catch
-                {
-                }
+                user.Props = props
+                    .Split(',')
+                    .Select(it =>
+                    {
+                        int.TryParse(it, out int prop);
+                        return prop;
+                    })
+                    .ToList();
             }
             return user;
         }

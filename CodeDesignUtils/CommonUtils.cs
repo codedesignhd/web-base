@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CodeDesign.Utilities
 {
-    public class CommonUtils
+    public abstract class CommonUtils
     {
         public static string GetIpAddress(HttpContext context)
         {

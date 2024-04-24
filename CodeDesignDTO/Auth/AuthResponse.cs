@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CodeDesign.Dtos.Auth
 {
-    public class AuthResponse : ResponseBase
+    public class AuthResponse : Response
     {
         public string accessToken { get; set; }
         public string refreshToken { get; set; }

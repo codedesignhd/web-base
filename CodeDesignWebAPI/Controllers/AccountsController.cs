@@ -9,6 +9,8 @@ using CodeDesign.Dtos.Accounts;
 using CodeDesign.Dtos.Validators;
 using CodeDesign.WebAPI.ServiceExtensions;
 using Serilog;
+using CodeDesign.WebAPI.Services;
+using System.Security.Principal;
 namespace CodeDesign.WebAPI.Controllers
 {
 
@@ -18,9 +20,9 @@ namespace CodeDesign.WebAPI.Controllers
     {
         #region DI
         private readonly ILog _logger = LogManager.GetLogger(typeof(AccountsController));
-        public AccountsController(AppDependencyProvider dependency) : base(dependency)
+        public AccountsController(DependencyContainer dependency) : base(dependency)
         {
-            
+
         }
         #endregion
 
@@ -29,13 +31,13 @@ namespace CodeDesign.WebAPI.Controllers
         [HttpPost, Route("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
         {
-            ValidationResult result = await _dependencies.Validator.ValidateAsync(request);
-            if (result.IsValid)
+            ValidationResult validate = await _dependencies.Validator.ValidateAsync(request);
+            if (validate.IsValid)
             {
                 var res = AccountBL.Instance.Register(request);
                 return Ok(res);
             }
-            return Ok(new Response(false, result.GetMessage()));
+            return BadRequest(new Response(false, validate.GetMessage()));
         }
 
         #endregion
@@ -51,7 +53,7 @@ namespace CodeDesign.WebAPI.Controllers
                 var res = AccountBL.Instance.ChangePassword(request);
                 return Ok(res);
             }
-            return Ok(new Response(false, validate.GetMessage()));
+            return BadRequest(new Response(false, validate.GetMessage()));
         }
 
         [HttpPost]
@@ -65,9 +67,58 @@ namespace CodeDesign.WebAPI.Controllers
         [Route("update-avatar")]
         public IActionResult UpdateAvatar(IFormFile file)
         {
-            return Ok(null);
+            var res = _dependencies.File.IsValidImage(file);
+            if (res.success)
+            {
+                try
+                {
+                    string filePath = string.Format(@"images\avatar\ava_{0}{1}", AppUser.Username, Path.GetExtension(file.FileName));
+                    string savePath = Path.Combine(_dependencies.Enviroment.ContentRootPath, filePath);
+                    using (FileStream ms = new FileStream(savePath, FileMode.Create, FileAccess.Write))
+                    {
+                        file.CopyTo(ms);
+                    }
+                    bool success = AccountBL.Instance.UpdateAvatar(AppUser.Username, filePath.Replace("\\", "/"));
+                    if (success)
+                    {
+                        return Ok(new Response(true, "Cập nhật avatar thành công"));
+                    }
+                    return Ok(new Response(false, "Có lỗi khi cập nhật, vui lòng thử lại"));
+                }
+                catch (Exception)
+                {
+                    return Ok(new Response(false, "Có lỗi khi lưu ảnh, vui lòng thử lại"));
+                }
+            }
+            return BadRequest(res);
         }
 
+        [HttpPost]
+        [Route("recovery-password")]
+        public IActionResult RecoverPassword(string identity)
+        {
+            if (string.IsNullOrWhiteSpace(identity))
+                return BadRequest(new Response(false, "Vui lòng nhập email hoặc username để tiếp tục"));
+            var res = AccountBL.Instance.RecoverPassword(identity);
+            return Ok(res);
+        }
+
+
+        [HttpPost]
+        [Route("verify-recover-password-token")]
+        public IActionResult VerifyRecoverPasswordToken(string token)
+        {
+            var res = AccountBL.Instance.VerifyRecoverPasswordToken(token);
+            return Ok(res);
+        }
+
+        [HttpPost]
+        [Route("reset-password")]
+        public IActionResult ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var res = AccountBL.Instance.ResetPassword(request);
+            return Ok(res);
+        }
         #endregion
 
         #region Others
@@ -98,6 +149,5 @@ namespace CodeDesign.WebAPI.Controllers
             });
         }
         #endregion
-
     }
 }

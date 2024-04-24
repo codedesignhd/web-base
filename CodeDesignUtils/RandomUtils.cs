@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Utilities
 {
-    public static class RandomUtils
+    public abstract class RandomUtils
     {
         public static Random _random;
         public static Random Rand

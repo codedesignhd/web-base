@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Utilities
 {
-    public static class EnumUtils
+    public abstract class EnumUtils
     {
 
     }

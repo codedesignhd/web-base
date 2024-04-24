@@ -10,8 +10,8 @@ namespace CodeDesign.WebAPI.Controllers
     public class BaseController : ControllerBase
     {
         #region DI
-        protected readonly AppDependencyProvider _dependencies;
-        public BaseController(AppDependencyProvider dependencies)
+        protected readonly DependencyContainer _dependencies;
+        public BaseController(DependencyContainer dependencies)
         {
             _dependencies = dependencies;
         }

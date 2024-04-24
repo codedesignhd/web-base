@@ -1,7 +1,10 @@
 ﻿using Asp.Versioning;
 using CodeDesign.Dtos.Packages;
+using CodeDesign.WebAPI.Core.Authorization;
+using CodeDesign.WebAPI.Core.Constants;
 using CodeDesign.WebAPI.ServiceExtensions;
 using log4net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,14 +16,16 @@ namespace CodeDesign.WebAPI.Controllers
     {
         #region DI
         private readonly ILog _logger = LogManager.GetLogger(typeof(PackagesController));
-        public PackagesController(AppDependencyProvider dependency) : base(dependency)
+        public PackagesController(DependencyContainer dependency) : base(dependency)
         {
 
         }
         #endregion
 
+
         [HttpPost]
         [Route("add-package")]
+        [Authorize(Policy = PolicyNames.AdminOnly)]
         public IActionResult AddPackage(AddPackageRequest data)
         {
             return Ok();

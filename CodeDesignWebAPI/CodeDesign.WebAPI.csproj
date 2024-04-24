@@ -30,4 +30,8 @@
 		<ProjectReference Include="..\CodeDesignUtils\CodeDesign.Utilities.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Core\Filters\" />
+	</ItemGroup>
+
 </Project>

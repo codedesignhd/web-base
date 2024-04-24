@@ -18,7 +18,7 @@ namespace CodeDesign.WebAPI.Controllers
         [HttpPost]
         public IActionResult CreateDrive([FromForm] string driveName)
         {
-            _gDriveService.Test();
+            
             return Ok("ok");
         }
         [HttpGet]

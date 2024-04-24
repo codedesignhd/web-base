@@ -64,9 +64,6 @@ namespace CodeDesign.BL
             return AccountRepository.Instance.Login(request.username.ChuanHoa(), request.password);
         }
 
-
-
-
         public Models.Account Login(string username, string password)
         {
             password = CryptoUtils.HashPasword(password.ChuanHoa());
@@ -107,15 +104,27 @@ namespace CodeDesign.BL
             return new Response(false, "Lỗi dữ liệu");
         }
 
+        #endregion
+
+        #region 
         public Response ChangePassword(ChangePwdRequest request)
         {
             Response response = new Response();
 
             return response;
         }
-        #endregion
-
-        #region 
+        public bool UpdateAvatar(string username, string avatar)
+        {
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                return AccountRepository.Instance.Update(username, new
+                {
+                    avatar = avatar,
+                    last_login = DateTimeUtils.TimeInEpoch()
+                });
+            }
+            return false;
+        }
         public bool UpdateLastLogin(string username)
         {
             if (!string.IsNullOrWhiteSpace(username))
@@ -148,6 +157,48 @@ namespace CodeDesign.BL
                 return AccountRepository.Instance.IsUserExist(identity);
             }
             return true;
+        }
+
+
+        /// <summary>
+        /// Tạo email khôi phục mật khẩu và tạo token trên couchbase, nếu quá hạn thì không truy cập được link
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        public Response RecoverPassword(string identity)
+        {
+            if (string.IsNullOrWhiteSpace(identity))
+                return new Response(false, "Không tìm thấy tài khoản");
+            Account account = AccountRepository.Instance.GetByIdentity(identity);
+            if (account is null)
+                return new Response(false, "Không tìm thấy tài khoản");
+            if (string.IsNullOrWhiteSpace(account.email))
+                return new Response(false, "Tài khoản chưa thiết lập email đặt lại mật khẩu");
+
+
+            ///Call service gửi mail
+            ///
+            ///End call service
+            string hiddenEmail = Utilities.StringUtils.HideEmail(account.email);
+            string message = string.Format("Một mã xác thực đã được gửi tới địa chỉ email {0}, vui lòng kiểm tra hòm thư và đặt lại mật khẩu", hiddenEmail);
+            return new Response<string>(true, message)
+            {
+                data = hiddenEmail,
+            };
+        }
+        /// <summary>
+        /// Check token và trả lại username dưới dạng hash nếu hợp lệ
+        /// </summary>
+        public Response VerifyRecoverPasswordToken(string token)
+        {
+            return new Response();
+        }
+        /// <summary>
+        /// Decrypt username và reset lại mật khẩu
+        /// </summary>
+        public Response ResetPassword(ResetPasswordRequest request)
+        {
+            return new Response();
         }
         #endregion
 

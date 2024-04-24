@@ -8,7 +8,7 @@ namespace CodeDesign.WebAPI.ServiceExtensions
     /// <summary>
     /// ApplicationServicesExtensions
     /// </summary>
-    public static class ApplicationServicesExtensions
+    public static class ServicesConfigureExtensions
     {
         public static IServiceCollection AddGoogleService(this IServiceCollection services)
         {
@@ -17,9 +17,17 @@ namespace CodeDesign.WebAPI.ServiceExtensions
         }
         public static AuthorizationOptions AddPolicies(this AuthorizationOptions options)
         {
-            options.AddPolicy(AppPolicy.AdminOnly, policy =>
+            options.AddPolicy(PolicyNames.SysOnly, policy =>
             {
-                policy.RequireRole(Convert.ToString(Role.Admin));
+                policy.RequireRole(Convert.ToString(Role.Sys));
+            });
+            options.AddPolicy(PolicyNames.AdminOnly, policy =>
+            {
+                policy.RequireRole(Convert.ToString(Role.Sys), Convert.ToString(Role.Admin));
+            });
+            options.AddPolicy(PolicyNames.UserOnly, policy =>
+            {
+                policy.RequireRole(Convert.ToString(Role.User));
             });
             return options;
         }

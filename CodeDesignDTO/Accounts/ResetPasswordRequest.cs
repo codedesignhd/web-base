@@ -4,10 +4,11 @@ using System.Text;
 
 namespace CodeDesign.Dtos.Accounts
 {
-    public class ChangePwdRequest
+    public class ResetPasswordRequest
     {
-        public string old_password { get; set; }
+        public string username { get; set; }
         public string new_password { get; set; }
         public string re_new_password { get; set; }
+        public string token { get; set; }
     }
 }
