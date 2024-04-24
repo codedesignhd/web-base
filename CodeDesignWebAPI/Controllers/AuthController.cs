@@ -18,9 +18,7 @@ namespace CodeDesign.WebAPI.Controllers
         private readonly IAuthService _auth;
         public AuthController(IAuthService auth)
         {
-
             _auth = auth;
-
         }
 
         [AllowAnonymous]
@@ -45,7 +43,7 @@ namespace CodeDesign.WebAPI.Controllers
         public new async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
-            return new JsonResult(new Response(true, "success"));
+            return Ok(new Response(true, "success"));
         }
     }
 }

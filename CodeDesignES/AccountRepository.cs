@@ -10,7 +10,7 @@ using Nest;
 
 namespace CodeDesign.ES
 {
-    public class AccountRepository : BaseESRepository, IESRepository<Account>
+    public class AccountRepository : ESRepositoryBase, IESRepository<Account>
     {
         #region Init
 

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using CodeDesign.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CodeDesign.ES
 {
-    public interface IESRepository<T> where T : class
+    public interface IESRepository<T> where T : ModelBase
     {
         (bool success, string id) Index(T data, string id = "", string route = "");
         bool Update(string id, object doc);

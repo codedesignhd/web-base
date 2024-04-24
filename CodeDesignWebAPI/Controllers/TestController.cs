@@ -19,13 +19,13 @@ namespace CodeDesign.WebAPI.Controllers
         public IActionResult CreateDrive([FromForm] string driveName)
         {
             _gDriveService.Test();
-            return new JsonResult("ok");
+            return Ok("ok");
         }
         [HttpGet]
         [Route("~/Auth")]
         public IActionResult Auth()
         {
-            return new JsonResult("ok");
+            return Ok("ok");
         }
     }
 

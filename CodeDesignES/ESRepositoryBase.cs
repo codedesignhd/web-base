@@ -15,7 +15,7 @@ using Nest;
 
 namespace CodeDesign.ES
 {
-    public abstract class BaseESRepository
+    public abstract class ESRepositoryBase
     {
         protected static Uri node = new Uri(ConfigurationManager.AppSettings["ES:Server"]);
         protected static string prefix_index = ConfigurationManager.AppSettings["ES:Prefix"];

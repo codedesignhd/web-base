@@ -129,11 +129,17 @@ namespace CodeDesign.BL
         }
         public KeyValuePair<bool, string> DeleteAccount(string username)
         {
-            return new KeyValuePair<bool, string>();
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                bool success = AccountRepository.Instance.Update(username, new
+                {
+                    id = username,
+                    trang_thai_du_lieu = TrangThaiDuLieu.Deleted,
+                });
+                return new KeyValuePair<bool, string>(success, success ? "Thành công" : "Thất bại");
+            }
+            return new KeyValuePair<bool, string>(false, "Tài khoản không tồn tại");
         }
-
-        #endregion
-
 
         public bool IsUserExist(string identity)
         {
@@ -143,6 +149,7 @@ namespace CodeDesign.BL
             }
             return true;
         }
+        #endregion
 
 
         #region Search
@@ -167,13 +174,12 @@ namespace CodeDesign.BL
             SearchResult<Account> result = AccountRepository.Instance.Search(request.q, SearchParamsBase.Create(request.scroll_id, request.page, request.page_size, request.sort_field, request.sort_dir));
 
             PaginatedResponse<Account> response = PaginatedResponse<Account>.Create(request);
-
-            //mapping
-
+            response.data = result.documents;
+            response.total = result.total;
+            response.scroll_id = result.scroll_id;
             return response;
         }
         #endregion
-
 
     }
 }

@@ -9,7 +9,7 @@ using Nest;
 
 namespace CodeDesign.ES
 {
-    public class EmailRepository : BaseESRepository, IESRepository<Email>
+    public class EmailRepository : ESRepositoryBase, IESRepository<Email>
     {
         #region Init
         public EmailRepository(string modify_index)
