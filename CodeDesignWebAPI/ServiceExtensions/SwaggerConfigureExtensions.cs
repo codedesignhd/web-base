@@ -9,7 +9,7 @@ namespace CodeDesign.WebAPI.ServiceExtensions
     /// <summary>
     /// ApplicationSwaggerExtension
     /// </summary>
-    public static class ApplicationSwaggerExtension
+    public static class SwaggerConfigureExtensions
     {
         /// <summary>
         /// AddSwashbuckleSwagger

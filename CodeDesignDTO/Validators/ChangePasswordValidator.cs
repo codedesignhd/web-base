@@ -11,16 +11,16 @@ namespace CodeDesign.Dtos.Validators
         public ChangePasswordValidator()
         {
 
-            RuleFor(x => x.OldPasword)
+            RuleFor(x => x.old_password)
                 .NotEmpty()
                 .WithMessage("Old password is invalid");
 
-            RuleFor(x => x.NewPassword)
+            RuleFor(x => x.new_password)
                 .NotEmpty()
                 .WithMessage("Password is invalid");
 
-            RuleFor(x => x.ReNewPassword)
-               .Equal(x => x.NewPassword)
+            RuleFor(x => x.re_new_password)
+               .Equal(x => x.new_password)
                .WithMessage("Password are not the same");
 
 

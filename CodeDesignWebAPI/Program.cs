@@ -71,12 +71,10 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICodeDesignValidatorFactory, ValidatorFactory>();
-builder.Services.AddTransient<IValidator<RegisterUserRequest>, RegisterValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<RegisterValidator>();
-builder.Services.AddScoped<AppValidator>();
-builder.Services.AddScoped<AppDependencyProvider>();
+builder.Services.AddScoped<DependencyContainer>();
 builder.Services.AddSingleton<IFileService, FileService>();
 builder.Services.AddGoogleService();
+builder.Services.AddCouchbase();
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();

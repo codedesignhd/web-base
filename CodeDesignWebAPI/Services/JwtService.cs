@@ -14,16 +14,20 @@ namespace CodeDesign.WebAPI.Services
     {
         public string GenAccessToken(Account user, int expiredMins = 30)
         {
-            if (user != null)
+            if (user is null)
             {
-                string secret = Utilities.ConfigurationManager.AppSettings["Jwt:Key"];
-                byte[] symmetricKey = Encoding.UTF8.GetBytes(secret);
-                var tokenHandler = new JwtSecurityTokenHandler();
+                return string.Empty;
+            }
 
-                var tokenDescriptor = new SecurityTokenDescriptor
+            string secret = Utilities.ConfigurationManager.AppSettings["Jwt:Key"];
+            byte[] symmetricKey = Encoding.UTF8.GetBytes(secret);
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
                 {
-                    Subject = new ClaimsIdentity(new[]
-                    {
+                        new Claim(ClaimTypesCustom.Id, user.id),
                         new Claim(ClaimTypes.Name, user.username),
                         new Claim(ClaimTypes.Role, Convert.ToString(user.role)),
                         new Claim(ClaimTypes.Email, user.email),
@@ -32,20 +36,18 @@ namespace CodeDesign.WebAPI.Services
                         new Claim(ClaimTypesCustom.Properties, string.Join(",", user.thuoc_tinh)),
                     }),
 
-                    Expires = DateTime.UtcNow.AddMinutes(Convert.ToInt32(expiredMins)),
+                Expires = DateTime.UtcNow.AddMinutes(Convert.ToInt32(expiredMins)),
 
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(symmetricKey),
-                        SecurityAlgorithms.HmacSha256Signature),
-                    Issuer = CodeDesign.Utilities.ConfigurationManager.AppSettings["Jwt:Issuer"],
-                    Audience = Utilities.ConfigurationManager.AppSettings["Jwt:Audience"],
-                };
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(symmetricKey),
+                    SecurityAlgorithms.HmacSha256Signature),
+                Issuer = CodeDesign.Utilities.ConfigurationManager.AppSettings["Jwt:Issuer"],
+                Audience = Utilities.ConfigurationManager.AppSettings["Jwt:Audience"],
+            };
 
-                SecurityToken stoken = tokenHandler.CreateToken(tokenDescriptor);
-                string token = tokenHandler.WriteToken(stoken);
+            SecurityToken stoken = tokenHandler.CreateToken(tokenDescriptor);
+            string token = tokenHandler.WriteToken(stoken);
 
-                return token;
-            }
-            return string.Empty;
+            return token;
         }
 
         public RefreshToken GenerateRefreshToken(string ipAddress)
@@ -64,13 +66,12 @@ namespace CodeDesign.WebAPI.Services
 
         private string getUniqueToken(int maxCall = 10)
         {
+            string token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             if (maxCall <= 0)
             {
-                return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+                return token;
             }
-            var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
             bool tokenIsUnique = AccountBL.Instance.IsUniqueRefreshToken(token);
-
             if (!tokenIsUnique)
                 return getUniqueToken(maxCall - 1);
             return token;
@@ -79,13 +80,13 @@ namespace CodeDesign.WebAPI.Services
         {
             try
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+                JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
 
                 if (jwtToken == null)
                     return null;
 
-                var symmetricKey = Convert.FromBase64String(Utilities.ConfigurationManager.AppSettings["Jwt:Key"]);
+                byte[] symmetricKey = Convert.FromBase64String(Utilities.ConfigurationManager.AppSettings["Jwt:Key"]);
 
                 var validationParameters = new TokenValidationParameters()
                 {

@@ -14,6 +14,4 @@ namespace CodeDesign.Models
         public decimal price_discount { get; set; }
         public int order { get; set; }
     }
-
-
 }

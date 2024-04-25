@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using CodeDesign.Dtos.Validators;
 
 namespace CodeDesign.WebAPI.Controllers
 {
@@ -16,23 +17,29 @@ namespace CodeDesign.WebAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _auth;
-        public AuthController(IAuthService auth)
+        private readonly ICodeDesignValidatorFactory _validator;
+        public AuthController(IAuthService auth, ICodeDesignValidatorFactory validator)
         {
-
             _auth = auth;
-
+            _validator = validator;
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] AuthRequest request)
         {
-            AuthResponse response = _auth.Authenticate(request);
-            return Ok(response);
+            var validate = _validator.Validate(request);
+            if (validate.IsValid)
+            {
+                AuthResponse response = _auth.Authenticate(request);
+                return Ok(response);
+            }
+            return BadRequest(new Response(false, validate.GetMessage()));
         }
 
         [AllowAnonymous]
-        [HttpPost("refresh-token")]
+        [HttpPost]
+        [Route("refresh-token")]
         public IActionResult RefreshToken([FromBody] string token)
         {
             string refreshToken = token ?? _auth.GetTokenCookie();
@@ -41,11 +48,12 @@ namespace CodeDesign.WebAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet, Route("sign-out")]
+        [HttpGet]
+        [Route("sign-out")]
         public new async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
-            return new JsonResult(new Response(true, "success"));
+            return Ok(new Response(true, "success"));
         }
     }
 }

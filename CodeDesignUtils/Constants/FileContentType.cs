@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Utilities.Constants
 {
-    public class FileContentType
+    public abstract class FileContentType
     {
         public const string Doc = "application/msword";
         public const string Docx = "application/vndoc";

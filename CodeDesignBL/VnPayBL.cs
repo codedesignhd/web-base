@@ -1,5 +1,6 @@
 ﻿using CodeDesign.Dtos.Responses;
 using CodeDesign.Dtos.Vnpay;
+using CodeDesign.Models;
 using Microsoft.AspNetCore.Http;
 using Nest;
 using Newtonsoft.Json;
@@ -16,11 +17,27 @@ using System.Threading.Tasks;
 
 namespace CodeDesign.BL
 {
-    public class VnPayBL
+    public sealed class VnPayBL
     {
         private const string VERSION = "2.1.0";
         private SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
         private SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
+
+        private static VnPayBL _instance;
+
+        public static VnPayBL Instance
+        {
+            get
+            {
+                if (_instance is null)
+                {
+                    _instance = new VnPayBL();
+                }
+                return _instance;
+            }
+        }
+
+
 
         private void addRequestData(string key, string value)
         {
@@ -123,21 +140,20 @@ namespace CodeDesign.BL
             string vnp_TmnCode = Utilities.ConfigurationManager.AppSettings["VnPay:vnp_TmnCode"]; //Ma định danh merchant kết nối (Terminal Id)
             string vnp_HashSecret = Utilities.ConfigurationManager.AppSettings["VnPay:vnp_HashSecret"]; //Secret Key
 
-
             addRequestData("vnp_Version", VERSION);
             addRequestData("vnp_Command", VnPayCommand.Payment);
             addRequestData("vnp_TmnCode", vnp_TmnCode);
             addRequestData("vnp_Amount", Convert.ToString(request.Amount * 100));
 
-            if (request.BankCode == VnPayBankCode.QrCode)
+            if (request.BankCode == BankCode.VnPayQrCode)
             {
                 addRequestData("vnp_BankCode", "VNPAYQR");
             }
-            else if (request.BankCode == VnPayBankCode.VnBank)
+            else if (request.BankCode == BankCode.VnPayVnBank)
             {
                 addRequestData("vnp_BankCode", "VNBANK");
             }
-            else if (request.BankCode == VnPayBankCode.IntCard)
+            else if (request.BankCode == BankCode.VnPayIntCard)
             {
                 addRequestData("vnp_BankCode", "INTCARD");
             }
@@ -145,17 +161,16 @@ namespace CodeDesign.BL
             addRequestData("vnp_CurrCode", "VND");
             addRequestData("vnp_IpAddr", request.vnp_IpAddr);
 
-            if (request.Locale == VnPayLocale.Vn)
+            if (request.Locale == Locale.Vn)
             {
                 addRequestData("vnp_Locale", "vn");
             }
-            else if (request.Locale == VnPayLocale.En)
+            else if (request.Locale == Locale.En)
             {
                 addRequestData("vnp_Locale", "en");
             }
             addRequestData("vnp_OrderInfo", request.vnp_OrderInfo);
             addRequestData("vnp_OrderType", "other"); //default value: other
-
             addRequestData("vnp_ReturnUrl", vnp_Returnurl);
             addRequestData("vnp_TxnRef", request.vnp_TxnRef);
             response.success = true;

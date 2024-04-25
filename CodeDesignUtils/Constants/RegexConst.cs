@@ -5,8 +5,9 @@ using System.Text.RegularExpressions;
 
 namespace CodeDesign.Utilities.Constants
 {
-    public class RegexConst
+    public abstract class RegexConst
     {
-        public static Regex RegXUsername = new Regex("", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1.0));
+        private static TimeSpan _defaultTimeSpan = TimeSpan.FromSeconds(1.0);
+        public static readonly Regex RegXUsername = new Regex("", RegexOptions.IgnoreCase, _defaultTimeSpan);
     }
 }

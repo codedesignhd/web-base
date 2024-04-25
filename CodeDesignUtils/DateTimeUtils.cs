@@ -2,7 +2,7 @@
 
 namespace CodeDesign.Utilities
 {
-    public static class DateTimeUtils
+    public abstract class DateTimeUtils
     {
         /// <summary>
         /// Convert DateTime to UnixTime
@@ -13,7 +13,8 @@ namespace CodeDesign.Utilities
             {
                 dt = DateTime.UtcNow;
             }
-            DateTimeOffset dt_off = DateTime.SpecifyKind(dt.Value, DateTimeKind.Local);
+            DateTimeOffset dt_off = DateTime
+                .SpecifyKind(dt.Value, DateTimeKind.Local);
             return dt_off.ToUnixTimeSeconds();
         }
 
@@ -22,7 +23,9 @@ namespace CodeDesign.Utilities
         /// </summary>
         public static DateTime EpochToTime(long epoch)
         {
-            return new DateTime(1970, 1, 1).AddSeconds(epoch).ToLocalTime();
+            return new DateTime(1970, 1, 1)
+                .AddSeconds(epoch)
+                .ToLocalTime();
         }
 
 

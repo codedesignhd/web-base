@@ -5,10 +5,10 @@ using System.Text;
 
 namespace CodeDesign.Utilities
 {
-    public static class CryptoUtils
+    public abstract class CryptoUtils
     {
-        private const string DefaultKey = "";
-        private static readonly string DefaultSalt = "DefaultSalt";
+        private const string DefaultKey = "CodeDesign";
+        private const string DefaultSalt = "DefaultSalt";
         public static string HmacSHA256(string key, string text)
         {
             byte[] keyBytes = Encoding.UTF8.GetBytes(key);
@@ -47,6 +47,21 @@ namespace CodeDesign.Utilities
                 return HmacSHA256(DefaultKey, password + salt);
             }
             return HmacSHA256(DefaultKey, password + DefaultSalt);
+        }
+        public static string Base64Encode(string plainText)
+        {
+            byte[] plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static string Encode(string plainText)
+        {
+            return plainText;
+        }
+
+        public static string Decode(string token)
+        {
+            return token;
         }
     }
 }

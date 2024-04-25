@@ -9,9 +9,6 @@ namespace CodeDesign.Models
         Demo = -10000,
         DaTongHop = -1,
         GoiCuocHienThi = 1,
-
-
-
     }
     public enum SortDir
     {
@@ -29,9 +26,9 @@ namespace CodeDesign.Models
     {
         All = 0,
         Sys = 1,
-        User = 2,
-        Guest = 3,
-        Admin = 4,
+        Admin = 2,
+        User = 3,
+        Guest = 4,
     }
     public enum TrangThaiMail
     {
@@ -39,8 +36,6 @@ namespace CodeDesign.Models
         Success = 1,
         Failed = 2,
     }
-
-
 
     public enum DoiTuong
     {
@@ -72,5 +67,31 @@ namespace CodeDesign.Models
         ChoThanhToan = 1,
         DaThanhToan = 2,
         HetHan = 3,
+    }
+
+    public enum ExternalPaymentSource
+    {
+        Web = 0,
+        VnPay = 1,
+        Momo = 2,
+        Paypal = 3,
+    }
+
+    public enum BankCode
+    {
+        VnPayQrCode = 1,
+        VnPayVnBank = 2,
+        VnPayIntCard = 3,
+    }
+    public enum CurrCode
+    {
+        Vnd = 1,
+        Usd = 2,
+    }
+
+    public enum Locale
+    {
+        Vn = 0,
+        En = 1
     }
 }

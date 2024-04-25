@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace CodeDesign.Utilities.Constants
 {
-    public static class AppConsts
+    public abstract class AppConsts
     {
         public const string DefaultUser = "unknow";
     }

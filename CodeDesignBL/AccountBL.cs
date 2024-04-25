@@ -7,11 +7,18 @@ using CodeDesign.ES.Models;
 using CodeDesign.Dtos.Responses;
 using CodeDesign.Dtos.Accounts;
 using CodeDesign.Dtos.Auth;
+using CodeDesign.BL.Providers;
+using System;
+using CodeDesign.Couchbase;
+using CodeDesign.Dtos.Caches;
+using System.Security.Principal;
+using Nest;
 namespace CodeDesign.BL
 {
     public class AccountBL : BaseBL
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(AccountBL));
+
         #region Init
         private static AccountBL _instance;
         public static AccountBL Instance
@@ -64,9 +71,6 @@ namespace CodeDesign.BL
             return AccountRepository.Instance.Login(request.username.ChuanHoa(), request.password);
         }
 
-
-
-
         public Models.Account Login(string username, string password)
         {
             password = CryptoUtils.HashPasword(password.ChuanHoa());
@@ -107,15 +111,27 @@ namespace CodeDesign.BL
             return new Response(false, "Lỗi dữ liệu");
         }
 
+        #endregion
+
+        #region 
         public Response ChangePassword(ChangePwdRequest request)
         {
             Response response = new Response();
 
             return response;
         }
-        #endregion
-
-        #region 
+        public bool UpdateAvatar(string username, string avatar)
+        {
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                return AccountRepository.Instance.Update(username, new
+                {
+                    avatar = avatar,
+                    last_login = DateTimeUtils.TimeInEpoch()
+                });
+            }
+            return false;
+        }
         public bool UpdateLastLogin(string username)
         {
             if (!string.IsNullOrWhiteSpace(username))
@@ -129,11 +145,17 @@ namespace CodeDesign.BL
         }
         public KeyValuePair<bool, string> DeleteAccount(string username)
         {
-            return new KeyValuePair<bool, string>();
+            if (!string.IsNullOrWhiteSpace(username))
+            {
+                bool success = AccountRepository.Instance.Update(username, new
+                {
+                    id = username,
+                    trang_thai_du_lieu = TrangThaiDuLieu.Deleted,
+                });
+                return new KeyValuePair<bool, string>(success, success ? "Thành công" : "Thất bại");
+            }
+            return new KeyValuePair<bool, string>(false, "Tài khoản không tồn tại");
         }
-
-        #endregion
-
 
         public bool IsUserExist(string identity)
         {
@@ -143,6 +165,88 @@ namespace CodeDesign.BL
             }
             return true;
         }
+
+
+        /// <summary>
+        /// Tạo email khôi phục mật khẩu và tạo token trên couchbase, nếu quá hạn thì không truy cập được link
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        public Response RecoverPassword(string identity)
+        {
+            if (string.IsNullOrWhiteSpace(identity))
+                return new Response(false, "Không tìm thấy tài khoản");
+            Account account = AccountRepository.Instance.GetByIdentity(identity);
+            if (account is null)
+                return new Response(false, "Không tìm thấy tài khoản");
+            if (string.IsNullOrWhiteSpace(account.email))
+                return new Response(false, "Tài khoản chưa thiết lập email đặt lại mật khẩu");
+
+
+            string key = CouchbaseKeyProvider.GenResetPasswordKey(account.username);
+            long epoch = Utilities.DateTimeUtils.TimeInEpoch();
+            ResetPasswordCache cache = CouchbaseService.Instance.Get<ResetPasswordCache>(key);
+            if (cache != null && cache.ExpireDate > epoch)
+            {
+                return new Response(false, "Bạn vừa yêu cầu đặt lại mật khẩu, vui lòng chờ ít phút trước khi gửi yêu cầu tiếp theo");
+            }
+
+            //string code = RandomUtils.GenCode(6);
+            long expireDate = Utilities.DateTimeUtils.TimeInEpoch(DateTime.UtcNow.AddMinutes(5));
+            cache = new ResetPasswordCache
+            {
+                ExpireDate = expireDate,
+                //Code = code,
+                Username = account.username,
+            };
+            bool success = CouchbaseService.Instance.Insert(key, cache, TimeSpan.FromMinutes(30));
+            if (success)
+            {
+                string token = Utilities.CryptoUtils.Encode(account.username);
+                //Tạo email gắn link đặt lại mật khẩu
+                string hiddenEmail = Utilities.StringUtils.HideEmail(account.email);
+                string message = string.Format("Một email chứa đường dẫn đặt lại mật khẩu đã được gửi tới địa chỉ {0}, vui lòng kiểm tra hòm thư và đặt lại mật khẩu", hiddenEmail);
+                return new Response<string>(true, message)
+                {
+                    data = hiddenEmail,
+                };
+            }
+            return new Response(false, "Có lỗi khi gửi email đặt lại mật khẩu, vui lòng thử lại sau");
+        }
+        /// <summary>
+        /// Check token và trả lại username dưới dạng hash nếu hợp lệ
+        /// </summary>
+        public Response VerifyRecoverPasswordToken(string token)
+        {
+            long epoch = Utilities.DateTimeUtils.TimeInEpoch();
+            string username = Utilities.CryptoUtils.Decode(token);
+            string key = CouchbaseKeyProvider.GenResetPasswordKey(username);
+            ResetPasswordCache cache = CouchbaseService.Instance.Get<ResetPasswordCache>(key);
+            if (cache is null || cache.ExpireDate < epoch)
+                return new Response(false, "Link đặt mật khẩu không hợp lệ hoặc đã hết hạn");
+            return new Response(true, "Hợp lệ");
+        }
+        /// <summary>
+        /// Decode token để xác định username và reset lại mật khẩu
+        /// </summary>
+        public Response ResetPassword(ResetPasswordRequest request)
+        {
+            string username = Utilities.CryptoUtils.Decode(request.token);
+            string key = CouchbaseKeyProvider.GenResetPasswordKey(username);
+            long epoch = Utilities.DateTimeUtils.TimeInEpoch();
+            ResetPasswordCache cache = CouchbaseService.Instance.Get<ResetPasswordCache>(key);
+            if (cache is null || cache.ExpireDate < epoch)
+                return new Response(false, "Có lỗi khi xác minh người dùng");
+
+            string newPassword = CryptoUtils.HashPasword(request.new_password);
+            bool success = AccountRepository.Instance.Update(username, new
+            {
+                password = newPassword
+            });
+            
+            return new Response(success, success ? "Mật khẩu đã được thay đổi thành công" : "Có lỗi khi thay đổi mật khẩu");
+        }
+        #endregion
 
 
         #region Search
@@ -167,13 +271,12 @@ namespace CodeDesign.BL
             SearchResult<Account> result = AccountRepository.Instance.Search(request.q, SearchParamsBase.Create(request.scroll_id, request.page, request.page_size, request.sort_field, request.sort_dir));
 
             PaginatedResponse<Account> response = PaginatedResponse<Account>.Create(request);
-
-            //mapping
-
+            response.data = result.documents;
+            response.total = result.total;
+            response.scroll_id = result.scroll_id;
             return response;
         }
         #endregion
-
 
     }
 }

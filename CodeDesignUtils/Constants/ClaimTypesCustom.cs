@@ -4,8 +4,9 @@ using System.Text;
 
 namespace CodeDesign.Utilities.Constants
 {
-    public class ClaimTypesCustom
+    public abstract class ClaimTypesCustom
     {
+        public const string Id = "id";
         public const string Properties = "prp";
         public const string Fullname = "fna";
         public const string Username = "usr";
