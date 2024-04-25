@@ -8,7 +8,7 @@ using System.Text;
 
 namespace CodeDesign.ES
 {
-    public class PaymentHistoryRepository : BaseESRepository, IESRepository<PaymentHistory>
+    public class PaymentHistoryRepository : ESRepositoryBase, IESRepository<PaymentHistory>
     {
         #region Init
         public PaymentHistoryRepository(string modify_index)
