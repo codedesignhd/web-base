@@ -53,7 +53,8 @@ namespace CodeDesign.Couchbase
         {
             try
             {
-                IOperationResult<T> o = _bucket.Insert<T>(key, doc, expiration);
+                string json = JsonConvert.SerializeObject(doc);
+                IOperationResult<string> o = _bucket.Insert(key, json, expiration);
                 return o.Success;
             }
             catch (Exception ex)
@@ -152,8 +153,13 @@ namespace CodeDesign.Couchbase
                 return default;
             try
             {
-                IOperationResult<T> o = _bucket.Get<T>(key);
-                return o.Value;
+                IOperationResult<string> o = _bucket.Get<string>(key);
+                if (o.Success)
+                {
+                    return JsonConvert.DeserializeObject<T>(o.Value);
+                }
+
+                return default;
             }
             catch (Exception ex)
             {
@@ -169,9 +175,12 @@ namespace CodeDesign.Couchbase
                 ConcurrentDictionary<string, T> dic = new ConcurrentDictionary<string, T>();
                 Parallel.ForEach(keys, async key =>
                 {
-                    var res = await _bucket.GetAsync<T>(key);
+                    var res = await _bucket.GetAsync<string>(key);
                     if (res.Success && !dic.ContainsKey(key))
-                        dic.TryAdd(key, res.Value);
+                    {
+                        T value = JsonConvert.DeserializeObject<T>(res.Value);
+                        dic.TryAdd(key, value);
+                    }
                 });
 
                 return dic.ToDictionary(it => it.Key, x => x.Value);

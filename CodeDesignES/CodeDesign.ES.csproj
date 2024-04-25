@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Elasticsearch.Net" Version="7.10.0" />
     <PackageReference Include="NEST.JsonNetSerializer" Version="7.10.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
