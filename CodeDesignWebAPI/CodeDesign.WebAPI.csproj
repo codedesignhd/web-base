@@ -25,6 +25,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\CodeDesign.GoogleService\CodeDesign.GoogleService.csproj" />
 		<ProjectReference Include="..\CodeDesignBL\CodeDesign.BL.csproj" />
+		<ProjectReference Include="..\CodeDesignCouchbase\CodeDesign.Couchbase.csproj" />
 		<ProjectReference Include="..\CodeDesignDTO\CodeDesign.Dtos.csproj" />
 		<ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj" />
 		<ProjectReference Include="..\CodeDesignUtils\CodeDesign.Utilities.csproj" />

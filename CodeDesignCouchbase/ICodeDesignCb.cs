@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using Couchbase;
 
@@ -15,5 +16,8 @@ namespace CodeDesign.Couchbase
         bool Exist(string key);
         T Get<T>(string key) where T : class;
         Dictionary<string, T> GetMany<T>(IList<string> keys) where T : class;
+
+
+        IEnumerable<T> Where<T>(Expression<Func<T, object>> expression) where T : class;
     }
 }

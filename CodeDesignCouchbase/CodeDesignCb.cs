@@ -12,6 +12,7 @@ using System.Linq;
 using Couchbase.IO;
 using Couchbase.N1QL;
 using Serilog;
+using System.Linq.Expressions;
 namespace CodeDesign.Couchbase
 {
     public class CodeDesignCb : ICodeDesignCb
@@ -19,71 +20,41 @@ namespace CodeDesign.Couchbase
         private readonly ILogger _logger;
         private IBucket _bucket;
         private string _bucketName;
-        public CodeDesignCb()
+
+
+        public CodeDesignCb(CouchbaseConfigOptions options)
         {
-            try
-            {
-                start();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.StackTrace);
-            }
+            start(options);
         }
 
-        public CodeDesignCb(string customBucketName)
+
+
+        private bool start(CouchbaseConfigOptions options)
         {
             try
             {
-                start(customBucketName);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.StackTrace);
-            }
-        }
-
-        private bool start(string customBucketName = null)
-        {
-            try
-            {
-                string server = Utilities.ConfigurationManager.AppSettings["Couchbase:Server"];
-                string bucketUser = Utilities.ConfigurationManager.AppSettings["Couchbase:Username"];
-                string bucketPass = Utilities.ConfigurationManager.AppSettings["Couchbase:Password"];
-                if (!string.IsNullOrWhiteSpace(customBucketName))
-                {
-                    _bucketName = customBucketName;
-                }
-                else
-                {
-                    _bucketName = Utilities.ConfigurationManager.AppSettings["Couchbase:BucketName"];
-                }
-
-
-                if (string.IsNullOrWhiteSpace(server)
-                    || string.IsNullOrWhiteSpace(_bucketName)
-                    || string.IsNullOrWhiteSpace(bucketUser)
-                    || string.IsNullOrWhiteSpace(bucketPass))
+                if (!options.IsValidOption())
                 {
                     throw new ArgumentNullException("Cần cấu hình đủ thông số cho couchbase trước khi khởi động");
                 }
                 ClientConfiguration config = new ClientConfiguration
                 {
-                    Servers = new List<Uri> { new Uri(server) },
+                    Servers = new List<Uri> { new Uri(options.Server) },
                     Serializer = () => new DefaultSerializer(new JsonSerializerSettings(), new JsonSerializerSettings())
                 };
                 Cluster cluster = new Cluster(config);
 
-                PasswordAuthenticator authenticator = new PasswordAuthenticator(bucketUser, bucketPass);
+                PasswordAuthenticator authenticator = new PasswordAuthenticator(options.Username, options.Password);
                 cluster.Authenticate(authenticator);
+                _bucketName = options.Bucketname;
                 _bucket = cluster.OpenBucket(_bucketName);
                 return true;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.StackTrace);
+                throw;
             }
-            return false;
         }
         public bool Insert<T>(string key, T doc, TimeSpan expiration) where T : class
         {
@@ -217,6 +188,11 @@ namespace CodeDesign.Couchbase
                 _logger.Error(ex.StackTrace);
             }
             return new Dictionary<string, T>();
+        }
+        public IEnumerable<T> Where<T>(Expression<Func<T, object>> expression) where T : class
+        {
+
+            return Enumerable.Empty<T>();
         }
     }
 }

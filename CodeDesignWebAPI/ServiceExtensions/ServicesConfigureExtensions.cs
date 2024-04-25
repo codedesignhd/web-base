@@ -1,7 +1,10 @@
-﻿using CodeDesign.GoogleService;
+﻿using CodeDesign.Couchbase;
+using CodeDesign.GoogleService;
 using CodeDesign.Models;
 using CodeDesign.WebAPI.Core.Constants;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq.Expressions;
 
 namespace CodeDesign.WebAPI.ServiceExtensions
 {
@@ -30,6 +33,13 @@ namespace CodeDesign.WebAPI.ServiceExtensions
                 policy.RequireRole(Convert.ToString(Role.User));
             });
             return options;
+        }
+
+
+        public static IServiceCollection AddCouchbase(this IServiceCollection services, Expression<Func<CouchbaseConfigOptions>> expresson)
+        {
+            //services.AddSingleton<ICodeDesignCb, CodeDesignCb>(s => new CodeDesignCb(expresson.Body));
+            return services;
         }
     }
 }

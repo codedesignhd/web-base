@@ -7,7 +7,7 @@ namespace CodeDesign.Utilities
 {
     public abstract class CryptoUtils
     {
-        private const string DefaultKey = "";
+        private const string DefaultKey = "codedesign";
         private static readonly string DefaultSalt = "DefaultSalt";
         public static string HmacSHA256(string key, string text)
         {
@@ -39,7 +39,6 @@ namespace CodeDesign.Utilities
                 return hash.ToString();
             }
         }
-
         public static string HashPasword(string password, string salt = null)
         {
             if (!string.IsNullOrWhiteSpace(salt))
@@ -47,6 +46,14 @@ namespace CodeDesign.Utilities
                 return HmacSHA256(DefaultKey, password + salt);
             }
             return HmacSHA256(DefaultKey, password + DefaultSalt);
+        }
+        public static string Encode(string text)
+        {
+            return string.Empty;
+        }
+        public static string Decode(string token)
+        {
+            return string.Empty;
         }
     }
 }
