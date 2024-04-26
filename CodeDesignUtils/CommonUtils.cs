@@ -13,7 +13,7 @@ namespace CodeDesign.Utilities
             string ipAddress;
             try
             {
-                ipAddress = context.Connection.RemoteIpAddress.ToString();
+                ipAddress = Convert.ToString(context.Connection.RemoteIpAddress);
                 if (string.IsNullOrEmpty(ipAddress) || (ipAddress.ToLower() == "unknown") || ipAddress.Length > 45)
                     ipAddress = context.Request.Headers["REMOTE_ADDR"];
             }

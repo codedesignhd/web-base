@@ -48,7 +48,6 @@ namespace CodeDesign.WebAPI.ServiceExtensions
             {
                 return new CodeDesignCb(options);
             });
-           // services.AddSingleton<CouchbaseInstance>();
         }
     }
 }

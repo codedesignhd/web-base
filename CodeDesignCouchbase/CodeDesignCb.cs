@@ -15,6 +15,9 @@ using Serilog;
 using System.Linq.Expressions;
 namespace CodeDesign.Couchbase
 {
+    /// <summary>
+    /// Cần cài đặt singleton pattern vì connect tới couchbase nhiều lần sẽ gây tốn tài nguyên rất nhiều
+    /// </summary>
     public class CodeDesignCb : ICodeDesignCb
     {
         private readonly ILogger _logger;
@@ -190,6 +193,12 @@ namespace CodeDesign.Couchbase
                 _logger.Error(ex.StackTrace);
             }
             return new Dictionary<string, T>();
+        }
+
+        public IEnumerable<T> Where<T>(Expression<Func<T, object>> expression) where T : class
+        {
+            string cmd = string.Empty;
+            return Enumerable.Empty<T>();
         }
     }
 }
