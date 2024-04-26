@@ -93,8 +93,14 @@ namespace CodeDesign.WebAPI.Controllers
             return BadRequest(res);
         }
 
+        /// <summary>
+        /// Gửi yêu cầu đặt lại mật khẩu qua email
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("recovery-password")]
+        [AllowAnonymous]
         public IActionResult RecoverPassword(string identity)
         {
             if (string.IsNullOrWhiteSpace(identity))
@@ -103,17 +109,28 @@ namespace CodeDesign.WebAPI.Controllers
             return Ok(res);
         }
 
-
+        /// <summary>
+        /// Xác minh token đặt lại mật khẩu từ link trong email
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("verify-recover-password-token")]
+        [AllowAnonymous]
         public IActionResult VerifyRecoverPasswordToken(string token)
         {
             var res = AccountBL.Instance.VerifyRecoverPasswordToken(token);
             return Ok(res);
         }
 
+        /// <summary>
+        /// Đặt lại mật khẩu mới
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("reset-password")]
+        [AllowAnonymous]
         public IActionResult ResetPassword([FromBody] ResetPasswordRequest request)
         {
             var res = AccountBL.Instance.ResetPassword(request);

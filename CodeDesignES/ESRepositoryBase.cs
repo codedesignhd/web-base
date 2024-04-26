@@ -75,6 +75,14 @@ namespace CodeDesign.ES
             }
             return (re.Result == Result.Created, re.Id);
         }
+
+        protected IEnumerable<string> BulkIndexReturnIds<T>(IEnumerable<T> docs) where T : ModelBase
+        {
+            BulkResponse res = client.Bulk(bi => bi.Index(_index).IndexMany(docs));
+            IEnumerable<string> errorIds = res.ItemsWithErrors.Select(it => it.Id);
+            return res.Items.Select(it => it.Id)
+                 .Except(errorIds);
+        }
         protected bool BulkIndex<T>(IEnumerable<T> docs) where T : ModelBase
         {
             BulkResponse res = client.Bulk(bi => bi.IndexMany(docs));
@@ -95,8 +103,9 @@ namespace CodeDesign.ES
             BulkResponse res = client.Bulk(bu => bu.UpdateMany(docs, (b, doc) => b.Doc(doc)));
             if (res.ItemsWithErrors.Count() > 0)
             {
+                IEnumerable<string> errorIds = res.ItemsWithErrors.Select(it => it.Id);
                 successId = res.Items.Select(it => it.Id)
-                    .Except(res.ItemsWithErrors.Select(it => it.Id))
+                    .Except(errorIds)
                     .ToList();
             }
             return res.IsValid && !res.Errors;
@@ -182,7 +191,7 @@ namespace CodeDesign.ES
             ConcurrentBag<IHit<T>> bag = new ConcurrentBag<IHit<T>>();
             try
             {
-                SearchRequest req = new SearchRequest()
+                SearchRequest req = new SearchRequest(_index)
                 {
                     From = 0,
                     Size = page_size,

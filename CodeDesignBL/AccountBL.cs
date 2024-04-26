@@ -7,11 +7,18 @@ using CodeDesign.ES.Models;
 using CodeDesign.Dtos.Responses;
 using CodeDesign.Dtos.Accounts;
 using CodeDesign.Dtos.Auth;
+using CodeDesign.BL.Providers;
+using System;
+using CodeDesign.Couchbase;
+using CodeDesign.Dtos.Caches;
+using System.Security.Principal;
+using Nest;
 namespace CodeDesign.BL
 {
     public class AccountBL : BaseBL
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(AccountBL));
+
         #region Init
         private static AccountBL _instance;
         public static AccountBL Instance
@@ -176,29 +183,68 @@ namespace CodeDesign.BL
                 return new Response(false, "Tài khoản chưa thiết lập email đặt lại mật khẩu");
 
 
-            ///Call service gửi mail
-            ///
-            ///End call service
-            string hiddenEmail = Utilities.StringUtils.HideEmail(account.email);
-            string message = string.Format("Một mã xác thực đã được gửi tới địa chỉ email {0}, vui lòng kiểm tra hòm thư và đặt lại mật khẩu", hiddenEmail);
-            return new Response<string>(true, message)
+            string key = CouchbaseKeyProvider.GenResetPasswordKey(account.username);
+            long epoch = Utilities.DateTimeUtils.TimeInEpoch();
+            ResetPasswordCache cache = CouchbaseService.Instance.Get<ResetPasswordCache>(key);
+            if (cache != null && cache.ExpireDate > epoch)
             {
-                data = hiddenEmail,
+                return new Response(false, "Bạn vừa yêu cầu đặt lại mật khẩu, vui lòng chờ ít phút trước khi gửi yêu cầu tiếp theo");
+            }
+
+            //string code = RandomUtils.GenCode(6);
+            long expireDate = Utilities.DateTimeUtils.TimeInEpoch(DateTime.UtcNow.AddMinutes(5));
+            cache = new ResetPasswordCache
+            {
+                ExpireDate = expireDate,
+                //Code = code,
+                Username = account.username,
             };
+            bool success = CouchbaseService.Instance.Insert(key, cache, TimeSpan.FromMinutes(30));
+            if (success)
+            {
+                string token = Utilities.CryptoUtils.Encode(account.username);
+                //Tạo email gắn link đặt lại mật khẩu
+                string hiddenEmail = Utilities.StringUtils.HideEmail(account.email);
+                string message = string.Format("Một email chứa đường dẫn đặt lại mật khẩu đã được gửi tới địa chỉ {0}, vui lòng kiểm tra hòm thư và đặt lại mật khẩu", hiddenEmail);
+                return new Response<string>(true, message)
+                {
+                    data = hiddenEmail,
+                };
+            }
+            return new Response(false, "Có lỗi khi gửi email đặt lại mật khẩu, vui lòng thử lại sau");
         }
         /// <summary>
         /// Check token và trả lại username dưới dạng hash nếu hợp lệ
         /// </summary>
         public Response VerifyRecoverPasswordToken(string token)
         {
-            return new Response();
+            long epoch = Utilities.DateTimeUtils.TimeInEpoch();
+            string username = Utilities.CryptoUtils.Decode(token);
+            string key = CouchbaseKeyProvider.GenResetPasswordKey(username);
+            ResetPasswordCache cache = CouchbaseService.Instance.Get<ResetPasswordCache>(key);
+            if (cache is null || cache.ExpireDate < epoch)
+                return new Response(false, "Link đặt mật khẩu không hợp lệ hoặc đã hết hạn");
+            return new Response(true, "Hợp lệ");
         }
         /// <summary>
-        /// Decrypt username và reset lại mật khẩu
+        /// Decode token để xác định username và reset lại mật khẩu
         /// </summary>
         public Response ResetPassword(ResetPasswordRequest request)
         {
-            return new Response();
+            string username = Utilities.CryptoUtils.Decode(request.token);
+            string key = CouchbaseKeyProvider.GenResetPasswordKey(username);
+            long epoch = Utilities.DateTimeUtils.TimeInEpoch();
+            ResetPasswordCache cache = CouchbaseService.Instance.Get<ResetPasswordCache>(key);
+            if (cache is null || cache.ExpireDate < epoch)
+                return new Response(false, "Có lỗi khi xác minh người dùng");
+
+            string newPassword = CryptoUtils.HashPasword(request.new_password);
+            bool success = AccountRepository.Instance.Update(username, new
+            {
+                password = newPassword
+            });
+            
+            return new Response(success, success ? "Mật khẩu đã được thay đổi thành công" : "Có lỗi khi thay đổi mật khẩu");
         }
         #endregion
 

@@ -6,9 +6,11 @@
 
   <ItemGroup>
 	  <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="7.0.0" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CodeDesignCouchbase\CodeDesign.Couchbase.csproj" />
     <ProjectReference Include="..\CodeDesignDTO\CodeDesign.Dtos.csproj" />
     <ProjectReference Include="..\CodeDesignES\CodeDesign.ES.csproj" />
     <ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj" />

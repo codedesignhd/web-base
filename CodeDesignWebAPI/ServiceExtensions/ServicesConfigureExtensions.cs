@@ -1,9 +1,9 @@
-﻿using CodeDesign.Couchbase;
+﻿using CodeDesign.BL.Providers;
+using CodeDesign.Couchbase;
 using CodeDesign.GoogleService;
 using CodeDesign.Models;
 using CodeDesign.WebAPI.Core.Constants;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 
 namespace CodeDesign.WebAPI.ServiceExtensions
@@ -35,11 +35,20 @@ namespace CodeDesign.WebAPI.ServiceExtensions
             return options;
         }
 
-
-        public static IServiceCollection AddCouchbase(this IServiceCollection services, Expression<Func<CouchbaseConfigOptions>> expresson)
+        public static void AddCouchbase(this IServiceCollection services)
         {
-            //services.AddSingleton<ICodeDesignCb, CodeDesignCb>(s => new CodeDesignCb(expresson.Body));
-            return services;
+            CouchbaseConfigOptions options = new CouchbaseConfigOptions
+            {
+                Server = new Uri(Utilities.ConfigurationManager.AppSettings["Couchbase:Server"]),
+                BucketName = Utilities.ConfigurationManager.AppSettings["Couchbase:BucketName"],
+                Username = Utilities.CryptoUtils.Decode(Utilities.ConfigurationManager.AppSettings["Couchbase:Username"]),
+                Password = Utilities.CryptoUtils.Decode(Utilities.ConfigurationManager.AppSettings["Couchbase:Password"]),
+            };
+            services.AddSingleton<ICodeDesignCb, CodeDesignCb>(s =>
+            {
+                return new CodeDesignCb(options);
+            });
+           // services.AddSingleton<CouchbaseInstance>();
         }
     }
 }

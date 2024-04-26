@@ -6,3 +6,4 @@
 bin
 obj
 /CodeDesignWebAPI/Logs
+/packages/Newtonsoft.Json.13.0.3

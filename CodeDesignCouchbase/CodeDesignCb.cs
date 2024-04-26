@@ -21,46 +21,40 @@ namespace CodeDesign.Couchbase
         private IBucket _bucket;
         private string _bucketName;
 
-
         public CodeDesignCb(CouchbaseConfigOptions options)
         {
-            start(options);
+            connect(options);
         }
 
-
-
-        private bool start(CouchbaseConfigOptions options)
+        private void connect(CouchbaseConfigOptions options)
         {
+            if (options.IsInvalidOption())
+                throw new ArgumentNullException("Cần cấu hình đủ thông số cho couchbase trước khi kết nối", nameof(options));
             try
             {
-                if (!options.IsValidOption())
-                {
-                    throw new ArgumentNullException("Cần cấu hình đủ thông số cho couchbase trước khi khởi động");
-                }
+                _bucketName = options.BucketName;
                 ClientConfiguration config = new ClientConfiguration
                 {
-                    Servers = new List<Uri> { new Uri(options.Server) },
+                    Servers = new List<Uri> { options.Server },
                     Serializer = () => new DefaultSerializer(new JsonSerializerSettings(), new JsonSerializerSettings())
                 };
                 Cluster cluster = new Cluster(config);
 
                 PasswordAuthenticator authenticator = new PasswordAuthenticator(options.Username, options.Password);
                 cluster.Authenticate(authenticator);
-                _bucketName = options.Bucketname;
                 _bucket = cluster.OpenBucket(_bucketName);
-                return true;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.StackTrace);
-                throw;
             }
         }
         public bool Insert<T>(string key, T doc, TimeSpan expiration) where T : class
         {
             try
             {
-                IOperationResult<T> o = _bucket.Insert<T>(key, doc, expiration);
+                string json = JsonConvert.SerializeObject(doc);
+                IOperationResult<string> o = _bucket.Insert(key, json, expiration);
                 return o.Success;
             }
             catch (Exception ex)
@@ -159,8 +153,13 @@ namespace CodeDesign.Couchbase
                 return default;
             try
             {
-                IOperationResult<T> o = _bucket.Get<T>(key);
-                return o.Value;
+                IOperationResult<string> o = _bucket.Get<string>(key);
+                if (o.Success)
+                {
+                    return JsonConvert.DeserializeObject<T>(o.Value);
+                }
+
+                return default;
             }
             catch (Exception ex)
             {
@@ -176,9 +175,12 @@ namespace CodeDesign.Couchbase
                 ConcurrentDictionary<string, T> dic = new ConcurrentDictionary<string, T>();
                 Parallel.ForEach(keys, async key =>
                 {
-                    var res = await _bucket.GetAsync<T>(key);
+                    var res = await _bucket.GetAsync<string>(key);
                     if (res.Success && !dic.ContainsKey(key))
-                        dic.TryAdd(key, res.Value);
+                    {
+                        T value = JsonConvert.DeserializeObject<T>(res.Value);
+                        dic.TryAdd(key, value);
+                    }
                 });
 
                 return dic.ToDictionary(it => it.Key, x => x.Value);
@@ -188,11 +190,6 @@ namespace CodeDesign.Couchbase
                 _logger.Error(ex.StackTrace);
             }
             return new Dictionary<string, T>();
-        }
-        public IEnumerable<T> Where<T>(Expression<Func<T, object>> expression) where T : class
-        {
-
-            return Enumerable.Empty<T>();
         }
     }
 }

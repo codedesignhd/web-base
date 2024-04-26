@@ -14,7 +14,6 @@ using CodeDesign.Dtos.Validators;
 using CodeDesign.Dtos.Accounts;
 using CodeDesign.Dtos;
 using Microsoft.AspNetCore.HttpOverrides;
-using CodeDesign.Couchbase;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -75,10 +74,7 @@ builder.Services.AddScoped<ICodeDesignValidatorFactory, ValidatorFactory>();
 builder.Services.AddScoped<DependencyContainer>();
 builder.Services.AddSingleton<IFileService, FileService>();
 builder.Services.AddGoogleService();
-builder.Services.AddCouchbase(options =>
-{
-    options.Server=
-});
+builder.Services.AddCouchbase();
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
