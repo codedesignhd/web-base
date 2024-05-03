@@ -43,6 +43,11 @@ namespace CodeDesign.WebAPI.Controllers
         #endregion
 
         #region User settings
+        /// <summary>
+        /// Đổi mật khẩu
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("change-password")]
         public async Task<IActionResult> ChangePassword(ChangePwdRequest request)
@@ -50,19 +55,39 @@ namespace CodeDesign.WebAPI.Controllers
             ValidationResult validate = await _dependencies.Validator.ValidateAsync(request);
             if (validate.IsValid)
             {
+                request.username = AppUser.Username;
                 var res = AccountBL.Instance.ChangePassword(request);
                 return Ok(res);
             }
             return BadRequest(new Response(false, validate.GetMessage()));
         }
 
+        /// <summary>
+        /// Cập nhật thông tin tài khoản
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("update-info")]
-        public IActionResult UpdateInfo()
+        public async Task<IActionResult> UpdateInfo(UpdateUserInfoRequest request)
         {
-            return Ok(null);
+            ValidationResult validate = await _dependencies.Validator.ValidateAsync(request);
+            if (validate.IsValid)
+            {
+                request.username = AppUser.Username;
+                var res = AccountBL.Instance.UpdateUserInfo(request);
+                return Ok(res);
+            }
+            return BadRequest(new Response(false, validate.GetMessage()));
         }
 
+
+
+        /// <summary>
+        /// Cập nhật ảnh đại diện
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("update-avatar")]
         public IActionResult UpdateAvatar(IFormFile file)
@@ -105,7 +130,7 @@ namespace CodeDesign.WebAPI.Controllers
         {
             if (string.IsNullOrWhiteSpace(identity))
                 return BadRequest(new Response(false, "Vui lòng nhập email hoặc username để tiếp tục"));
-            var res = AccountBL.Instance.RecoverPassword(identity);
+            var res = AccountBL.Instance.RecoveryPassword(identity);
             return Ok(res);
         }
 

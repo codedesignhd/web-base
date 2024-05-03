@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesign.Dtos.Packages
 {
-    public class AddPackageRequest
+    public class CreatePackageRequest
     {
     }
 }
