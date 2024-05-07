@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace CodeDesign.Utilities
 {
@@ -95,7 +96,7 @@ namespace CodeDesign.Utilities
 
         public static bool IsValidDate(string date)
         {
-            return DateTime.TryParse(date, out _);
+            return DateTime.TryParse(date, new CultureInfo("vi-VN"), DateTimeStyles.None, out _);
         }
 
     }

@@ -113,13 +113,73 @@ namespace CodeDesign.BL
 
         #endregion
 
-        #region 
+        #region Update Account
+        /// <summary>
+        /// Đổi mật khẩu (yêu cầu mật khẩu cũ)
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public Response ChangePassword(ChangePwdRequest request)
         {
             Response response = new Response();
 
+            Account account = AccountRepository.Instance.Get(request.username, new string[] { "password" });
+            if (account is null)
+            {
+                response.message = "Tài khoản không tồn tại trong hệ thống";
+                return response;
+            }
+            ///Check mật khẩu cũ xem người dùng nhập có đúng hay không rồi mới cho đổi mật khẩu
+            string oldPassword = CryptoUtils.HashPasword(request.old_password);
+            if (string.Equals(oldPassword, account.password))
+            {
+                account.password = CryptoUtils.HashPasword(request.new_password);
+                response.success = AccountRepository.Instance.Update(account.username, new
+                {
+                    account.password,
+                });
+                response.message = response.success ? "Thành công" : "Có lỗi xảy ra";
+            }
+            else
+            {
+                response.message = "Mật khẩu cũ bạn nhập không chính xác";
+            }
             return response;
         }
+
+
+        /// <summary>
+        /// Cập nhật thông tin user
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Response UpdateUserInfo(UpdateUserInfoRequest request)
+        {
+            Response response = new Response();
+
+            Account account = AccountRepository.Instance.Get(request.username, new string[] { "password" });
+            if (account is null)
+            {
+                response.message = "Tài khoản không tồn tại trong hệ thống";
+                return response;
+            }
+            account.fullname = request.fullname;
+            account.dob = DateTimeUtils.StringToEpoch(request.dob);
+            response.success = AccountRepository.Instance.Update(account.id, new
+            {
+                account.fullname,
+                account.dob,
+            });
+            response.message = response.success ? "Thành công" : "Có lỗi xảy ra";
+            return response;
+        }
+
+        /// <summary>
+        /// Cập nhật ảnh đại diện
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="avatar"></param>
+        /// <returns></returns>
         public bool UpdateAvatar(string username, string avatar)
         {
             if (!string.IsNullOrWhiteSpace(username))
@@ -132,6 +192,12 @@ namespace CodeDesign.BL
             }
             return false;
         }
+
+        /// <summary>
+        /// Cập nhật ngày hoạt động cuối
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public bool UpdateLastLogin(string username)
         {
             if (!string.IsNullOrWhiteSpace(username))
@@ -143,6 +209,12 @@ namespace CodeDesign.BL
             }
             return false;
         }
+
+        /// <summary>
+        /// Xóa tài khoản khỏi hệ thống
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public KeyValuePair<bool, string> DeleteAccount(string username)
         {
             if (!string.IsNullOrWhiteSpace(username))
@@ -157,6 +229,11 @@ namespace CodeDesign.BL
             return new KeyValuePair<bool, string>(false, "Tài khoản không tồn tại");
         }
 
+        /// <summary>
+        /// Kiểm tra nếu user tồn tại trong hệ thống (check bằng email, username)
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
         public bool IsUserExist(string identity)
         {
             if (!string.IsNullOrWhiteSpace(identity))
@@ -172,7 +249,7 @@ namespace CodeDesign.BL
         /// </summary>
         /// <param name="identity"></param>
         /// <returns></returns>
-        public Response RecoverPassword(string identity)
+        public Response RecoveryPassword(string identity)
         {
             if (string.IsNullOrWhiteSpace(identity))
                 return new Response(false, "Không tìm thấy tài khoản");
@@ -243,7 +320,7 @@ namespace CodeDesign.BL
             {
                 password = newPassword
             });
-            
+
             return new Response(success, success ? "Mật khẩu đã được thay đổi thành công" : "Có lỗi khi thay đổi mật khẩu");
         }
         #endregion

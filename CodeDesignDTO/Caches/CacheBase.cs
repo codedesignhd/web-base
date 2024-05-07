@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Dtos.Packages
+namespace CodeDesign.Dtos.Caches
 {
-    public class AddPackageRequest
+    internal class CacheBase
     {
     }
 }

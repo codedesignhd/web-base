@@ -22,8 +22,20 @@ namespace CodeDesign.Dtos.Validators
             RuleFor(x => x.re_new_password)
                .Equal(x => x.new_password)
                .WithMessage("Password are not the same");
-
-
         }
+        private static ChangePasswordValidator _instance;
+
+        public static ChangePasswordValidator Instance
+        {
+            get
+            {
+                if (_instance is null)
+                {
+                    _instance = new ChangePasswordValidator();
+                }
+                return _instance;
+            }
+        }
+
     }
 }

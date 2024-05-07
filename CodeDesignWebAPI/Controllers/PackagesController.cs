@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using CodeDesign.BL;
 using CodeDesign.Dtos.Packages;
 using CodeDesign.WebAPI.Core.Authorization;
 using CodeDesign.WebAPI.Core.Constants;
@@ -26,14 +27,14 @@ namespace CodeDesign.WebAPI.Controllers
         [HttpPost]
         [Route("add-package")]
         [Authorize(Policy = PolicyNames.AdminOnly)]
-        public IActionResult AddPackage(AddPackageRequest data)
+        public IActionResult AddPackage(CreatePackageRequest data)
         {
             return Ok();
         }
 
         [HttpPost]
         [Route("update-package")]
-        public IActionResult UpdatePackage(AddPackageRequest data)
+        public IActionResult UpdatePackage(CreatePackageRequest data)
         {
             return Ok();
         }
@@ -43,7 +44,8 @@ namespace CodeDesign.WebAPI.Controllers
         [Route("{id}/delete")]
         public IActionResult Delete(string id)
         {
-            return Ok();
+            var res = PackageBL.Instance.DeletePack(id);
+            return Ok(res);
         }
     }
 }
