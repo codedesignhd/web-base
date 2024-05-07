@@ -1,6 +1,5 @@
 ﻿using CodeDesign.BL.Providers;
 using CodeDesign.Couchbase;
-using CodeDesign.GoogleService;
 using CodeDesign.Models;
 using CodeDesign.WebAPI.Core.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +14,7 @@ namespace CodeDesign.WebAPI.ServiceExtensions
     {
         public static IServiceCollection AddGoogleService(this IServiceCollection services)
         {
-            services.AddScoped<GDriverService>();
+            //services.AddScoped<GDriverService>();
             return services;
         }
         public static AuthorizationOptions AddPolicies(this AuthorizationOptions options)
