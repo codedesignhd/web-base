@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -88,6 +90,44 @@ namespace CodeDesign.Utilities
         public static string Decode(string token)
         {
             return token;
+        }
+
+        public static string HashSha256(byte[] buffer)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] hash = sha256.ComputeHash(buffer);
+                return BitConverter.ToString(hash)
+                    .Replace("-", "")
+                    .ToLowerInvariant();
+            }
+        }
+        public static string HashSha256(Stream stream)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] hash = sha256.ComputeHash(stream);
+                return BitConverter.ToString(hash)
+                    .Replace("-", "")
+                    .ToLowerInvariant();
+            }
+        }
+    }
+
+    public static class ByteExtenstion
+    {
+        public static string GetMd5(this byte[] bytes)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] hashBytes = md5.ComputeHash(bytes);
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in hashBytes)
+                {
+                    sb.Append(b.ToString("x2")); // Convert each byte to a 2-character hex representation
+                }
+                return sb.ToString();
+            }
         }
     }
 }

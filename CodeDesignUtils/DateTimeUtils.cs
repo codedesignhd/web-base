@@ -99,5 +99,14 @@ namespace CodeDesign.Utilities
             return DateTime.TryParse(date, new CultureInfo("vi-VN"), DateTimeStyles.None, out _);
         }
 
+
+
+    }
+    public static class DateTimeExtensions
+    {
+        public static string ToLocalTime(this DateTime dt, string format = "dd/MM/yyyy HH:mm")
+        {
+            return dt.ToLocalTime().ToString(format);
+        }
     }
 }

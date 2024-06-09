@@ -23,7 +23,7 @@ namespace CodeDesign.Utilities
             List<int> codes = new List<int>();
             while (length > 0)
             {
-                codes.Add(_random.Next(0, 10));
+                codes.Add(Rand.Next(0, 10));
                 length -= 1;
             }
             return string.Join("", codes);
