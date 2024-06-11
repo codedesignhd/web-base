@@ -2,6 +2,7 @@
 using CodeDesignDtos.Accounts;
 using Microsoft.AspNetCore.Mvc;
 using CodeDesignWebAPI.Extensions;
+using CodeDesignWebAPI.Services.Auth;
 
 namespace CodeDesignWebAPI.Controllers
 {
@@ -9,13 +10,13 @@ namespace CodeDesignWebAPI.Controllers
     public class ApiBaseController : ControllerBase
     {
         #region DI
-        protected readonly ServicesPool _services;
-        public ApiBaseController(ServicesPool services)
+        protected readonly IAuthService _auth;
+        public ApiBaseController(IAuthService auth)
         {
-            _services = services;
+            _auth = auth;
         }
 
-        protected AppUser AppUser => _services.Auth.GetUser();
+        protected AppUser AppUser => _auth.GetUser();
         #endregion
     }
 }

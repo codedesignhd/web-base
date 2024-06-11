@@ -10,9 +10,10 @@ using System.Text;
 
 namespace CodeDesignES
 {
-    public class PackageRepository : ESRepositoryBase, IESRepository<Package>
+    public class PackageRepository : ESRepositoryBase<Package>
     {
         #region Init
+        private static string _index;
         public PackageRepository(string modify_index)
         {
             _index = !string.IsNullOrEmpty(modify_index) ? modify_index : _index;
@@ -36,40 +37,12 @@ namespace CodeDesignES
             {
                 if (_instance is null)
                 {
-                    _index = string.Format("{0}_pkgs", prefix_index);
-                    _instance = new PackageRepository(_index);
+                    _instance = new PackageRepository(string.Format("{0}pkgs", prefix_index));
                 }
                 return _instance;
             }
         }
 
-        #endregion
-
-        #region Core func
-        public bool Delete(string id, bool isForceDelete = false)
-        {
-            return Delete<Package>(id, isForceDelete);
-        }
-
-        public Package Get(string id, string[] fields = null)
-        {
-            return Get<Package>(id, fields);
-        }
-
-        public (bool success, string id) Index(Package data, string id = "", string route = "")
-        {
-            return base.Index(data, id, route);
-        }
-
-        public List<Package> MultiGet(IEnumerable<string> ids, string[] fields = null)
-        {
-            return MultiGet<Package>(ids, fields);
-        }
-
-        public bool Update(string id, object doc)
-        {
-            return Update<Package>(id, doc);
-        }
         #endregion
 
         #region Features Func
@@ -83,7 +56,7 @@ namespace CodeDesignES
             SearchRequest request = new SearchRequest(_index)
             {
                 Query = new BoolQuery { Filter = filter, Must = CustomMustNot() },
-                Size = ESConsts.MaxResultWindow,
+                Size = ESConstants.MaxResultWindow,
                 Sort = CustomSort(sort),
                 Source = CustomSource(fields),
             };

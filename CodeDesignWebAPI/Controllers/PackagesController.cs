@@ -2,6 +2,7 @@
 using CodeDesignDtos.Packages;
 using CodeDesignWebAPI.Core.Constants;
 using CodeDesignWebAPI.Extensions;
+using CodeDesignWebAPI.Services.Auth;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace CodeDesignWebAPI.Controllers
     {
         #region DI
         private readonly ILog _logger = LogManager.GetLogger(typeof(PackagesController));
-        public PackagesController(ServicesPool services) : base(services)
+        public PackagesController(IAuthService auth) : base(auth)
         {
 
         }

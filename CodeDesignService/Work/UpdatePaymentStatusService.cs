@@ -20,24 +20,24 @@ namespace CodeDesignServices.Work
 
         public void Run()
         {
-            //Lấy tất cả những payment hết hạn nhưng vẫn đánh trạng thái đã thanh toán (kích hoạt)
-            string[] fields = new string[] { "payment_user" };
-            List<PaymentHistory> expiredPayments = PaymentHistoryRepository.Instance.GetAllPaymentExpired(fields);
+            ////Lấy tất cả những payment hết hạn nhưng vẫn đánh trạng thái đã thanh toán (kích hoạt)
+            //string[] fields = new string[] { "payment_user" };
+            //List<PaymentHistory> expiredPayments = PaymentHistoryRepository.Instance.GetAllPaymentExpired(fields);
 
-            _logger.LogInformation("Tìm thấy {0} payments hết hạn", expiredPayments.Count);
-            ConcurrentBag<object> docs = new ConcurrentBag<object>();
-            long epoch = DateTimeUtils.TimeInEpoch();
-            Parallel.ForEach(expiredPayments, payment =>
-            {
-                docs.Add(new
-                {
-                    payment.id,
-                    payment_status = PaymentStatus.HetHan,
-                    ngay_sua = epoch,
-                });
-            });
-            List<string> successIds = PaymentHistoryRepository.Instance.UpdateMany(docs.ToList());
-            _logger.LogInformation("Update trạng thái thành công cho {0} payments hết hạn", successIds.Count);
+            //_logger.LogInformation("Tìm thấy {0} payments hết hạn", expiredPayments.Count);
+            //ConcurrentBag<object> docs = new ConcurrentBag<object>();
+            //long epoch = DateTimeUtils.TimeInEpoch();
+            //Parallel.ForEach(expiredPayments, payment =>
+            //{
+            //    docs.Add(new
+            //    {
+            //        payment.id,
+            //        payment_status = PaymentStatus.HetHan,
+            //        ngay_sua = epoch,
+            //    });
+            //});
+            //List<string> successIds = PaymentHistoryRepository.Instance.UpdateMany(docs.ToList());
+            //_logger.LogInformation("Update trạng thái thành công cho {0} payments hết hạn", successIds.Count);
         }
     }
 }

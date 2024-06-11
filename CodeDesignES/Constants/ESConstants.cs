@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeDesignES.Constants
 {
-    public class ESConsts
+    public class ESConstants
     {
         public const int MaxResultWindow = 9999;
     }

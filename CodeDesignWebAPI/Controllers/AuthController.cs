@@ -15,8 +15,8 @@ namespace CodeDesignWebAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _auth;
-        private readonly ICDValidatorFactory _validator;
-        public AuthController(IAuthService auth, ICDValidatorFactory validator)
+        private readonly IValidatationFactory _validator;
+        public AuthController(IAuthService auth, IValidatationFactory validator)
         {
             _auth = auth;
             _validator = validator;

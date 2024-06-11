@@ -15,16 +15,17 @@ using Nest;
 
 namespace CodeDesignES
 {
-    public abstract class ESRepositoryBase
+    public abstract class ESRepositoryBase<T> where T : ModelBase
     {
         protected static Uri node = new Uri(ConfigurationManager.AppSettings["ES:Server"]);
         protected static string prefix_index = ConfigurationManager.AppSettings["ES:Prefix"];
         protected static StickyConnectionPool connectionPool = new StickyConnectionPool(new[] { node });
         protected ElasticClient client;
-        protected static string _index;
+        protected string _index;
         protected const string ScrollTimeOut = "5m";
+
         #region Core Function
-        protected T ToDocument<T>(IMultiGetHit<T> hit) where T : ModelBase
+        protected T ToDocument(IMultiGetHit<T> hit)
         {
             if (hit.Found)
             {
@@ -38,7 +39,7 @@ namespace CodeDesignES
             }
             return default;
         }
-        protected T ToDocument<T>(IHit<T> hit) where T : ModelBase
+        protected T ToDocument(IHit<T> hit)
         {
             T obj = hit.Source;
             PropertyInfo prop = typeof(T).GetProperty("id");
@@ -49,14 +50,14 @@ namespace CodeDesignES
             return obj;
         }
 
-        protected IEnumerable<T> ToDocument<T>(ConcurrentBag<IHit<T>> hits) where T : ModelBase
+        protected IEnumerable<T> ToDocument(ConcurrentBag<IHit<T>> hits)
         {
             foreach (var hit in hits)
             {
                 yield return ToDocument(hit);
             }
         }
-        protected (bool success, string id) Index<T>(T data, string id = "", string route = "") where T : ModelBase
+        public (bool success, string id) Index(T data, string id = "", string route = "")
         {
             IndexResponse re = null;
             if (!string.IsNullOrWhiteSpace(id))
@@ -76,19 +77,16 @@ namespace CodeDesignES
             return (re.Result == Result.Created, re.Id);
         }
 
-        protected IEnumerable<string> BulkIndexReturnIds<T>(IEnumerable<T> docs) where T : ModelBase
+        public List<string> BulkIndex(IEnumerable<T> docs)
         {
             BulkResponse res = client.Bulk(bi => bi.Index(_index).IndexMany(docs));
             IEnumerable<string> errorIds = res.ItemsWithErrors.Select(it => it.Id);
             return res.Items.Select(it => it.Id)
-                 .Except(errorIds);
+                 .Except(errorIds)
+                 .ToList();
         }
-        protected bool BulkIndex<T>(IEnumerable<T> docs) where T : ModelBase
-        {
-            BulkResponse res = client.Bulk(bi => bi.IndexMany(docs));
-            return res.IsValid && !res.Errors;
-        }
-        protected bool Update<T>(string id, object doc) where T : ModelBase
+
+        public bool Update(string id, object doc)
         {
             if (!string.IsNullOrWhiteSpace(id) && doc != null)
             {
@@ -97,27 +95,23 @@ namespace CodeDesignES
             }
             return false;
         }
-        protected bool BulkUpdate<T>(IEnumerable<object> docs, out List<string> successId) where T : ModelBase
+        public List<string> BulkUpdate(IEnumerable<object> docs)
         {
-            successId = new List<string>();
             BulkResponse res = client.Bulk(bu => bu.UpdateMany(docs, (b, doc) => b.Doc(doc)));
-            if (res.ItemsWithErrors.Count() > 0)
-            {
-                IEnumerable<string> errorIds = res.ItemsWithErrors.Select(it => it.Id);
-                successId = res.Items.Select(it => it.Id)
-                    .Except(errorIds)
-                    .ToList();
-            }
-            return res.IsValid && !res.Errors;
+
+            IEnumerable<string> errorIds = res.ItemsWithErrors.Select(it => it.Id);
+            return res.Items.Select(it => it.Id)
+                .Except(errorIds)
+                .ToList();
         }
-        protected bool Delete<T>(string id, bool isForceDelete = false) where T : ModelBase
+        public bool Delete(string id, bool isForceDelete = false)
         {
             if (!isForceDelete)
             {
                 PropertyInfo prop = typeof(T).GetProperty("trang_thai_du_lieu");
                 if (prop != null)
                 {
-                    return Update<T>(id, new
+                    return Update(id, new
                     {
                         trang_thai_du_lieu = TrangThaiDuLieu.Deleted
                     });
@@ -126,9 +120,8 @@ namespace CodeDesignES
             DeleteResponse res = client.Delete<T>(id);
             return res.IsValid && res.Result == Result.Deleted;
         }
-        protected bool BulkDelete<T>(IEnumerable<string> ids, out List<string> successIds, bool isForceDelete = false) where T : ModelBase
+        public List<string> BulkDelete(IEnumerable<string> ids, bool isForceDelete = false)
         {
-            successIds = new List<string>();
             if (ids != null && ids.Count() > 0)
             {
                 if (!isForceDelete)
@@ -141,18 +134,18 @@ namespace CodeDesignES
                             id,
                             trang_thai_du_lieu = TrangThaiDuLieu.Deleted
                         });
-                        return BulkUpdate<T>(docs, out successIds);
+                        return BulkUpdate(docs);
                     }
                 }
-                BulkResponse res = client.Bulk(bu => bu.DeleteMany<T>(ids));
-                successIds = res.Items.Select(it => it.Id)
+                BulkResponse res = client.Bulk(bu => bu.DeleteMany(ids));
+                return res.Items.Select(it => it.Id)
                     .Except(res.ItemsWithErrors.Select(it => it.Id))
                     .ToList();
-                return res.IsValid && !res.Errors;
+
             }
-            return false;
+            return new List<string>();
         }
-        protected T Get<T>(string id, string[] fields = null) where T : class
+        public T Get(string id, string[] fields = null)
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
@@ -171,7 +164,7 @@ namespace CodeDesignES
             }
             return default;
         }
-        protected List<T> MultiGet<T>(IEnumerable<string> ids, string[] fields = null) where T : ModelBase
+        public List<T> MultiGet(IEnumerable<string> ids, string[] fields = null)
         {
             MultiGetResponse res = client.MultiGet(mget => mget.GetMany<T>(ids).SourceIncludes(fields));
             if (res.IsValid)
@@ -182,7 +175,7 @@ namespace CodeDesignES
             }
             return new List<T>();
         }
-        public IEnumerable<T> GetObjectScroll<T>(QueryContainer query, SourceFilter so, string scroll_timeout = "5m", int page_size = 2000) where T : ModelBase
+        public IEnumerable<T> GetObjectScroll(QueryContainer query, SourceFilter so, string scroll_timeout = "5m", int page_size = 2000)
         {
             if (query == null)
                 query = new MatchAllQuery();
@@ -228,41 +221,15 @@ namespace CodeDesignES
             return ToDocument(bag);
         }
 
-        //public ScrollResult<T> GetScroll<T>(string scrollId, SearchRequest request) where T : ModelBase
-        //{
-        //    ScrollResult<T> result = new ScrollResult<T>()
-        //    {
-        //        documents = new List<T>(),
-        //    };
-        //    ISearchResponse<T> response;
-        //    if (string.IsNullOrWhiteSpace(scrollId))
-        //    {
-        //        response = client.Search<T>(request);
-        //    }
-        //    else
-        //    {
-        //        response = client.Scroll<T>("5m", scrollId);
-        //    }
-        //    result.documents = response.Hits
-        //        .Select(ToDocument)
-        //        .ToList();
-        //    result.total = response.Total;
-        //    if (response.Total > request.Size)
-        //    {
-        //        result.scroll_id = response.ScrollId;
-        //    }
-        //    return result;
-        //}
 
-
-        public SearchResult<T> GetScroll<T>(SearchRequest request, string scrollId = null) where T : ModelBase
+        public SearchResult<T> GetScroll(SearchRequest request, string scrollId = null)
         {
             SearchResult<T> result = new SearchResult<T>()
             {
                 documents = new List<T>(),
             };
             ISearchResponse<T> response;
-            if (string.IsNullOrWhiteSpace(scrollId) && request.From * request.Size <= ESConsts.MaxResultWindow)
+            if (string.IsNullOrWhiteSpace(scrollId) && request.From * request.Size <= ESConstants.MaxResultWindow)
             {
                 request.Scroll = null;
                 request.TrackTotalHits = true;
@@ -330,10 +297,11 @@ namespace CodeDesignES
 
     }
 
-    public static class ESExt
+    public static class ESExtensions
     {
         public static ISearchRequest AddPaging(this ISearchRequest req, int page, int page_size)
         {
+            if (page < 1) page = 1;
             req.From = (page - 1) * page_size;
             req.Size = page_size;
             return req;

@@ -7,7 +7,7 @@ namespace CodeDesignUtilities.Constants
 {
     public abstract class AppConsts
     {
-        public const string DefaultUser = "unknow";
+        public const string DefaultUser = "anonymous";
     }
 
 }

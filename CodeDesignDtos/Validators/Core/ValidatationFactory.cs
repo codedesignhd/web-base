@@ -11,7 +11,7 @@ using CodeDesignDtos.Validators.Accounts;
 
 namespace CodeDesignDtos.Validators
 {
-    public class ValidatorFactory : ICDValidatorFactory
+    public class ValidatationFactory : IValidatationFactory
     {
         private IValidator<T> getValidator<T>(T _) where T : class
         {

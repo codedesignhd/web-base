@@ -5,14 +5,14 @@ namespace CodeDesign.Web.Services
     public class ServicePool
     {
         private readonly AppUserService _appUserService;
-        private readonly ICDValidatorFactory _validator;
-        public ServicePool(AppUserService appUserService, ICDValidatorFactory validator)
+        private readonly IValidatationFactory _validator;
+        public ServicePool(AppUserService appUserService, IValidatationFactory validator)
         {
             _appUserService = appUserService;
             _validator = validator;
         }
 
-        public ICDValidatorFactory Validator => _validator;
+        public IValidatationFactory Validator => _validator;
         public AppUserService AppUserService => _appUserService;
     }
 }

@@ -3,6 +3,7 @@ using CodeDesignBL;
 using CodeDesignDtos.Vnpay;
 using CodeDesignWebAPI.Core.Constants;
 using CodeDesignWebAPI.Extensions;
+using CodeDesignWebAPI.Services.Auth;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +18,7 @@ namespace CodeDesignWebAPI.Controllers
     {
         #region DI
         private readonly ILog _logger = LogManager.GetLogger(typeof(PackagesController));
-        public PaymentsController(ServicesPool services) : base(services)
+        public PaymentsController(IAuthService auth) : base(auth)
         {
 
         }

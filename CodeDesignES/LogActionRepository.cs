@@ -7,7 +7,7 @@ using Nest;
 
 namespace CodeDesignES
 {
-    public class LogActionRepository : ESRepositoryBase, IESRepository<LogAction>
+    public class LogActionRepository : ESRepositoryBase<LogAction>
     {
         #region Init
 
@@ -31,55 +31,11 @@ namespace CodeDesignES
             {
                 if (_instance is null)
                 {
-                    _index = string.Format("{0}logaction", prefix_index);
-                    _instance = new LogActionRepository(_index);
+                    _instance = new LogActionRepository(string.Format("{0}logaction", prefix_index));
                 }
                 return _instance;
             }
         }
-
-        #endregion
-
-        #region CRUD
-        public (bool success, string id) Index(LogAction data, string id = "", string route = "")
-        {
-            return Index<LogAction>(data, data.id);
-        }
-
-        public bool Delete(string id, bool isForceDelete = false)
-        {
-            return Delete<LogAction>(id, isForceDelete);
-        }
-
-        public List<LogAction> MultiGet(IEnumerable<string> ids, string[] fields = null)
-        {
-            return MultiGet<LogAction>(ids, fields);
-        }
-
-        public bool Update(string id, object obj)
-        {
-            return Update<LogAction>(id, obj);
-        }
-
-        public bool Delete(string id)
-        {
-            return Delete<LogAction>(id);
-        }
-
-        public LogAction Get(string id, string[] fields = null)
-        {
-            return Get<LogAction>(id, fields);
-        }
-
-        public List<LogAction> GetAll(string[] fields = null)
-        {
-            SourceFilter so = new SourceFilter()
-            {
-                Includes = fields,
-            };
-            return GetObjectScroll<LogAction>(null, so).ToList();
-        }
-
 
         #endregion
     }

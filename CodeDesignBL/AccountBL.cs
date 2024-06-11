@@ -340,7 +340,8 @@ namespace CodeDesignBL
 
         public List<Account> GetAll(string[] fields = null)
         {
-            return AccountRepository.Instance.GetAll(fields);
+            //return AccountRepository.Instance.GetAll(fields);
+            return new List<Account>();
         }
 
 

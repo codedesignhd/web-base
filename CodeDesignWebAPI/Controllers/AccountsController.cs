@@ -8,6 +8,9 @@ using CodeDesignDtos.Accounts;
 using CodeDesignDtos.Responses;
 using CodeDesignWebAPI.Extensions;
 using CodeDesignDtos.Validators.Extensions;
+using CodeDesignDtos.Validators;
+using CodeDesignWebAPI.Services.Auth;
+using CodeDesignWebAPI.Services.Files;
 
 namespace CodeDesignWebAPI.Controllers
 {
@@ -18,9 +21,14 @@ namespace CodeDesignWebAPI.Controllers
     {
         #region DI
         private readonly ILog _logger = LogManager.GetLogger(typeof(AccountsController));
-        public AccountsController(ServicesPool dependency) : base(dependency)
+        readonly IValidatationFactory _validator;
+        readonly IFileService _file;
+        readonly IWebHostEnvironment _env;
+        public AccountsController(IValidatationFactory validator, IFileService file, IWebHostEnvironment env, IAuthService auth) : base(auth)
         {
-
+            _validator = validator;
+            _file = file;
+            _env = env;
         }
         #endregion
 
@@ -29,7 +37,7 @@ namespace CodeDesignWebAPI.Controllers
         [HttpPost, Route("register")]
         public async Task<IActionResult> Register(RegisterUserRequest request)
         {
-            ValidationResult validate = await _services.Validator.ValidateAsync(request);
+            ValidationResult validate = await _validator.ValidateAsync(request);
             if (validate.IsValid)
             {
                 var res = AccountBL.Instance.Register(request);
@@ -50,7 +58,7 @@ namespace CodeDesignWebAPI.Controllers
         [Route("change-password")]
         public async Task<IActionResult> ChangePassword(ChangePwdRequest request)
         {
-            ValidationResult validate = await _services.Validator.ValidateAsync(request);
+            ValidationResult validate = await _validator.ValidateAsync(request);
             if (validate.IsValid)
             {
                 request.username = AppUser.Username;
@@ -69,7 +77,7 @@ namespace CodeDesignWebAPI.Controllers
         [Route("update-info")]
         public async Task<IActionResult> UpdateInfo(UpdateUserInfoRequest request)
         {
-            ValidationResult validate = await _services.Validator.ValidateAsync(request);
+            ValidationResult validate = await _validator.ValidateAsync(request);
             if (validate.IsValid)
             {
                 request.username = AppUser.Username;
@@ -90,13 +98,13 @@ namespace CodeDesignWebAPI.Controllers
         [Route("update-avatar")]
         public IActionResult UpdateAvatar(IFormFile file)
         {
-            var res = _services.File.IsValidImage(file);
+            var res = _file.IsValidImage(file);
             if (res.success)
             {
                 try
                 {
                     string filePath = string.Format(@"images\avatar\ava_{0}{1}", AppUser.Username, Path.GetExtension(file.FileName));
-                    string savePath = Path.Combine(_services.Enviroment.ContentRootPath, filePath);
+                    string savePath = Path.Combine(_env.ContentRootPath, filePath);
                     using (FileStream ms = new FileStream(savePath, FileMode.Create, FileAccess.Write))
                     {
                         file.CopyTo(ms);

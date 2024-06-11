@@ -7,7 +7,7 @@ using CodeDesignES.Models;
 using CodeDesignUtilities;
 namespace CodeDesignES
 {
-    public class AccountRepository : ESRepositoryBase, IESRepository<Account>
+    public class AccountRepository : ESRepositoryBase<Account>
     {
         #region Init
         public AccountRepository(string modify_index)
@@ -33,55 +33,11 @@ namespace CodeDesignES
             {
                 if (_instance is null)
                 {
-                    _index = string.Format("{0}account", prefix_index);
-                    _instance = new AccountRepository(_index);
+                    _instance = new AccountRepository(string.Format("{0}account", prefix_index));
                 }
                 return _instance;
             }
         }
-
-        #endregion
-
-        #region CRUD
-        public (bool success, string id) Index(Account data, string id = "", string route = "")
-        {
-            return Index<Account>(data, data.username);
-        }
-
-        public bool Delete(string id, bool isForceDelete = false)
-        {
-            return Delete<Account>(id, isForceDelete);
-        }
-
-        public List<Account> MultiGet(IEnumerable<string> ids, string[] fields = null)
-        {
-            return MultiGet<Account>(ids, fields);
-        }
-
-        public bool Update(string id, object obj)
-        {
-            return Update<Account>(id, obj);
-        }
-
-        public bool Delete(string id)
-        {
-            return Delete<Account>(id);
-        }
-
-        public Account Get(string id, string[] fields = null)
-        {
-            return Get<Account>(id, fields);
-        }
-
-        public List<Account> GetAll(string[] fields = null)
-        {
-            SourceFilter so = new SourceFilter()
-            {
-                Includes = fields,
-            };
-            return GetObjectScroll<Account>(null, so).ToList();
-        }
-
 
         #endregion
 
@@ -252,7 +208,7 @@ namespace CodeDesignES
         {
             if (search_params != null && !string.IsNullOrWhiteSpace(search_params.scroll_id))
             {
-                return GetScroll<Account>(null, search_params?.scroll_id);
+                return GetScroll(null, search_params?.scroll_id);
             }
 
             List<QueryContainer> filter = new List<QueryContainer>();
@@ -271,7 +227,7 @@ namespace CodeDesignES
                 request.Sort = CustomSort(search_params.sort);
                 request.AddPaging(search_params.page, search_params.page_size);
             }
-            SearchResult<Account> result = GetScroll<Account>(request, search_params?.scroll_id);
+            SearchResult<Account> result = GetScroll(request, search_params?.scroll_id);
             return result;
         }
         #endregion

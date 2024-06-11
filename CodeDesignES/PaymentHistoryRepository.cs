@@ -9,7 +9,7 @@ using System.Text;
 
 namespace CodeDesignES
 {
-    public class PaymentHistoryRepository : ESRepositoryBase, IESRepository<PaymentHistory>
+    public class PaymentHistoryRepository : ESRepositoryBase<PaymentHistory>
     {
         #region Init
         public PaymentHistoryRepository(string modify_index)
@@ -35,46 +35,12 @@ namespace CodeDesignES
             {
                 if (_instance is null)
                 {
-                    _index = string.Format("{0}_payment_history", prefix_index);
-                    _instance = new PaymentHistoryRepository(_index);
+                    _instance = new PaymentHistoryRepository(string.Format("{0}payment_history", prefix_index));
                 }
                 return _instance;
             }
         }
 
-        #endregion
-
-        #region Core func
-        public bool Delete(string id, bool isForceDelete = false)
-        {
-            return Delete<PaymentHistory>(id, isForceDelete);
-        }
-
-        public PaymentHistory Get(string id, string[] fields = null)
-        {
-            return Get<PaymentHistory>(id, fields);
-        }
-
-        public (bool success, string id) Index(PaymentHistory data, string id = "", string route = "")
-        {
-            return base.Index(data, id, route);
-        }
-
-        public List<PaymentHistory> MultiGet(IEnumerable<string> ids, string[] fields = null)
-        {
-            return MultiGet<PaymentHistory>(ids, fields);
-        }
-
-        public bool Update(string id, object doc)
-        {
-            return Update<PaymentHistory>(id, doc);
-        }
-
-        public List<string> UpdateMany(IEnumerable<object> docs)
-        {
-            BulkUpdate<PaymentHistory>(docs, out List<string> successIds);
-            return successIds;
-        }
         #endregion
 
         #region Features func
@@ -93,7 +59,7 @@ namespace CodeDesignES
             SearchRequest request = new SearchRequest(_index)
             {
                 Query = new BoolQuery { Filter = filter, Must = CustomMustNot() },
-                Size = ESConsts.MaxResultWindow,
+                Size = ESConstants.MaxResultWindow,
                 Sort = CustomSort(sort),
                 Source = CustomSource(fields),
             };
@@ -122,7 +88,7 @@ namespace CodeDesignES
 
             QueryContainer query = new BoolQuery { Filter = filter, MustNot = CustomMustNot() };
 
-            return GetObjectScroll<PaymentHistory>(query, CustomSource(fields))
+            return GetObjectScroll(query, CustomSource(fields))
                 .ToList();
         }
         #endregion
