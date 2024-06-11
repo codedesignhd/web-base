@@ -1,8 +1,6 @@
 using System.Net;
-using CodeDesign.Dtos.Validators;
 using CodeDesign.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,8 +32,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<AppUserService>();
-builder.Services.AddScoped<AppValidator>();
-builder.Services.AddScoped<DependencyContainer>();
+builder.Services.AddScoped<ServicePool>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

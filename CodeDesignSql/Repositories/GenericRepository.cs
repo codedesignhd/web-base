@@ -4,10 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using CodeDesign.Sql;
+using CodeDesignSql;
 using Microsoft.EntityFrameworkCore;
 
-namespace CodeDesign.Sql.Repositories
+namespace CodeDesignSql.Repositories
 {
     public class GenericRepository<TEntity> where TEntity : class
     {

@@ -4,12 +4,13 @@ using System;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Net;
+using CodeDesignUtilities;
 
 namespace CodeDesign.AWS
 {
     public class S3AwsService : AwsServiceBase
     {
-        private static string _bucketName = Utilities.ConfigurationManager.AppSettings["Aws:BucketName"];
+        private static string _bucketName = ConfigurationManager.AppSettings["Aws:BucketName"];
         private static IAmazonS3 _client = new AmazonS3Client(_credential);
 
         public static async Task<CopyObjectResponse> CopyingObjectAsync(

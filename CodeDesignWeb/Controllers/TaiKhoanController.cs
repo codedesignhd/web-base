@@ -1,23 +1,22 @@
 ﻿using System.Security.Claims;
-using CodeDesign.BL;
-using CodeDesign.BL.Response;
 using CodeDesign.Web.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using CodeDesign.Models;
-using CodeDesign.Dtos.Validators;
-using CodeDesign.Dtos.Accounts;
-using CodeDesign.Dtos.Constants;
-using CodeDesign.Utilities.Constants;
+using CodeDesignModels;
+using CodeDesignBL;
+using CodeDesignDtos.Accounts;
+using CodeDesignUtilities.Constants;
+using CodeDesignDtos.Responses;
+using CodeDesignDtos.Validators.Extensions;
 namespace CodeDesign.Web.Controllers
 {
     [Route("auth")]
     public class TaiKhoanController : BaseController
     {
         #region DI && Init
-        public TaiKhoanController(DependencyContainer dependencies) : base(dependencies)
+        public TaiKhoanController(ServicePool dependencies) : base(dependencies)
         {
 
         }
@@ -95,7 +94,7 @@ namespace CodeDesign.Web.Controllers
         [Route("/PostRegister", Name = "PostRegister")]
         public IActionResult Register(RegisterUserRequest dto)
         {
-            var validate = _dependencies.Validator.Validate(dto);
+            var validate = _services.Validator.Validate(dto);
             if (validate.IsValid)
             {
                 var res = AccountBL.Instance.Register(dto);

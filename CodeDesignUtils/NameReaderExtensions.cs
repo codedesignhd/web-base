@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace CodeDesign.Models.Extensions
+namespace CodeDesignUtilities
 {
     public static class NameReaderExtensions
     {

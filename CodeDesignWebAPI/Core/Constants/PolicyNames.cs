@@ -1,4 +1,4 @@
-﻿namespace CodeDesign.WebAPI.Core.Constants
+﻿namespace CodeDesignWebAPI.Core.Constants
 {
     public abstract class PolicyNames
     {

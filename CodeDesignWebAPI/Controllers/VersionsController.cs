@@ -1,9 +1,4 @@
-﻿using Asp.Versioning;
-using CodeDesign.WebAPI.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace CodeDesign.WebAPI.Controllers
+﻿namespace CodeDesignWebAPI.Controllers
 {
     //[ApiVersion(AppApiVersion.v1)]
     //[Route("api/v{v:apiVersion}/[controller]")]

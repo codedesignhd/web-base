@@ -6,14 +6,14 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
-using CodeDesign.ES.Constants;
-using CodeDesign.ES.Models;
-using CodeDesign.Models;
-using CodeDesign.Utilities;
+using CodeDesignES.Constants;
+using CodeDesignES.Models;
+using CodeDesignModels;
+using CodeDesignUtilities;
 using Elasticsearch.Net;
 using Nest;
 
-namespace CodeDesign.ES
+namespace CodeDesignES
 {
     public abstract class ESRepositoryBase
     {

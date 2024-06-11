@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace CodeDesign.Utilities
+namespace CodeDesignUtilities
 {
     public abstract class DateTimeUtils
     {

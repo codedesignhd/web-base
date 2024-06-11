@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CodeDesign.WebAPI.Core.Authorization
+namespace CodeDesignWebAPI.Core.Authorization
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizedAttribute : Attribute, IAuthorizationFilter

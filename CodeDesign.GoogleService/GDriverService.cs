@@ -14,7 +14,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CodeDesign.GoogleService
+namespace CodeDesignGoogleService
 {
     public class GDriverService : GServiceBase
     {
@@ -36,8 +36,8 @@ namespace CodeDesign.GoogleService
             using (var stream =
                 new FileStream("client_secret.json", FileMode.Open, FileAccess.Read))
             {
-                string credPath = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.Personal);
+                string credPath = Environment.GetFolderPath(
+                    Environment.SpecialFolder.Personal);
                 credPath = Path.Combine(credPath, ".credentials/drive-dotnet-quickstart.json");
 
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(

@@ -1,4 +1,4 @@
-﻿namespace CodeDesign.Form;
+﻿namespace CodeDesignForm;
 using System.Windows.Forms;
 partial class frmTest : Form
 {

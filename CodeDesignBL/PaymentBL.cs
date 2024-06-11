@@ -1,10 +1,10 @@
-﻿using CodeDesign.Dtos.Responses;
-using CodeDesign.Models;
+﻿using CodeDesignDtos.Responses;
+using CodeDesignModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.BL
+namespace CodeDesignBL
 {
     public class PaymentBL : BaseBL
     {

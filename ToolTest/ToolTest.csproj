@@ -84,29 +84,29 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CodeDesignBL\CodeDesign.BL.csproj">
+    <ProjectReference Include="..\CodeDesignBL\CodeDesignBL.csproj">
       <Project>{cb46c112-ca69-4183-9fdc-0bd2c7a64399}</Project>
-      <Name>CodeDesign.BL</Name>
+      <Name>CodeDesignBL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CodeDesignCouchbase\CodeDesign.Couchbase.csproj">
+    <ProjectReference Include="..\CodeDesignCouchbase\CodeDesignCouchbase.csproj">
       <Project>{ed644bb9-37c1-4f85-ab3a-ec44a4f99fe4}</Project>
-      <Name>CodeDesign.Couchbase</Name>
+      <Name>CodeDesignCouchbase</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CodeDesignDTO\CodeDesign.Dtos.csproj">
+    <ProjectReference Include="..\CodeDesignDtos\CodeDesignDtos.csproj">
       <Project>{1dfdac0e-28c1-4697-a8f0-1950338bce50}</Project>
-      <Name>CodeDesign.Dtos</Name>
+      <Name>CodeDesignDtos</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CodeDesignES\CodeDesign.ES.csproj">
+    <ProjectReference Include="..\CodeDesignES\CodeDesignES.csproj">
       <Project>{a59a260b-803b-42fb-99d3-8ba89beddfa5}</Project>
-      <Name>CodeDesign.ES</Name>
+      <Name>CodeDesignES</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CodeDesignModels\CodeDesign.Models.csproj">
+    <ProjectReference Include="..\CodeDesignModels\CodeDesignModels.csproj">
       <Project>{0dc6017e-84ab-494f-a6b0-5f46edd621c6}</Project>
-      <Name>CodeDesign.Models</Name>
+      <Name>CodeDesignModels</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CodeDesignUtils\CodeDesign.Utilities.csproj">
+    <ProjectReference Include="..\CodeDesignUtils\CodeDesignUtilities.csproj">
       <Project>{de1047ae-38a0-49be-b8db-3379cac1d868}</Project>
-      <Name>CodeDesign.Utilities</Name>
+      <Name>CodeDesignUtilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

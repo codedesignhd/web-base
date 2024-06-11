@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Utilities.Constants
+namespace CodeDesignUtilities.Constants
 {
     public abstract class FileExtension
     {

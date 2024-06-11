@@ -1,7 +1,7 @@
-﻿using CodeDesign.ES;
-using CodeDesign.Models;
+﻿using CodeDesignES;
+using CodeDesignModels;
 
-namespace CodeDesign.BL
+namespace CodeDesignBL
 {
     public class EmailBL : BaseBL
     {

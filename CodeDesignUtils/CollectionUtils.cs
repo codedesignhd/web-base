@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
-namespace CodeDesign.Utilities
+namespace CodeDesignUtilities
 {
     public static class CollectionUtils
     {

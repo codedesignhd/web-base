@@ -3,11 +3,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CodeDesign.Models;
+using CodeDesignModels;
 using Elasticsearch.Net;
 using Nest;
 
-namespace CodeDesign.ES
+namespace CodeDesignES
 {
     public class EmailRepository : ESRepositoryBase, IESRepository<Email>
     {

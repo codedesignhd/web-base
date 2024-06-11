@@ -1,23 +1,20 @@
-﻿using Asp.Versioning;
-using CodeDesign.BL;
-using CodeDesign.Dtos.Packages;
-using CodeDesign.WebAPI.Core.Authorization;
-using CodeDesign.WebAPI.Core.Constants;
-using CodeDesign.WebAPI.ServiceExtensions;
+﻿using CodeDesignBL;
+using CodeDesignDtos.Packages;
+using CodeDesignWebAPI.Core.Constants;
+using CodeDesignWebAPI.Extensions;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CodeDesign.WebAPI.Controllers
+namespace CodeDesignWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PackagesController : BaseController
+    public class PackagesController : ApiBaseController
     {
         #region DI
         private readonly ILog _logger = LogManager.GetLogger(typeof(PackagesController));
-        public PackagesController(DependencyContainer dependency) : base(dependency)
+        public PackagesController(ServicesPool services) : base(services)
         {
 
         }

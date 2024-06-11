@@ -1,24 +1,22 @@
-﻿using CodeDesign.BL;
-using CodeDesign.Dtos.Auth;
-using CodeDesign.Dtos.Responses;
-using CodeDesign.Models;
-using CodeDesign.WebAPI.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using CodeDesign.Dtos.Validators;
+using CodeDesignWebAPI.Services.Auth;
+using CodeDesignDtos.Auth;
+using CodeDesignDtos.Validators;
+using CodeDesignDtos.Responses;
+using CodeDesignDtos.Validators.Extensions;
 
-namespace CodeDesign.WebAPI.Controllers
+namespace CodeDesignWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _auth;
-        private readonly ICodeDesignValidatorFactory _validator;
-        public AuthController(IAuthService auth, ICodeDesignValidatorFactory validator)
+        private readonly ICDValidatorFactory _validator;
+        public AuthController(IAuthService auth, ICDValidatorFactory validator)
         {
             _auth = auth;
             _validator = validator;

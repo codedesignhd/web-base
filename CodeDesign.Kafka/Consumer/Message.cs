@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Kafka.Consumer
+namespace CodeDesignKafka.Consumer
 {
     public class Message
     {

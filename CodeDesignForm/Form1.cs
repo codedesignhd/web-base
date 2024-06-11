@@ -1,4 +1,4 @@
-using CodeDesign.Sql.Repositories;
+using CodeDesignSql.Repositories;
 
 namespace DemoForm
 {

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using CodeDesignUtilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Models
+namespace CodeDesignModels
 {
     public class Account : ModelBase
     {
@@ -20,7 +21,7 @@ namespace CodeDesign.Models
         {
             return refresh_token != null
                 && !string.IsNullOrWhiteSpace(refresh_token.token)
-                && refresh_token.expires > Utilities.DateTimeUtils.TimeInEpoch();
+                && refresh_token.expires > DateTimeUtils.TimeInEpoch();
         }
     }
 

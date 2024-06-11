@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CodeDesign.Services.Work;
+using CodeDesignServices.Work;
 
-namespace CodeDesign.Services.Workers
+namespace CodeDesignServices.Workers
 {
     public class EmailWorker : BackgroundService
     {
@@ -21,7 +21,7 @@ namespace CodeDesign.Services.Workers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            double.TryParse(CodeDesign.Utilities.ConfigurationManager.AppSettings["MailSettings:DelayTime"], out double delay);
+            double.TryParse(CodeDesignUtilities.ConfigurationManager.AppSettings["MailSettings:DelayTime"], out double delay);
             if (delay == 0)
             {
                 delay = 1;

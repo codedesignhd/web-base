@@ -1,19 +1,16 @@
 using System.Net;
 using System.Text;
-using CodeDesign.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.FeatureManagement;
-using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Serilog;
-using FluentValidation;
-using CodeDesign.WebAPI.ServiceExtensions;
-using CodeDesign.Dtos.Validators;
-using CodeDesign.Dtos.Accounts;
-using CodeDesign.Dtos;
 using Microsoft.AspNetCore.HttpOverrides;
+using CodeDesignWebAPI.Services.Files;
+using CodeDesignWebAPI.Services.Auth;
+using CodeDesignDtos.Validators;
+using CodeDesignWebAPI.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -70,8 +67,8 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICodeDesignValidatorFactory, ValidatorFactory>();
-builder.Services.AddScoped<DependencyContainer>();
+builder.Services.AddScoped<ICDValidatorFactory, ValidatorFactory>();
+builder.Services.AddScoped<ServicesPool>();
 builder.Services.AddSingleton<IFileService, FileService>();
 builder.Services.AddGoogleService();
 builder.Services.AddCouchbase();

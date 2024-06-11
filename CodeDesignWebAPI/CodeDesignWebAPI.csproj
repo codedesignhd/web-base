@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Core\Filters\**" />
+	  <Content Remove="Core\Filters\**" />
+	  <EmbeddedResource Remove="Core\Filters\**" />
+	  <None Remove="Core\Filters\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Asp.Versioning.Mvc" Version="6.0.0" />
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="6.0.0" />
+		<PackageReference Include="FluentValidation" Version="10.0.4" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="7.0.0" />
+		<PackageReference Include="Microsoft.FeatureManagement" Version="3.2.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Serilog" Version="3.0.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="6.0.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\CodeDesignBL\CodeDesignBL.csproj" />
+		<ProjectReference Include="..\CodeDesignCouchbase\CodeDesignCouchbase.csproj" />
+		<ProjectReference Include="..\CodeDesignDtos\CodeDesignDtos.csproj" />
+		<ProjectReference Include="..\CodeDesignModels\CodeDesignModels.csproj" />
+		<ProjectReference Include="..\CodeDesignUtils\CodeDesignUtilities.csproj" />
+	</ItemGroup>
+
+</Project>

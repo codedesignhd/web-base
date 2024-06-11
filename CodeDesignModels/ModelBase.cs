@@ -1,9 +1,9 @@
-﻿using CodeDesign.Utilities;
+﻿using CodeDesignUtilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Models
+namespace CodeDesignModels
 {
     public class ModelBase
     {

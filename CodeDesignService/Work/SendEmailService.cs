@@ -1,5 +1,5 @@
-﻿using CodeDesign.ES;
-using CodeDesign.Models;
+﻿using CodeDesignES;
+using CodeDesignModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace CodeDesign.Services.Work
+namespace CodeDesignServices.Work
 {
     public class SendEmailService
     {
@@ -23,17 +23,17 @@ namespace CodeDesign.Services.Work
         {
             try
             {
-                int max_error = Convert.ToInt32(Utilities.ConfigurationManager.AppSettings["MailSettings:MaxError"]);
+                int max_error = Convert.ToInt32(CodeDesignUtilities.ConfigurationManager.AppSettings["MailSettings:MaxError"]);
                 if (max_error < 1)
                 {
                     max_error = 5;
                 }
 
 
-                int port = Convert.ToInt32(Utilities.ConfigurationManager.AppSettings["MailSettings:Port"]);
-                string host = Utilities.ConfigurationManager.AppSettings["MailSettings:Host"];
-                string sender_address = Utilities.ConfigurationManager.AppSettings["MailSettings:SenderAddress"];
-                string password = Utilities.ConfigurationManager.AppSettings["MailSettings:SenderSecret"];
+                int port = Convert.ToInt32(CodeDesignUtilities.ConfigurationManager.AppSettings["MailSettings:Port"]);
+                string host = CodeDesignUtilities.ConfigurationManager.AppSettings["MailSettings:Host"];
+                string sender_address = CodeDesignUtilities.ConfigurationManager.AppSettings["MailSettings:SenderAddress"];
+                string password = CodeDesignUtilities.ConfigurationManager.AppSettings["MailSettings:SenderSecret"];
                 SmtpClient mailClient = new SmtpClient(host)
                 {
                     Port = port,
@@ -42,7 +42,7 @@ namespace CodeDesign.Services.Work
                 };
 
                 mailClient.SendCompleted += OnMailSendCompleted;
-                string sender_name = Utilities.ConfigurationManager.AppSettings["MailSettings:SenderName"];
+                string sender_name = CodeDesignUtilities.ConfigurationManager.AppSettings["MailSettings:SenderName"];
 
                 MailAddress sender = new MailAddress(sender_address, sender_name);
                 List<Email> emails = EmailRepository.Instance.GetMailResend(max_error, new string[] { "nguoi_nhan", "title", "body" }).ToList();

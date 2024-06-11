@@ -3,33 +3,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.BL", "CodeDesignBL\CodeDesign.BL.csproj", "{CB46C112-CA69-4183-9FDC-0BD2C7A64399}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignBL", "CodeDesignBL\CodeDesignBL.csproj", "{CB46C112-CA69-4183-9FDC-0BD2C7A64399}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Couchbase", "CodeDesignCouchbase\CodeDesign.Couchbase.csproj", "{ED644BB9-37C1-4F85-AB3A-EC44A4F99FE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignCouchbase", "CodeDesignCouchbase\CodeDesignCouchbase.csproj", "{ED644BB9-37C1-4F85-AB3A-EC44A4F99FE4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Dtos", "CodeDesignDTO\CodeDesign.Dtos.csproj", "{1DFDAC0E-28C1-4697-A8F0-1950338BCE50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignDtos", "CodeDesignDtos\CodeDesignDtos.csproj", "{1DFDAC0E-28C1-4697-A8F0-1950338BCE50}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.ES", "CodeDesignES\CodeDesign.ES.csproj", "{A59A260B-803B-42FB-99D3-8BA89BEDDFA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignES", "CodeDesignES\CodeDesignES.csproj", "{A59A260B-803B-42FB-99D3-8BA89BEDDFA5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Form", "CodeDesignForm\CodeDesign.Form.csproj", "{F91618A2-73EB-467D-9458-55967CD4F14C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignForm", "CodeDesignForm\CodeDesignForm.csproj", "{F91618A2-73EB-467D-9458-55967CD4F14C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Models", "CodeDesignModels\CodeDesign.Models.csproj", "{0DC6017E-84AB-494F-A6B0-5F46EDD621C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignModels", "CodeDesignModels\CodeDesignModels.csproj", "{0DC6017E-84AB-494F-A6B0-5F46EDD621C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Services", "CodeDesignService\CodeDesign.Services.csproj", "{5FB2203A-3CEA-4BDB-B142-14950AB6873C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignServices", "CodeDesignService\CodeDesignServices.csproj", "{5FB2203A-3CEA-4BDB-B142-14950AB6873C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Sql", "CodeDesignSql\CodeDesign.Sql.csproj", "{7B80AC6D-6C4B-4CB8-8FCD-2364076398AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignSql", "CodeDesignSql\CodeDesignSql.csproj", "{7B80AC6D-6C4B-4CB8-8FCD-2364076398AC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Web", "CodeDesignWeb\CodeDesign.Web.csproj", "{116A9EC1-D863-4C09-BB36-14F5D18A5039}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignWeb", "CodeDesignWeb\CodeDesignWeb.csproj", "{116A9EC1-D863-4C09-BB36-14F5D18A5039}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.WebAPI", "CodeDesignWebAPI\CodeDesign.WebAPI.csproj", "{C92017C8-7459-4693-8952-EF16ABDD61E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignWebAPI", "CodeDesignWebAPI\CodeDesignWebAPI.csproj", "{C92017C8-7459-4693-8952-EF16ABDD61E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Utilities", "CodeDesignUtils\CodeDesign.Utilities.csproj", "{DE1047AE-38A0-49BE-B8DB-3379CAC1D868}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignUtilities", "CodeDesignUtils\CodeDesignUtilities.csproj", "{DE1047AE-38A0-49BE-B8DB-3379CAC1D868}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.Kafka", "CodeDesign.Kafka\CodeDesign.Kafka.csproj", "{723EB19B-7678-4BAE-B20E-FF1A3F202253}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignKafka", "CodeDesign.Kafka\CodeDesignKafka.csproj", "{723EB19B-7678-4BAE-B20E-FF1A3F202253}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.AWS", "CodeDesign.AWS\CodeDesign.AWS.csproj", "{1840283F-2D37-4327-A3E8-339A064D010B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignAWS", "CodeDesign.AWS\CodeDesignAWS.csproj", "{1840283F-2D37-4327-A3E8-339A064D010B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesign.GoogleService", "CodeDesign.GoogleService\CodeDesign.GoogleService.csproj", "{82A03B54-C175-4526-B6FA-0F7ADF9E155D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeDesignGoogleService", "CodeDesign.GoogleService\CodeDesignGoogleService.csproj", "{82A03B54-C175-4526-B6FA-0F7ADF9E155D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolTest", "ToolTest\ToolTest.csproj", "{F0AC3BC3-2BE9-4233-A9B3-C6FA1E21966A}"
 EndProject

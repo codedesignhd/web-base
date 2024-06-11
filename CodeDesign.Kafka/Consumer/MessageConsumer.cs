@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Kafka.Consumer
+namespace CodeDesignKafka.Consumer
 {
     public class MessageConsumer : IMessageConsumer
     {
         private ConsumerConfig config = null;
         public MessageConsumer()
         {
-            
+
         }
         public void Listen(string topic)
         {

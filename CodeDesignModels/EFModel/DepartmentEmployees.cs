@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Models.EFModel
+namespace CodeDesignModels.EFModel
 {
     public class DepartmentEmployees
     {

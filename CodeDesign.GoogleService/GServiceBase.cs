@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.GoogleService
+namespace CodeDesignGoogleService
 {
     public abstract class GServiceBase
     {
-      
+
 
     }
 }

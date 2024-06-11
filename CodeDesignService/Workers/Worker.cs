@@ -1,4 +1,4 @@
-namespace CodeDesign.Services.Workers
+namespace CodeDesignServices.Workers
 {
     public class Worker : BackgroundService
     {

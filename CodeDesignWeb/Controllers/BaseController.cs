@@ -1,5 +1,5 @@
-﻿using CodeDesign.Dtos.Accounts;
-using CodeDesign.Web.Services;
+﻿using CodeDesign.Web.Services;
+using CodeDesignDtos.Accounts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,13 +9,13 @@ namespace CodeDesign.Web.Controllers
     public class BaseController : Controller
     {
         #region DI
-        protected readonly DependencyContainer _dependencies;
-        public BaseController(DependencyContainer dependencies)
+        protected readonly ServicePool _services;
+        public BaseController(ServicePool dependencies)
         {
-            _dependencies = dependencies;
+            _services = dependencies;
         }
 
-        protected AppUser AppUser => _dependencies.AppUserService.GetPrincipal();
+        protected AppUser AppUser => _services.AppUserService.GetPrincipal();
         #endregion
     }
 }

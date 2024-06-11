@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.ES.Constants
+namespace CodeDesignES.Constants
 {
     public class ESConsts
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Models
+namespace CodeDesignModels
 {
     public class Package : ModelBase
     {

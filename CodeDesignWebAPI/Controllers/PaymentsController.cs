@@ -1,23 +1,23 @@
 ﻿using Asp.Versioning;
-using CodeDesign.BL;
-using CodeDesign.Dtos.Vnpay;
-using CodeDesign.WebAPI.Core.Constants;
-using CodeDesign.WebAPI.ServiceExtensions;
+using CodeDesignBL;
+using CodeDesignDtos.Vnpay;
+using CodeDesignWebAPI.Core.Constants;
+using CodeDesignWebAPI.Extensions;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 
-namespace CodeDesign.WebAPI.Controllers
+namespace CodeDesignWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaymentsController : BaseController
+    public class PaymentsController : ApiBaseController
     {
         #region DI
         private readonly ILog _logger = LogManager.GetLogger(typeof(PackagesController));
-        public PaymentsController(DependencyContainer dependency) : base(dependency)
+        public PaymentsController(ServicesPool services) : base(services)
         {
 
         }

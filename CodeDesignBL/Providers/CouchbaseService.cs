@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
-namespace CodeDesign.BL.Providers
+using Utilities = CodeDesignUtilities;
+namespace CodeDesignBL.Providers
 {
     public class CouchbaseService
     {

@@ -1,5 +1,5 @@
-using CodeDesign.Services.Work;
-using CodeDesign.Services.Workers;
+using CodeDesignServices.Work;
+using CodeDesignServices.Workers;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>

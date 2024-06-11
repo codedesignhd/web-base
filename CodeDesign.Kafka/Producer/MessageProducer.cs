@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Kafka.Producer
+namespace CodeDesignKafka.Producer
 {
     public class MessageProducer
     {
@@ -13,7 +13,7 @@ namespace CodeDesign.Kafka.Producer
         {
             config = new ProducerConfig
             {
-                BootstrapServers = Utilities.ConfigurationManager.AppSettings["Kafka:Server"]
+                BootstrapServers = CodeDesignUtilities.ConfigurationManager.AppSettings["Kafka:Server"]
             };
             producer = new ProducerBuilder<Null, string>(config).Build();
         }

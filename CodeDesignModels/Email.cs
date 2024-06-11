@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using System.Text;
 
-namespace CodeDesign.Models
+namespace CodeDesignModels
 {
     public class Email : ModelBase
     {

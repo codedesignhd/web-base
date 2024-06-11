@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Models
+namespace CodeDesignModels
 {
     public class LogAction : ModelBase
     {
         public string source_id { get; set; }
         public string target_id { get; set; }
         public DoiTuong target_type { get; set; }
-        public Action action { get; set; }
+        public ActionType action { get; set; }
         public LogInfo info { get; set; }
     }
 

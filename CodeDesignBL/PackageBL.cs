@@ -1,12 +1,12 @@
-﻿using CodeDesign.Dtos.Responses;
-using CodeDesign.ES;
+﻿using CodeDesignDtos.Responses;
+using CodeDesignES;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CodeDesign.BL
+namespace CodeDesignBL
 {
     public class PackageBL : BaseBL
     {

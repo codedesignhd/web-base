@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Models
+namespace CodeDesignModels
 {
     public enum ThuocTinhHeThong
     {
@@ -42,7 +42,7 @@ namespace CodeDesign.Models
         TaiKhoan = 1,
     }
 
-    public enum Action
+    public enum ActionType
     {
         All = 0,
         View = 1,

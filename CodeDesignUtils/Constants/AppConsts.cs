@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace CodeDesign.Utilities.Constants
+namespace CodeDesignUtilities.Constants
 {
     public abstract class AppConsts
     {

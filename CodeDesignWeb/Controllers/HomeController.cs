@@ -9,7 +9,7 @@ namespace CodeDesign.Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(DependencyContainer dependencies) : base(dependencies) { }
+        public HomeController(ServicePool dependencies) : base(dependencies) { }
         public IActionResult Index()
         {
             return View();

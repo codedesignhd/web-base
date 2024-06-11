@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 
-namespace CodeDesign.Utilities
+namespace CodeDesignUtilities
 {
     public abstract class CommonUtils
     {
@@ -14,7 +14,7 @@ namespace CodeDesign.Utilities
             try
             {
                 ipAddress = Convert.ToString(context.Connection.RemoteIpAddress);
-                if (string.IsNullOrEmpty(ipAddress) || (ipAddress.ToLower() == "unknown") || ipAddress.Length > 45)
+                if (string.IsNullOrEmpty(ipAddress) || ipAddress.ToLower() == "unknown" || ipAddress.Length > 45)
                     ipAddress = context.Request.Headers["REMOTE_ADDR"];
             }
             catch (Exception ex)

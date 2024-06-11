@@ -1,21 +1,16 @@
-﻿using CodeDesign.Dtos.Responses;
-using CodeDesign.Dtos.Vnpay;
-using CodeDesign.Models;
-using Microsoft.AspNetCore.Http;
-using Nest;
+﻿using CodeDesignDtos.Responses;
+using CodeDesignDtos.Vnpay;
+using CodeDesignModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace CodeDesign.BL
+using Utilities = CodeDesignUtilities;
+namespace CodeDesignBL
 {
     public sealed class VnPayBL
     {
@@ -224,16 +219,16 @@ namespace CodeDesign.BL
             string vnp_SecureHash = Utilities.CryptoUtils.HmacSHA512(vnp_HashSecret, signData);
             var qdrData = new
             {
-                vnp_RequestId = vnp_RequestId,
+                vnp_RequestId,
                 vnp_Version = VERSION,
                 vnp_Command = VnPayCommand.Query,
-                vnp_TmnCode = vnp_TmnCode,
-                vnp_TxnRef = request.vnp_TxnRef,
-                vnp_OrderInfo = request.vnp_OrderInfo,
-                vnp_TransactionDate = vnp_TransactionDate,
-                vnp_CreateDate = vnp_CreateDate,
-                vnp_IpAddr = request.vnp_IpAddr,
-                vnp_SecureHash = vnp_SecureHash
+                vnp_TmnCode,
+                request.vnp_TxnRef,
+                request.vnp_OrderInfo,
+                vnp_TransactionDate,
+                vnp_CreateDate,
+                request.vnp_IpAddr,
+                vnp_SecureHash
             };
             string payload = JsonConvert.SerializeObject(qdrData);
             using (HttpClient client = new HttpClient())

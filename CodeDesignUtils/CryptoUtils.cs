@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CodeDesign.Utilities
+namespace CodeDesignUtilities
 {
     public abstract class CryptoUtils
     {
@@ -78,8 +76,8 @@ namespace CodeDesign.Utilities
         }
         public static string Base64Encode(string plainText)
         {
-            byte[] plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
         }
 
         public static string Encode(string plainText)

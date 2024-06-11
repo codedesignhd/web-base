@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace CodeDesign.WebAPI.Core.Authorization;
+namespace CodeDesignWebAPI.Core.Authorization;
 
 
 public class AuthorizeRolesAttribute : AuthorizeAttribute

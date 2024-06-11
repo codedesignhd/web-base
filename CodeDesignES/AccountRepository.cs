@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using CodeDesign.ES.Models;
-using CodeDesign.Models;
-using Elasticsearch.Net;
 using Nest;
-using CodeDesign.Models.Extensions;
-namespace CodeDesign.ES
+using CodeDesignModels;
+using CodeDesignES.Models;
+using CodeDesignUtilities;
+namespace CodeDesignES
 {
     public class AccountRepository : ESRepositoryBase, IESRepository<Account>
     {
@@ -82,7 +79,7 @@ namespace CodeDesign.ES
             {
                 Includes = fields,
             };
-            return GetObjectScroll<Account>( null, so).ToList();
+            return GetObjectScroll<Account>(null, so).ToList();
         }
 
 
@@ -234,7 +231,7 @@ namespace CodeDesign.ES
             List<QueryContainer> filter = new List<QueryContainer>()
             {
                 new TermQuery{Field="refresh_token.token.keyword", Value=token},
-                new LongRangeQuery{Field="refresh_token.expires", GreaterThan=Utilities.DateTimeUtils.TimeInEpoch()}
+                new LongRangeQuery{Field="refresh_token.expires", GreaterThan=DateTimeUtils.TimeInEpoch()}
             };
             SearchRequest req = new SearchRequest(_index)
             {

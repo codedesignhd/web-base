@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CodeDesign.Form;
+namespace CodeDesignForm;
 public partial class frmTest : Form
 {
     public frmTest()

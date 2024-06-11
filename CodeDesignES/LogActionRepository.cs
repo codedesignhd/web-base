@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CodeDesign.Models;
+using CodeDesignModels;
 using Nest;
 
-namespace CodeDesign.ES
+namespace CodeDesignES
 {
     public class LogActionRepository : ESRepositoryBase, IESRepository<LogAction>
     {

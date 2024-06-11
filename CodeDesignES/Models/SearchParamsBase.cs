@@ -1,9 +1,9 @@
-﻿using CodeDesign.Models;
+﻿using CodeDesignModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.ES.Models
+namespace CodeDesignES.Models
 {
     public class SearchParamsBase
     {

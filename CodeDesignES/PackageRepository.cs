@@ -1,6 +1,6 @@
-﻿using CodeDesign.ES.Constants;
-using CodeDesign.ES.Models;
-using CodeDesign.Models;
+﻿using CodeDesignES.Constants;
+using CodeDesignES.Models;
+using CodeDesignModels;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace CodeDesign.ES
+namespace CodeDesignES
 {
     public class PackageRepository : ESRepositoryBase, IESRepository<Package>
     {
@@ -48,27 +48,27 @@ namespace CodeDesign.ES
         #region Core func
         public bool Delete(string id, bool isForceDelete = false)
         {
-            return base.Delete<Package>(id, isForceDelete);
+            return Delete<Package>(id, isForceDelete);
         }
 
         public Package Get(string id, string[] fields = null)
         {
-            return base.Get<Package>(id, fields);
+            return Get<Package>(id, fields);
         }
 
         public (bool success, string id) Index(Package data, string id = "", string route = "")
         {
-            return base.Index<Package>(data, id, route);
+            return base.Index(data, id, route);
         }
 
         public List<Package> MultiGet(IEnumerable<string> ids, string[] fields = null)
         {
-            return base.MultiGet<Package>(ids, fields);
+            return MultiGet<Package>(ids, fields);
         }
 
         public bool Update(string id, object doc)
         {
-            return base.Update<Package>(id, doc);
+            return Update<Package>(id, doc);
         }
         #endregion
 

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CodeDesign.Models.EFModel;
-using CodeDesign.Sql;
+using CodeDesignModels.EFModel;
+using CodeDesignSql;
 
-namespace CodeDesign.Sql.Repositories
+namespace CodeDesignSql.Repositories
 {
     public interface IUnitOfWork
     {

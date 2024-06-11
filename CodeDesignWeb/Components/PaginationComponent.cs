@@ -1,12 +1,11 @@
-﻿using CodeDesign.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace CodeDesign.Web.Components
+namespace CodeDesignWeb.Components
 {
     [ViewComponent(Name = "Pagination")]
     public class PaginationComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(Pagination pagination)
+        public async Task<IViewComponentResult> InvokeAsync(CodeDesignDtos.Pagination.Pager pagination)
         {
             return View(pagination);
         }

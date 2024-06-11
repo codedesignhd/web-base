@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CodeDesign.BL
+namespace CodeDesignBL
 {
     public abstract class BaseBL
     {

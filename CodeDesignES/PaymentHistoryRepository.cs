@@ -1,12 +1,13 @@
-﻿using CodeDesign.ES.Constants;
-using CodeDesign.Models;
+﻿using CodeDesignES.Constants;
+using CodeDesignModels;
+using CodeDesignUtilities;
 using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CodeDesign.ES
+namespace CodeDesignES
 {
     public class PaymentHistoryRepository : ESRepositoryBase, IESRepository<PaymentHistory>
     {
@@ -46,27 +47,27 @@ namespace CodeDesign.ES
         #region Core func
         public bool Delete(string id, bool isForceDelete = false)
         {
-            return base.Delete<PaymentHistory>(id, isForceDelete);
+            return Delete<PaymentHistory>(id, isForceDelete);
         }
 
         public PaymentHistory Get(string id, string[] fields = null)
         {
-            return base.Get<PaymentHistory>(id, fields);
+            return Get<PaymentHistory>(id, fields);
         }
 
         public (bool success, string id) Index(PaymentHistory data, string id = "", string route = "")
         {
-            return base.Index<PaymentHistory>(data, id, route);
+            return base.Index(data, id, route);
         }
 
         public List<PaymentHistory> MultiGet(IEnumerable<string> ids, string[] fields = null)
         {
-            return base.MultiGet<PaymentHistory>(ids, fields);
+            return MultiGet<PaymentHistory>(ids, fields);
         }
 
         public bool Update(string id, object doc)
         {
-            return base.Update<PaymentHistory>(id, doc);
+            return Update<PaymentHistory>(id, doc);
         }
 
         public List<string> UpdateMany(IEnumerable<object> docs)
@@ -83,7 +84,7 @@ namespace CodeDesign.ES
             List<QueryContainer> filter = new List<QueryContainer>()
             {
                 new TermQuery{Field="payment_status", Value=PaymentStatus.DaThanhToan},
-                new LongRangeQuery{Field="ngay_het_han", LessThan=CodeDesign.Utilities.DateTimeUtils.TimeInEpoch()},
+                new LongRangeQuery{Field="ngay_het_han", LessThan=DateTimeUtils.TimeInEpoch()},
             };
             if (username != null)
             {
@@ -115,7 +116,7 @@ namespace CodeDesign.ES
         {
             List<QueryContainer> filter = new List<QueryContainer>()
             {
-                new LongRangeQuery{Field="ngay_het_han",LessThan=Utilities.DateTimeUtils.TimeInEpoch()},
+                new LongRangeQuery{Field="ngay_het_han",LessThan=CodeDesignUtilities.DateTimeUtils.TimeInEpoch()},
                 new TermQuery{Field="payment_status",Value=PaymentStatus.DaThanhToan},
             };
 

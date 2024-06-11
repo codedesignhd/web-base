@@ -4,10 +4,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using DemoForm;
-using CodeDesign.Sql;
-using CodeDesign.Sql.Repositories;
+using CodeDesignSql;
+using CodeDesignSql.Repositories;
 
-namespace CodeDesign.Form
+namespace CodeDesignForm
 {
     internal static class Program
     {
@@ -27,7 +27,7 @@ namespace CodeDesign.Form
         }
 
 
-        public static IServiceProvider ServiceProvider { get; private set; }
+        public static IServiceProvider? ServiceProvider { get; private set; }
         static IHostBuilder CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()

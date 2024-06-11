@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.BL.Providers
+namespace CodeDesignBL.Providers
 {
     public static class CouchbaseKeyProvider
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using CodeDesign.ES;
-using CodeDesign.Models;
+using CodeDesignES;
+using CodeDesignModels;
 
-namespace CodeDesign.BL
+namespace CodeDesignBL
 {
     public class LogActionBL : BaseBL
     {

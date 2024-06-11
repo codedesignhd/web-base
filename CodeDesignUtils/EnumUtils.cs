@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeDesign.Utilities
+namespace CodeDesignUtilities
 {
     public abstract class EnumUtils
     {
