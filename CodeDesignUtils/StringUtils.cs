@@ -7,6 +7,7 @@ namespace CodeDesignUtilities
 {
     public static class StringUtils
     {
+        public const string Alphabet = "-_abcfefjhijklmnopqrstuvwxyz0123456789";
         public static string TiengVietKhongDau(string input)
         {
             string[] strArray1 = new string[8];
@@ -23,6 +24,21 @@ namespace CodeDesignUtilities
             for (int index = 0; index < 8; ++index)
                 input = Regex.Replace(input, "[" + strArray1[index] + "]", strArray2[index], RegexOptions.IgnoreCase);
             return input;
+        }
+        /// <summary>
+        /// Lấy username từ email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public static string GetUsernameFromEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return string.Empty;
+            }
+            string[] parts = email.Split('@');
+
+            return parts.Length > 0 ? parts[0] : string.Empty;
         }
         public static string ChuanHoa(this string str)
         {

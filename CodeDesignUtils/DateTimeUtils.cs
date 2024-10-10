@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace CodeDesignUtilities
 {
-    public abstract class DateTimeUtils
+    public static class DateTimeUtils
     {
         /// <summary>
         /// Convert DateTime to UnixTime
@@ -99,14 +99,10 @@ namespace CodeDesignUtilities
             return DateTime.TryParse(date, new CultureInfo("vi-VN"), DateTimeStyles.None, out _);
         }
 
-
-
-    }
-    public static class DateTimeExtensions
-    {
         public static string ToLocalTime(this DateTime dt, string format = "dd/MM/yyyy HH:mm")
         {
             return dt.ToLocalTime().ToString(format);
         }
+
     }
 }
